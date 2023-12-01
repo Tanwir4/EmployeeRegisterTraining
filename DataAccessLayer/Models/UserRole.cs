@@ -8,7 +8,7 @@ namespace EmployeeTrainingRegistrationServices.Entities
 {
     public class UserRole
     {
-        public int RoleID { set; get; }
+        public int RoleId { set; get; }
         public string RoleName { set; get; }
     }
 }

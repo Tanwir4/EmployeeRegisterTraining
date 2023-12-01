@@ -10,12 +10,7 @@ namespace DataAccessLayer.Repositories.IRepositories
 {
     public interface IUserRepository
     {
-    /*    bool AddNewUser(); //Register
-        UserAccount GetAccountById(int id);
-        UserAccount GetAccountByEmail(string email);*/
-        bool GetUserLogin(UserAccount user);
-        bool AddUserAccount(UserDetails user, UserAccount acc, Department dept);
- 
-
+        bool AuthenticateUser(UserAccount user);
+        bool RegisterUser(UserDetails user, UserAccount acc, Department dept);
     }
 }

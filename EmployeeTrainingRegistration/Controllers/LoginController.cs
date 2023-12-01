@@ -48,10 +48,8 @@ namespace EmployeeTrainingRegistration.Controllers
         [HttpPost]
         public ActionResult Verify(UserAccount acc)
         {
-             if (_loginService.CheckLogin(acc)) { return View("Success"); }
+             if (_loginService.VerifyLogin(acc)) { return View("Success"); }
              else { return View("Error"); }
-          
-            
         }
 
     }

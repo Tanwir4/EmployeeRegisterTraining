@@ -16,45 +16,33 @@ namespace DataAccessLayer.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly IDataAccessLayer _dataAccessLayer;
-        string result;
-        string sql;
         public UserRepository(IDataAccessLayer layer)
         {
             _dataAccessLayer = layer;
         }
-        public bool GetUserLogin(UserAccount user)
+        public bool AuthenticateUser(UserAccount user)
         {
-            try
+            string result;
+            string sql;
+            result = _dataAccessLayer.Connect();
+            sql = "SELECT * FROM UserAccount WHERE Email=@EmailAddress AND Passwordd=@Password";
+            List<SqlParameter> parameters = new List<SqlParameter>
             {
-                result = _dataAccessLayer.Connect();
-                sql = "SELECT * FROM TestLogin WHERE EmailAddress=@EmailAddress AND HashedPassword=@Password";
+                new SqlParameter("@EmailAddress", SqlDbType.VarChar, 100) { Value = user.Email },
+                new SqlParameter("@Password", SqlDbType.VarChar, 100) { Value = user.Password }
+            };
+            DataTable resultTable = _dataAccessLayer.GetData(sql, parameters);
+            Debug.WriteLine(resultTable);
+            Debug.WriteLine(sql);
+            Debug.WriteLine(result);
+            Debug.WriteLine(user.Email);
+            Debug.WriteLine(user.Password);
 
-                List<SqlParameter> parameters = new List<SqlParameter>
-                {
-                    new SqlParameter("@EmailAddress", SqlDbType.VarChar, 100) { Value = user.Email },
-                    new SqlParameter("@Password", SqlDbType.VarChar, 100) { Value = user.Password }
-                };
-                DataTable resultTable = _dataAccessLayer.GetData(sql, parameters);
-                Debug.WriteLine(resultTable);
-                Debug.WriteLine(sql);
-                Debug.WriteLine(user.Email);
-                Debug.WriteLine(user.Password);
-
-                return (resultTable.Rows.Count > 0);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine("Error");
-                Console.WriteLine(e.Message);
-                //throw e;
-                return false;
-            }
-
-
-
+            return (resultTable.Rows.Count > 0);
         }
-
-         public bool AddUserAccount(UserDetails user, UserAccount acc, Department dept) {
+         public bool RegisterUser(UserDetails user, UserAccount acc, Department dept) {
+            string result;
+            string sql;
             result = _dataAccessLayer.Connect();
             sql = $@"BEGIN TRANSACTION
                         DECLARE @AccountTempID INT
@@ -88,11 +76,6 @@ namespace DataAccessLayer.Repositories
             Debug.WriteLine(acc.Email);
             Debug.WriteLine(acc.Password);
             return (resultTable.Rows.Count > 0);
-
-    }
-
-   
-
-
+        }
     }
 }

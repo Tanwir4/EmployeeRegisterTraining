@@ -37,8 +37,8 @@ namespace EmployeeTrainingRegistration.Controllers
         [HttpPost]
         public ActionResult AddAccount(UserDetails user, UserAccount acc, Department dept)
         {
-            if (_registerService.CheckRegister(user,acc, dept)) { return View("Error"); }
-            else { return View("Success"); }
+            if (_registerService.CheckRegister(user,acc, dept)) { return View("Success"); }
+            else { return View("Error"); }
         }
     }
 }
