@@ -8,14 +8,17 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.DBConnection
 {
-    public interface IDataAccessLayer : IDisposable
+    public interface IDBConnection
     {
         SqlConnection Connection { get; }
+
         string Connect();
+
+
+        /*string Connect(string connectionString);*/
+
         void Disconnect();
-        SqlDataReader GetData(string sql, List<SqlParameter> parameters);
-        int InsertData(string sql, List<SqlParameter> parameters);
-        List<string> GetAll(string sql);
-        SqlConnection CreateConnection();
+
+        DataTable GetData(string sql, List<SqlParameter> parameters);
     }
 }

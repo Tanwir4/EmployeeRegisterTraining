@@ -22,7 +22,9 @@ namespace EmployeeTrainingRegistration
             // e.g. container.RegisterType<ITestService, TestService>();
             container.RegisterType<IDataAccessLayer, DataAccessLayer.DBConnection.DataAccessLayer>();
             container.RegisterType<IUserRepository, UserRepository>();
+            container.RegisterType<ITrainingRepository, TrainingRepository>();
             container.RegisterType<ILoginService, LoginService>();
+            container.RegisterType<ITrainingService, TrainingService>();
             container.RegisterType<ILoginValidation, LoginValidation>();
             container.RegisterType<IRegisterService, RegisterService>();
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));

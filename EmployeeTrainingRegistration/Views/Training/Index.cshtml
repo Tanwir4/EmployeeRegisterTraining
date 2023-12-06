@@ -1,0 +1,14 @@
+﻿@model List<string>
+
+<table border="1">
+    <tr>
+        <th>Training Title</th>
+    </tr>
+    @foreach (var title in Model)
+    {
+        <tr>
+            <td>@title</td>
+        </tr>
+    }
+</table>
+

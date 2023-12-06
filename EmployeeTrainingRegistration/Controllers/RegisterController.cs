@@ -13,8 +13,6 @@ namespace EmployeeTrainingRegistration.Controllers
     public class RegisterController : Controller
     {
         private readonly IRegisterService _registerService;
-        // GET: Register
-
         public RegisterController(IRegisterService registerService)
         {
             _registerService = registerService;
@@ -23,22 +21,26 @@ namespace EmployeeTrainingRegistration.Controllers
         {
             return View();
         }
-
         public ActionResult Success()
         {
             return View();
         }
-
         public ActionResult Error()
         {
             return View();
         }
-
         [HttpPost]
-        public ActionResult AddAccount(UserDetails user, UserAccount acc, Department dept)
+        public ActionResult AddAccount(User user)
         {
-            if (_registerService.CheckRegister(user,acc, dept)) { return View("Success"); }
-            else { return View("Error"); }
+            if (_registerService.IsRegistered(user)) {return RedirectToAction("Login","Login"); }
+            else {
+                return View("Error");
+            } //Error message is displayed on login page itself instead of redirecting to error page
+           
+
+         
+
         }
+
     }
 }

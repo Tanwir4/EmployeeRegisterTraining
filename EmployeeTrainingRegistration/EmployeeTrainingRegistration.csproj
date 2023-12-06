@@ -136,6 +136,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
+    <Compile Include="Controllers\TrainingController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -162,6 +163,8 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="js\LoginValidation.js" />
+    <Content Include="js\RegisterValidation.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -193,6 +196,7 @@
     <Content Include="Styles\LoginCSS\js\jquery.min.js" />
     <Content Include="Styles\LoginCSS\js\main.js" />
     <Content Include="Styles\LoginCSS\js\popper.js" />
+    <Content Include="Styles\Training.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -219,6 +223,8 @@
     <Content Include="Styles\LoginCSS\css\.DS_Store" />
     <Content Include="Styles\LoginCSS\css\bootstrap\.DS_Store" />
     <Content Include="Styles\LoginCSS\css\bootstrap\mixins\.DS_Store" />
+    <Content Include="Views\Training\TrainingIndex.cshtml" />
+    <Content Include="Views\Training\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

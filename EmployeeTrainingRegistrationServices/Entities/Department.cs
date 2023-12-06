@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace EmployeeTrainingRegistrationServices.Entities
 {
-    public class UserRole
+    public class Department
     {
-        public int RoleId { set; get; }
-        public string RoleName { set; get; }
-        //add UserId
+        public int DepartmentID { set; get; }
+        public string DepartmentName { set; get; }
     }
 }

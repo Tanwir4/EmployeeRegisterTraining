@@ -10,16 +10,21 @@ using System.Threading.Tasks;
 
 namespace EmployeeTrainingRegistrationServices.Services
 {
-    public class RegisterService : IRegisterService
+    public class AccountService : IAccountService
     {
         private readonly IUserRepository _userRepository;
-        public RegisterService(IUserRepository userRepository) 
-        { 
+        public AccountService(IUserRepository userRepository) {
             _userRepository = userRepository;
         }
-        public bool IsRegistered(User user)
+        public bool AuthenticateUser(UserAccount acc)
         {
-            return _userRepository.Register(user);
+            if (_userRepository.AuthenticateUser(acc)) { return true; }
+            else { return false; }
+        }
+        public bool RegisterUser(UserDetails user, UserAccount acc, Department dept)
+        {
+            if (_userRepository.RegisterUser(user, acc, dept)) { return true; }
+            else { return false; }
         }
     }
 }

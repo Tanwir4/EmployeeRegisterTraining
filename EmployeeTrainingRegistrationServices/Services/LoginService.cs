@@ -15,22 +15,14 @@ namespace EmployeeTrainingRegistrationServices.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly ILoginValidation _loginValidation;
-
         public LoginService(IUserRepository userRepository, ILoginValidation loginValidation)
         {
             _userRepository = userRepository;
             _loginValidation = loginValidation;
         }
-
-        public bool VerifyLogin(UserAccount acc)
+        public bool IsAuthenticated(Account account)
         {
-
-            //List<string> results = _loginValidation.ValidationLoginResults(emailAddress, password);
-            if (_userRepository.AuthenticateUser(acc)) { return true; }
-            else { return false; }
-
+            return _userRepository.Authenticate(account);
         }
-
-
     }
 }

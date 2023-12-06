@@ -1,0 +1,22 @@
+﻿@model List<string>
+@{
+    ViewBag.Title = "Training";
+}
+<!doctype html>
+<html lang="en">
+<head>
+    <link href="~/Styles/Training.css" rel="stylesheet" />
+</head>
+<body>
+    @foreach (var title in Model)
+    {
+        <div class="card w-50">
+            <div class="card-body">
+                <h5 class="card-title">@title </h5>
+                <div></div>
+                <a href="#" class="btn btn-primary">Apply</a>
+            </div>
+        </div>
+    }
+    </body>
+</html>

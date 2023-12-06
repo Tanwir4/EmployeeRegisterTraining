@@ -9,6 +9,6 @@ namespace EmployeeTrainingRegistrationServices.Interfaces
 {
     public interface ILoginService
     {
-        bool VerifyLogin(UserAccount acc);
+        bool IsAuthenticated(Account acc);
     }
 }

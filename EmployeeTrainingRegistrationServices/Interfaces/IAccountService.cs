@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace EmployeeTrainingRegistrationServices.Interfaces
 {
-    public interface IRegisterService
+    public interface IAccountService
     {
-        bool IsRegistered(User user);
+        bool AuthenticateUser(UserAccount acc);
+        bool RegisterUser(UserDetails user, UserAccount acc, Department dept);
     }
 }

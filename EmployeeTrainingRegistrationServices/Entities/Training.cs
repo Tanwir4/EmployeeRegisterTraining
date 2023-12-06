@@ -13,7 +13,6 @@ namespace EmployeeTrainingRegistrationServices.Entities
         public DateTime StartDate { set; get; }
         public int Threshold { set; get; }
         public string PreRequisite { set; get; }
-        public int DepartmentPriority { set; get; }
-        public DateTime Deadline { set; get; }
+        public int Priority { set; get; }
     }
 }
