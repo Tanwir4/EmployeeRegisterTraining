@@ -1,8 +1,10 @@
 ﻿using DataAccessLayer.Models;
+using System.Threading.Tasks;
+
 namespace EmployeeTrainingRegistrationServices.Interfaces
 {
     public interface IRegisterService
     {
-        bool IsRegistered(User user);
+        Task<bool> IsRegistered(User user);
     }
 }

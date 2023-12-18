@@ -41,11 +41,11 @@ function openTrainingDetails(trainingId) {
             var formattedStartDate = startDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
             var deadline = new Date(parseInt(data.trainings.Deadline.substr(6)));
             var formattedDeadline = deadline.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-            $('#trainingTitle').text(data.trainings.Title);
-            $('#trainingPreRequisite').text(data.trainings.PreRequisite);
-            $('#trainingDeadline').text(formattedDeadline);
-            $('#trainingSeat').text(data.trainings.Threshold);
-            $('#trainingStartDate').text(formattedStartDate);
+            $('#trainingTitle').html(data.trainings.Title);
+            $('#trainingPreRequisite').html('<span>Description: </span>' +data.trainings.PreRequisite);
+            $('#trainingDeadline').html('<span>Deadline: </span>'+formattedDeadline);
+            $('#trainingSeat').html('<span>Seat Threshold: </span>' +data.trainings.Threshold);
+            $('#trainingStartDate').html('<span>Start Date: </span>' +formattedStartDate);
             $('#trainingDetailsModal').modal('show');
         },
         error: function (error) {

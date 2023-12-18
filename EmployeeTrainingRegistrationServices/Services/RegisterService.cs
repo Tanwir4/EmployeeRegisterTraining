@@ -1,6 +1,8 @@
 ﻿using DataAccessLayer.Models;
 using DataAccessLayer.Repositories.IRepositories;
 using EmployeeTrainingRegistrationServices.Interfaces;
+using System.Threading.Tasks;
+
 namespace EmployeeTrainingRegistrationServices.Services
 {
     public class RegisterService : IRegisterService
@@ -10,9 +12,9 @@ namespace EmployeeTrainingRegistrationServices.Services
         { 
             _userRepository = userRepository;
         }
-        public bool IsRegistered(User user)
+        public async Task<bool> IsRegistered(User user)
         {
-            return _userRepository.Register(user);
+            return await _userRepository.Register(user);
         }
     }
 }

@@ -1,3 +1,4 @@
+using DataAccessLayer.AppLogger;
 using DataAccessLayer.DBConnection;
 using DataAccessLayer.Repositories;
 using DataAccessLayer.Repositories.IRepositories;
@@ -24,6 +25,7 @@ namespace EmployeeTrainingRegistration
             container.RegisterType<ILoginValidation, LoginValidation>();
             container.RegisterType<IRegisterService, RegisterService>();
             container.RegisterType<IAccountService, AccountService>();
+            container.RegisterType<ILogger, Logger>();
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }
     }

@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppLogger\ILogger.cs" />
+    <Compile Include="AppLogger\Logger.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="DBConnection\DataAccessLayer.cs" />
     <Compile Include="DBConnection\IDataAccessLayer.cs" />

@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.Models;
 using EmployeeTrainingRegistrationServices.Interfaces;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 namespace EmployeeTrainingRegistration.Controllers
 {
@@ -23,9 +24,9 @@ namespace EmployeeTrainingRegistration.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult AddAccount(User user)
+        public async Task<ActionResult> AddAccount(User user)
         {
-            if (_registerService.IsRegistered(user)) {return RedirectToAction("Login","Login"); }
+            if (await _registerService.IsRegistered(user)) {return RedirectToAction("Login","Login"); }
             else {
                 return View("Error");
             }

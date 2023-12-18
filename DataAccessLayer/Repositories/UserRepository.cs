@@ -6,6 +6,7 @@ using System.Data;
 using DataAccessLayer.DBConnection;
 using System.Net;
 using System.Web;
+using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repositories
 {
@@ -30,7 +31,7 @@ namespace DataAccessLayer.Repositories
                 return (getData.HasRows);
             }
         }
-        public bool Register(User user)
+        public async Task<bool> Register(User user)
         {
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
@@ -57,8 +58,8 @@ namespace DataAccessLayer.Repositories
                        new SqlParameter("@ManagerName", SqlDbType.VarChar, 80) { Value = user.ManagerName },
                        new SqlParameter("@DepartmentName", SqlDbType.VarChar, 40) { Value = user.DepartmentName }
                    };
-                int numberOfRowsAffected = _dataAccessLayer.InsertData(sql, parameters);
-                return (numberOfRowsAffected > 0);
+                int numberOfRowsAffected = await _dataAccessLayer.InsertDataAsync(sql, parameters);
+                return (numberOfRowsAffected>0);
             }
         }
         public int GetUserAccountIdByEmail(string email){
@@ -103,7 +104,6 @@ namespace DataAccessLayer.Repositories
                 }
             }
             return userId;
-
         }
     }
 }
