@@ -5,5 +5,6 @@ namespace EmployeeTrainingRegistrationServices.Interfaces
     public interface ITrainingService
     {
         List<Training> GetAllTraining();
+        List<Training> GetAllTrainingById(int id);
     }
 }

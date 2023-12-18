@@ -1,7 +1,7 @@
-﻿using DataAccessLayer.Models;
+﻿using DataAccessLayer.Repositories;
 using DataAccessLayer.Repositories.IRepositories;
-using EmployeeTrainingRegistrationServices.Entities;
 using EmployeeTrainingRegistrationServices.Interfaces;
+using EmployeeTrainingRegistrationServices.Validation.IValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,21 +10,24 @@ using System.Threading.Tasks;
 
 namespace EmployeeTrainingRegistrationServices.Services
 {
+  
     public class AccountService : IAccountService
     {
         private readonly IUserRepository _userRepository;
-        public AccountService(IUserRepository userRepository) {
+        private readonly IApplicationRepository _applicationRepository;
+        public AccountService(IUserRepository userRepository, IApplicationRepository applicationRepository)
+        {
             _userRepository = userRepository;
+            _applicationRepository = applicationRepository;
         }
-        public bool AuthenticateUser(UserAccount acc)
+        public int GetUserAccountId(string email)
         {
-            if (_userRepository.AuthenticateUser(acc)) { return true; }
-            else { return false; }
+            return _userRepository.GetUserAccountIdByEmail(email);
         }
-        public bool RegisterUser(UserDetails user, UserAccount acc, Department dept)
+
+        public bool IsApplicationSubmitted(int trainingId)
         {
-            if (_userRepository.RegisterUser(user, acc, dept)) { return true; }
-            else { return false; }
+            return _applicationRepository.submitApplication(trainingId);
         }
     }
 }

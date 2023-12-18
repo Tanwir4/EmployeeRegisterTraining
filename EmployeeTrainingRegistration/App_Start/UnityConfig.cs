@@ -15,20 +15,16 @@ namespace EmployeeTrainingRegistration
         public static void RegisterComponents()
         {
 			var container = new UnityContainer();
-
-            // register all your components with the container here
-            // it is NOT necessary to register your controllers
-
-            // e.g. container.RegisterType<ITestService, TestService>();
             container.RegisterType<IDataAccessLayer, DataAccessLayer.DBConnection.DataAccessLayer>();
             container.RegisterType<IUserRepository, UserRepository>();
             container.RegisterType<ITrainingRepository, TrainingRepository>();
+            container.RegisterType<IApplicationRepository, ApplicationRepository>();
             container.RegisterType<ILoginService, LoginService>();
             container.RegisterType<ITrainingService, TrainingService>();
             container.RegisterType<ILoginValidation, LoginValidation>();
             container.RegisterType<IRegisterService, RegisterService>();
+            container.RegisterType<IAccountService, AccountService>();
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
-            /*UnityConfig.RegisterComponents();*/
         }
     }
 }

@@ -2,8 +2,6 @@
 using EmployeeTrainingRegistrationServices.Entities;
 using EmployeeTrainingRegistrationServices.Interfaces;
 using System.Collections.Generic;
-
-
 namespace EmployeeTrainingRegistrationServices.Services
 {
     public class TrainingService : ITrainingService
@@ -16,6 +14,10 @@ namespace EmployeeTrainingRegistrationServices.Services
         public List<Training> GetAllTraining()
         {
             return _trainingRepository.GetAll();
+        }
+        public List<Training> GetAllTrainingById(int id)
+        {
+            return _trainingRepository.GetTrainingById(id);
         }
     }
 }

@@ -2,13 +2,6 @@
 using DataAccessLayer.Repositories.IRepositories;
 using EmployeeTrainingRegistrationServices.Interfaces;
 using EmployeeTrainingRegistrationServices.Validation.IValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EmployeeTrainingRegistrationServices.Services
 {
     public class LoginService : ILoginService
@@ -23,6 +16,11 @@ namespace EmployeeTrainingRegistrationServices.Services
         public bool IsAuthenticated(Account account)
         {
             return _userRepository.Authenticate(account);
+        }
+
+        public int GetUserIdByEmail(string email)
+        {
+            return _userRepository.GetUserAccountIdByEmail(email);
         }
     }
 }

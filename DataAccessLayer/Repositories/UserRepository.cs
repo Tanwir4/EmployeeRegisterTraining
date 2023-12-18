@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
 using DataAccessLayer.DBConnection;
-using EmployeeTrainingRegistrationServices.Entities;
-using System.Diagnostics;
+using System.Net;
+using System.Web;
 
 namespace DataAccessLayer.Repositories
 {
@@ -18,20 +18,23 @@ namespace DataAccessLayer.Repositories
         }
         public bool Authenticate(Account user)
         {
-            _dataAccessLayer.Connect();
-            const string SQL = "SELECT 1 FROM UserAccount WHERE Email=@EmailAddress AND Passwordd=@Password";
-            List<SqlParameter> parameters = new List<SqlParameter>
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                const string SQL = "SELECT 1 FROM UserAccount WHERE Email=@EmailAddress AND Passwordd=@Password";
+                List<SqlParameter> parameters = new List<SqlParameter>
             {
                 new SqlParameter("@EmailAddress", SqlDbType.VarChar, 100) { Value = user.Email },
-                new SqlParameter("@Password", SqlDbType.VarChar, 100) { Value = user.Password } //Change password varchar
+                new SqlParameter("@Password", SqlDbType.VarChar, 100) { Value = user.Password }
             };
-            SqlDataReader getData = _dataAccessLayer.GetData(SQL, parameters);
-            return (getData.HasRows);
+                SqlDataReader getData = _dataAccessLayer.GetDataWithConditions(SQL, parameters);
+                return (getData.HasRows);
+            }
         }
         public bool Register(User user)
         {
-            _dataAccessLayer.Connect();
-            string sql = $@"
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                string sql = $@"
                           DECLARE @AccountTempID INT
                           DECLARE @managerId INT
                           DECLARE @deptId INT
@@ -43,7 +46,7 @@ namespace DataAccessLayer.Repositories
 
                           INSERT INTO UserDetails (FirstName,LastName,MobileNumber,NationalIdentityCard,ManagerID,UserAccountID,DepartmentID)
                           VALUES (@FirstName,@LastName,@MobileNumber,@NationalIdentityCard,@managerId, @AccountTempID, @deptId)";
-            List<SqlParameter> parameters = new List<SqlParameter>
+                List<SqlParameter> parameters = new List<SqlParameter>
                    {
                        new SqlParameter("@Email", SqlDbType.VarChar, 100) { Value = user.Email },
                        new SqlParameter("@Passwordd", SqlDbType.VarChar, 100) { Value = user.Password },
@@ -53,10 +56,54 @@ namespace DataAccessLayer.Repositories
                        new SqlParameter("@NationalIdentityCard", SqlDbType.VarChar, 15) { Value = user.NationalIdentityCard },
                        new SqlParameter("@ManagerName", SqlDbType.VarChar, 80) { Value = user.ManagerName },
                        new SqlParameter("@DepartmentName", SqlDbType.VarChar, 40) { Value = user.DepartmentName }
-
                    };
-            int numberOfRowsAffected = _dataAccessLayer.InsertData(sql, parameters);
-            return (numberOfRowsAffected>0);
+                int numberOfRowsAffected = _dataAccessLayer.InsertData(sql, parameters);
+                return (numberOfRowsAffected > 0);
+            }
+        }
+        public int GetUserAccountIdByEmail(string email){
+            int userAccountId=-1;
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                string SQL = $@"SELECT UserAccountID
+                                FROM UserAccount
+                                WHERE Email=@Email";
+                List<SqlParameter> parameters = new List<SqlParameter>
+                {
+                new SqlParameter("@Email", SqlDbType.VarChar, 100) { Value = email }
+                };
+                using (SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(SQL, parameters))
+                {
+                    if (reader.Read())
+                    {
+                        userAccountId = reader.GetInt32(reader.GetOrdinal("UserAccountID"));
+                    }
+                }
+            }
+            return userAccountId;
+        }
+
+        public int GetUserId()
+        {
+            int userId = 0;
+
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                string SQL = $@"SELECT UserID
+                                FROM UserDetails
+                                WHERE UserAccountID=@UserAccountId";
+                List<SqlParameter> parameters = new List<SqlParameter>();
+                parameters.Add(new SqlParameter("@UserAccountId", HttpContext.Current.Session["UserAccountId"]));
+                using (SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(SQL, parameters))
+                {
+                    if (reader.Read())
+                    {
+                        userId = reader.GetInt32(reader.GetOrdinal("UserID"));
+                    }
+                }
+            }
+            return userId;
+
         }
     }
 }

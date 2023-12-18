@@ -34,6 +34,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,13 +46,15 @@
     <Compile Include="Class1.cs" />
     <Compile Include="DBConnection\DataAccessLayer.cs" />
     <Compile Include="DBConnection\IDataAccessLayer.cs" />
-    <Compile Include="Models\ApplicationDetails.cs" />
+    <Compile Include="Models\Application.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\Training.cs" />
     <Compile Include="Models\User.cs" />
-    <Compile Include="Models\UserRole.cs" />
+    <Compile Include="Models\Role.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\ApplicationRepository.cs" />
+    <Compile Include="Repositories\IRepositories\IApplicationRepository.cs" />
     <Compile Include="Repositories\IRepositories\ITrainingRepository.cs" />
     <Compile Include="Repositories\TrainingRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />

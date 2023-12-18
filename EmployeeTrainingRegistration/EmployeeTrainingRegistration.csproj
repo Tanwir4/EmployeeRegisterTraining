@@ -133,6 +133,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\UnityConfig.cs" />
+    <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
@@ -164,6 +165,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="js\LoginValidation.js" />
+    <Content Include="js\PopulateTrainingIndex.js" />
     <Content Include="js\RegisterValidation.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
@@ -182,21 +184,10 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Styles\Login.css" />
-    <Content Include="Styles\LoginCSS\css\bootstrap.min.css" />
-    <Content Include="Styles\LoginCSS\css\bootstrap\mixins\_border-radius.css" />
-    <Content Include="Styles\LoginCSS\css\bootstrap\mixins\_resize.css" />
-    <Content Include="Styles\LoginCSS\css\bootstrap\mixins\_screen-reader.css" />
-    <Content Include="Styles\LoginCSS\css\bootstrap\mixins\_transition.css" />
-    <Content Include="Styles\LoginCSS\css\bootstrap\mixins\_visibility.css" />
-    <Content Include="Styles\LoginCSS\css\bootstrap\utilities\_stretched-link.css" />
-    <Content Include="Styles\LoginCSS\css\bootstrap\_media.css" />
-    <Content Include="Styles\LoginCSS\css\style.css" />
-    <Content Include="Styles\LoginCSS\js\bootstrap.min.js" />
-    <Content Include="Styles\LoginCSS\js\jquery.min.js" />
-    <Content Include="Styles\LoginCSS\js\main.js" />
-    <Content Include="Styles\LoginCSS\js\popper.js" />
+    <Content Include="Styles\Login\LoginPage.css" />
+    <Content Include="Styles\Register\RegisterPage.css" />
     <Content Include="Styles\Training.css" />
+    <Content Include="Styles\TrainingIndex.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -217,14 +208,13 @@
     <Content Include="Views\Register\Register.cshtml" />
     <Content Include="Views\Register\Success.cshtml" />
     <Content Include="Views\Register\Error.cshtml" />
-    <Content Include="Styles\LoginCSS\fonts\.DS_Store" />
-    <Content Include="Styles\LoginCSS\images\.DS_Store" />
-    <Content Include="Styles\LoginCSS\js\.DS_Store" />
-    <Content Include="Styles\LoginCSS\css\.DS_Store" />
-    <Content Include="Styles\LoginCSS\css\bootstrap\.DS_Store" />
-    <Content Include="Styles\LoginCSS\css\bootstrap\mixins\.DS_Store" />
     <Content Include="Views\Training\TrainingIndex.cshtml" />
+    <Content Include="Views\Training\IndexTraining.cshtml" />
     <Content Include="Views\Training\Index.cshtml" />
+    <Content Include="Views\Application\Index.cshtml" />
+    <Content Include="Views\Application\SubmitApplication.cshtml" />
+    <Content Include="Views\Training\Fail.cshtml" />
+    <Content Include="Views\Shared\_LayoutPage1.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -2,22 +2,26 @@
 .card {
     border: 1px solid #ddd; /* Add a border */
     border-radius: 8px; /* Optional: Add rounded corners */
-    margin-bottom: 20px; /* Add space between cards */
-    width:300px;
-    display:inline-flex;
+    margin: 30px; /* Add space between cards */
+    width: 300px;
+    display: inline-flex;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 }
 
 /* Style for the card body */
 .card-body {
-    padding: 20px; /* Add padding to the card body */
+    padding: 20px;
+    height: 130px; /* Add padding to the card body */
+}
+.content {
+    height: 70px;
 }
 
 /* Style for the card title */
 .card-title {
     font-size: 1.5rem; /* Increase font size */
     margin-bottom: 10px; /* Add space below the title */
-    margin-top:0px;
-    padding-bottom:25px;
+    margin-top: 0px;
 }
 
 /* Style for the card text */

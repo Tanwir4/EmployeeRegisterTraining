@@ -1,15 +1,17 @@
 ﻿using DataAccessLayer.Models;
+using DataAccessLayer.Repositories.IRepositories;
 using EmployeeTrainingRegistrationServices.Interfaces;
 using System.Web.Mvc;
-
 namespace EmployeeTrainingRegistration.Controllers
 {
     public class LoginController : Controller
     {
         private readonly ILoginService _loginService;
-        public LoginController(ILoginService loginService)
+        private readonly IAccountService _accountService;
+        public LoginController(ILoginService loginService, IAccountService accountService)
         {
             _loginService = loginService;
+            _accountService = accountService;
         }
         public ActionResult Login()
         {
@@ -18,8 +20,9 @@ namespace EmployeeTrainingRegistration.Controllers
         [HttpPost]
         public ActionResult Verify(Account acc)
         {
-            if (_loginService.IsAuthenticated(acc)) { 
-                //return View("Success");
+            if (_loginService.IsAuthenticated(acc)) {
+                Session["Email"] = acc.Email;
+                Session["UserAccountId"] = _accountService.GetUserAccountId(acc.Email);
                 return RedirectToAction("Index", "Training");
                 }
             else
