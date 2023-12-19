@@ -8,6 +8,6 @@ namespace DataAccessLayer.Repositories.IRepositories
 {
     public interface IApplicationRepository
     {
-        bool submitApplication(int trainingId);
+        bool saveApplication(int trainingId, byte[] fileData);
     }
 }

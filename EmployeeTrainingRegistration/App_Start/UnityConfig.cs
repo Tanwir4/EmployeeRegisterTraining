@@ -25,6 +25,7 @@ namespace EmployeeTrainingRegistration
             container.RegisterType<ILoginValidation, LoginValidation>();
             container.RegisterType<IRegisterService, RegisterService>();
             container.RegisterType<IAccountService, AccountService>();
+            container.RegisterType<IApplicationService, ApplicationService>();
             container.RegisterType<ILogger, Logger>();
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }

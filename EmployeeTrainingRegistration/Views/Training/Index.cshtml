@@ -50,12 +50,20 @@
                     </button>
                 </div>
                 <div class="modal-body">
+
+                    @*<h1>APPLICATION</h1>
+        <button type="button" class="btn btn-secondary">Upload File</button>*@
                     <h1>APPLICATION</h1>
-                    <button type="button" class="btn btn-secondary">Upload File</button>
+                    <form id="applicationForm" enctype="multipart/form-data" >
+                        <h4 id="test"></h4>
+                        <input type="file" id="fileInput" name="fileInput" />
+                        <button type="submit" class="btn btn-secondary" onclick="submitApplication()">Upload File</button>
+                    </form>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-secondary">Apply</button>
+                    <button type="button" class="btn btn-secondary">Submit</button>
                 </div>
             </div>
         </div>

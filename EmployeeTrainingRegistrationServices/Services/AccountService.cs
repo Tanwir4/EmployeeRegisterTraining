@@ -14,20 +14,13 @@ namespace EmployeeTrainingRegistrationServices.Services
     public class AccountService : IAccountService
     {
         private readonly IUserRepository _userRepository;
-        private readonly IApplicationRepository _applicationRepository;
-        public AccountService(IUserRepository userRepository, IApplicationRepository applicationRepository)
+        public AccountService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            _applicationRepository = applicationRepository;
         }
         public int GetUserAccountId(string email)
         {
             return _userRepository.GetUserAccountIdByEmail(email);
-        }
-
-        public bool IsApplicationSubmitted(int trainingId)
-        {
-            return _applicationRepository.submitApplication(trainingId);
         }
     }
 }

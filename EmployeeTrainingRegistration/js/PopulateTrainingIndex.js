@@ -23,8 +23,8 @@ function displayTraining(data) {
               </div>
                 <p class="message"> </p>
           <div class="actions button">
-            <button class="read" onclick="openTrainingDetails(${training["TrainingID"]})" type="button">View</button>
-            <button type="button" onclick="submitApplication(${training["TrainingID"]})" class="read">Apply</button>              
+            <button class="read" onclick="openTrainingDetails(${training["TrainingID"]})" type="button">View</button> 
+           <button type="button" onclick="openApplication(${training["TrainingID"]})" class="read">Apply</button>
            </div>
         </div>`;
         trainingCards.append(trainingHtml);
@@ -53,20 +53,52 @@ function openTrainingDetails(trainingId) {
         },
     });
 }
-function openApplication() {
+function openApplication(trainingId) {
     $('#ApplicationModal').modal('show');
-}
-
-function submitApplication(trainingId) {
     $.ajax({
-        url: '/Application/SubmitApplication',
-        type: 'POST',
+        url: '/Training/GetTrainingById',
+        type: 'GET',
         data: { trainingId: trainingId },
         datatype: 'json',
         success: function (data) {
+            $('#ApplicationModal').modal('show');
+            $('#test').html('You are applying for: ' + data.trainings.Title);
+
+            // Set the trainingId as a data attribute in the modal
+            $('#ApplicationModal').data('trainingId', trainingId);
         },
         error: function (error) {
             console.error(error);
         },
     });
 }
+function submitApplication() {
+    // Retrieve the trainingId from the data attribute
+    var trainingId = $('#ApplicationModal').data('trainingId');
+
+    // Ensure that trainingId is not null or undefined
+    if (!trainingId) {
+        console.error('TrainingId is missing');
+        return;
+    }
+    var formData = new FormData($('#applicationForm')[0]);
+    formData.append('trainingId', trainingId);
+    $.ajax({
+        url: '/Application/SubmitApplication',  // Remove trainingId from the URL
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            // Handle success
+            alert("Successful");
+        },
+        error: function (error) {
+            console.error(error);
+        },
+    });
+}
+
+
+
+
