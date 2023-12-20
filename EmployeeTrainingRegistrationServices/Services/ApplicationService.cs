@@ -1,5 +1,7 @@
-﻿using DataAccessLayer.Repositories.IRepositories;
+﻿using DataAccessLayer.Models;
+using DataAccessLayer.Repositories.IRepositories;
 using EmployeeTrainingRegistrationServices.Interfaces;
+using System.Collections.Generic;
 
 namespace EmployeeTrainingRegistrationServices.Services
 {
@@ -10,6 +12,12 @@ namespace EmployeeTrainingRegistrationServices.Services
         {
             _applicationRepository = applicationRepository;
         }
+
+        public List<UserApplication> GetApplicationDetailsByUserId()
+        {
+           return _applicationRepository.GetApplicationDetailsByUserId();
+        }
+
         public bool IsApplicationSubmitted(int trainingId, byte[] fileData)
         {
             return _applicationRepository.saveApplication(trainingId, fileData);

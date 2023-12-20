@@ -3,6 +3,12 @@ using System.IO;
 using System.Web;
 using System;
 using System.Web.Mvc;
+using System.Collections.Generic;
+using System.Linq;
+using EmployeeTrainingRegistrationServices.Entities;
+using EmployeeTrainingRegistrationServices.Services;
+using DataAccessLayer.Models;
+
 namespace EmployeeTrainingRegistration.Controllers
 {
     public class ApplicationController : Controller
@@ -45,6 +51,13 @@ namespace EmployeeTrainingRegistration.Controllers
                 // Handle case when no file is uploaded
                 return Json(new { success = false, message = "No file uploaded" });
             }
+        }
+
+        [HttpGet]
+        public JsonResult GetApplicationById()
+        {
+            List<UserApplication> getApplicationById = _applicationService.GetApplicationDetailsByUserId();
+            return Json(new { applications = getApplicationById }, JsonRequestBehavior.AllowGet);
         }
     }
 }
