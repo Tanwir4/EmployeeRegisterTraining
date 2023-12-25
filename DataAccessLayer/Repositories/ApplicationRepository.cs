@@ -36,7 +36,7 @@ namespace DataAccessLayer.Repositories
                       };
                 return (_dataAccessLayer.InsertData(sql, parameters) > 0);
             }
-        }
+        }                   
 
         public List<UserApplication> GetApplicationDetailsByUserId()
         {

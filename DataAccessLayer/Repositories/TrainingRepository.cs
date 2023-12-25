@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.DBConnection;
+using DataAccessLayer.Models;
 using DataAccessLayer.Repositories.IRepositories;
 using EmployeeTrainingRegistrationServices.Entities;
 using System;
@@ -80,6 +81,24 @@ namespace DataAccessLayer.Repositories
                 }
             }
             return trainingList;
+        }
+
+        public bool UpdateTraining(Training training)
+        {
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                string sql = $@"Update TrainingDetails 
+                                SET Title=@Title
+                                WHERE TrainingID=@TrainingID";
+                List<SqlParameter> parameters = new List<SqlParameter>
+                {
+                       new SqlParameter("@Title", SqlDbType.VarChar, 100) { Value = training.Title },
+                       //new SqlParameter("@StartDate", SqlDbType.Date) { Value = training.StartDate },
+                       new SqlParameter("@TrainingID", SqlDbType.Int) { Value = training.TrainingID }
+                   };
+                int numberOfRowsAffected =  _dataAccessLayer.InsertData(sql, parameters);
+                return (numberOfRowsAffected > 0);
+            }
         }
     }
 }

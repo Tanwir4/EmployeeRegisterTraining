@@ -6,5 +6,6 @@ namespace EmployeeTrainingRegistrationServices.Interfaces
     {
         List<Training> GetAllTraining();
         List<Training> GetAllTrainingById(int id);
+        bool IsTrainingUpdated(Training training);
     }
 }

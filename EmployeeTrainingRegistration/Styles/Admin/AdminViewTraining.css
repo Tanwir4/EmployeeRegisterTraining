@@ -1,0 +1,85 @@
+﻿body {
+    font-family: 'Arial', sans-serif;
+    margin: 20px;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    border: 1px solid #dee2e6;
+    padding: 16px;
+    text-align: left;
+}
+
+th {
+    background-color: #007bff;
+    color: #fff;
+}
+
+tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+tr:hover {
+    background-color: #e9ecef;
+}
+
+.editButton {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+    .editButton:hover {
+        background-color: #218838;
+    }
+
+/* Add space between buttons */
+.editButton {
+    margin-right: 5px;
+}
+
+.AddTrainingButton {
+    background-color:blue;
+}
+
+/* Style for the delete button */
+.deleteButton {
+    background-color: #dc3545; /* Red background color */
+    color: #fff; /* White text color */
+    border: none;
+    padding: 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+    .deleteButton:hover {
+        background-color: #c82333; /* Darker red on hover */
+    }
+
+.input-group-append {
+    cursor: pointer;
+}

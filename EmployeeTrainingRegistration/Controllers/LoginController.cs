@@ -23,8 +23,9 @@ namespace EmployeeTrainingRegistration.Controllers
             if (_loginService.IsAuthenticated(acc)) {
                 Session["Email"] = acc.Email;
                 Session["UserAccountId"] = _accountService.GetUserAccountId(acc.Email);
-                return RedirectToAction("Index", "Training");
-                }
+                //return RedirectToAction("Index", "Training");
+                return RedirectToAction("AdminViewTraining", "Training");
+            }
             else
             {
                 ViewBag.ErrorMessage = "Invalid email or password."; 

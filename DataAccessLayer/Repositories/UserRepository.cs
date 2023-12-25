@@ -59,11 +59,12 @@ namespace DataAccessLayer.Repositories
                        new SqlParameter("@DepartmentName", SqlDbType.VarChar, 40) { Value = user.DepartmentName }
                    };
                 int numberOfRowsAffected = await _dataAccessLayer.InsertDataAsync(sql, parameters);
-                return (numberOfRowsAffected>0);
+                return (numberOfRowsAffected > 0);
             }
         }
-        public int GetUserAccountIdByEmail(string email){
-            int userAccountId=-1;
+        public int GetUserAccountIdByEmail(string email)
+        {
+            int userAccountId = -1;
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
                 string SQL = $@"SELECT UserAccountID

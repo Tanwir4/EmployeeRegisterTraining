@@ -19,5 +19,10 @@ namespace EmployeeTrainingRegistrationServices.Services
         {
             return _trainingRepository.GetTrainingById(id);
         }
+
+        public bool IsTrainingUpdated(Training training)
+        {
+            return _trainingRepository.UpdateTraining(training);
+        }
     }
 }

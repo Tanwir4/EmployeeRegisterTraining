@@ -11,7 +11,7 @@
         },
     });
 });
-function displayTraining(data) {
+/*function displayTraining(data) {
     var trainingCards = $('#trainingCards');
     data.forEach(function (training) {
         var trainingHtml = `
@@ -29,7 +29,46 @@ function displayTraining(data) {
         </div>`;
         trainingCards.append(trainingHtml);
     });
+}*/
+
+
+function displayTraining(data) {
+    var trainingTable = $('#trainingTable');
+
+    // Clear existing content in the table
+    trainingTable.empty();
+
+    // Add table headers
+    trainingTable.append(`
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+    `);
+
+    // Add rows for each training entry
+    data.forEach(function (training) {
+        var trainingHtml = `
+            <tr>
+                <td>${training["Title"]}</td>
+                <td>
+                    <button onclick="openTrainingDetails(${training["TrainingID"]})">View</button>
+                    <button onclick="openApplication(${training["TrainingID"]})">Apply</button>
+                </td>
+            </tr>
+        `;
+        trainingTable.append(trainingHtml);
+    });
+
+    // Close the table body
+    trainingTable.append(`</tbody>`);
 }
+
+
+
 function openTrainingDetails(trainingId) {
     $.ajax({
         url: '/Training/GetTrainingById',

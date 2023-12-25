@@ -1,8 +1,11 @@
 ﻿using EmployeeTrainingRegistrationServices.Entities;
 using EmployeeTrainingRegistrationServices.Interfaces;
+using EmployeeTrainingRegistrationServices.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 namespace EmployeeTrainingRegistration.Controllers
 {
@@ -14,6 +17,10 @@ namespace EmployeeTrainingRegistration.Controllers
             _trainingService = trainingService;
         }
         public ActionResult Index()
+        {
+            return View();
+        }
+        public ActionResult AdminViewTraining()
         {
             return View();
         }
@@ -29,6 +36,13 @@ namespace EmployeeTrainingRegistration.Controllers
             Training getTrainingById = _trainingService.GetAllTrainingById(trainingId).FirstOrDefault();
             Session["TrainingId"] = getTrainingById;
             return Json(new { trainings = getTrainingById }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult UpdateTraining(Training training)
+        {
+            if(_trainingService.IsTrainingUpdated(training)) { return RedirectToAction("Login", "Login"); }
+            else { return RedirectToAction("Register", "Register"); }
         }
     }
 }
