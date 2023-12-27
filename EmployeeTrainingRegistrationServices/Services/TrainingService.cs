@@ -20,6 +20,16 @@ namespace EmployeeTrainingRegistrationServices.Services
             return _trainingRepository.GetTrainingById(id);
         }
 
+        public bool IsTrainingAdded(Training training, Department department)
+        {
+            return _trainingRepository.AddTraining(training, department);
+        }
+
+        public bool IsTrainingDeleted(int id)
+        {
+            return _trainingRepository.DeleteTraining(id);
+        }
+
         public bool IsTrainingUpdated(Training training)
         {
             return _trainingRepository.UpdateTraining(training);

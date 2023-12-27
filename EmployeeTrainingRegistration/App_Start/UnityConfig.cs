@@ -20,11 +20,13 @@ namespace EmployeeTrainingRegistration
             container.RegisterType<IUserRepository, UserRepository>();
             container.RegisterType<ITrainingRepository, TrainingRepository>();
             container.RegisterType<IApplicationRepository, ApplicationRepository>();
+            container.RegisterType<IDepartmentRepository, DepartmentRepository>();
             container.RegisterType<ILoginService, LoginService>();
             container.RegisterType<ITrainingService, TrainingService>();
             container.RegisterType<ILoginValidation, LoginValidation>();
             container.RegisterType<IRegisterService, RegisterService>();
             container.RegisterType<IAccountService, AccountService>();
+            container.RegisterType<IDepartmentService, DepartmentService>();
             container.RegisterType<IApplicationService, ApplicationService>();
             container.RegisterType<ILogger, Logger>();
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));

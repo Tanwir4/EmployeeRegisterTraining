@@ -1,10 +1,12 @@
-﻿using EmployeeTrainingRegistrationServices.Entities;
+﻿using DataAccessLayer.Models;
+using EmployeeTrainingRegistrationServices.Entities;
 using EmployeeTrainingRegistrationServices.Interfaces;
 using EmployeeTrainingRegistrationServices.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 namespace EmployeeTrainingRegistration.Controllers
@@ -21,6 +23,10 @@ namespace EmployeeTrainingRegistration.Controllers
             return View();
         }
         public ActionResult AdminViewTraining()
+        {
+            return View();
+        }
+        public ActionResult AddTraining()
         {
             return View();
         }
@@ -43,6 +49,23 @@ namespace EmployeeTrainingRegistration.Controllers
         {
             if(_trainingService.IsTrainingUpdated(training)) { return RedirectToAction("Login", "Login"); }
             else { return RedirectToAction("Register", "Register"); }
+        }
+
+        [HttpPost]
+        public ActionResult DeleteTraining(int id)
+        {
+            if (_trainingService.IsTrainingDeleted(id)) { return RedirectToAction("Login", "Login"); }
+            else { return RedirectToAction("Register", "Register"); }
+        }
+
+        [HttpPost]
+        public ActionResult AddTraining(Training training, Department department)
+        {
+            if (_trainingService.IsTrainingAdded(training, department)) { return RedirectToAction("Login", "Login"); }
+            else
+            {
+                return View("Error");
+            }
         }
     }
 }

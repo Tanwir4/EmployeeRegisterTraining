@@ -7,5 +7,7 @@ namespace EmployeeTrainingRegistrationServices.Interfaces
         List<Training> GetAllTraining();
         List<Training> GetAllTrainingById(int id);
         bool IsTrainingUpdated(Training training);
+        bool IsTrainingDeleted(int id);
+        bool IsTrainingAdded(Training training, Department department);
     }
 }

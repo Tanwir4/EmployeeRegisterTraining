@@ -43,6 +43,7 @@ function displayTraining(data) {
         <thead>
             <tr>
                 <th>Title</th>
+                <th>Description</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -54,6 +55,7 @@ function displayTraining(data) {
         var trainingHtml = `
             <tr>
                 <td>${training["Title"]}</td>
+                 <td>${training["PreRequisite"]}</td>
                 <td>
                     <button onclick="openTrainingDetails(${training["TrainingID"]})">View</button>
                     <button onclick="openApplication(${training["TrainingID"]})">Apply</button>

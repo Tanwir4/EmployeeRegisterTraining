@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <script src="~/js/AdminTraining.js"></script>
     <link href="~/Styles/Admin/AdminViewTraining.css" rel="stylesheet" />
     @* <title>@ViewBag.Title - My ASP.NET Application</title>*@
     @*    @Styles.Render("~/Content/css")
@@ -18,7 +18,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li>
-                    <button class="editButton AddTrainingButton">Add Training</button>
+                    <a class="editButton AddTrainingButton addTrainingButton" href="@Url.Action("AddTraining", "Training")">Add Training</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="@Url.Action("Index", "Application")">Home</a>
