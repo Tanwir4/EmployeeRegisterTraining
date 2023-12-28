@@ -67,6 +67,49 @@
             max-height: 400px;
             overflow-y: auto;
         }
+
+        /* Add this CSS to your stylesheet or in a <style> tag in your HTML */
+        #prerequisitesInputs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+            #prerequisitesInputs label {
+                background-color: #007bff;
+                color: #fff;
+                padding: 8px 12px;
+                cursor: pointer;
+                border-radius: 4px;
+                font-weight: bold;
+                display: inline-block;
+            }
+
+                #prerequisitesInputs label:hover {
+                    background-color: #0056b3;
+                }
+
+            #prerequisitesInputs input[type="file"] {
+                display: none;
+            }
+
+                #prerequisitesInputs input[type="file"]:focus + label {
+                    outline: 1px solid #fff;
+                    outline-offset: -1px;
+                }
+
+        .prerequisite-name {
+            border: 1px solid #ced4da; /* Border color for the file name */
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* Additional styling for the submit button */
+        #applicationForm button[type="submit"] {
+            width: 100%;
+        }
+
     </style>
 
 </head>
@@ -106,6 +149,7 @@
                     <p id="trainingDeadline"></p>
                     <p id="trainingSeat"></p>
                     <p id="trainingStartDate"></p>
+                    <p id="trainingPrerequisites"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -123,11 +167,11 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <h1>APPLICATION</h1>
                     <form id="applicationForm" enctype="multipart/form-data">
                         <h4 id="test"></h4>
-                        <input type="file" id="fileInput" name="fileInput" />
-                        <button type="submit" class="btn btn-secondary" onclick="submitApplication()">Submit Application</button>
+                        <!-- Add a file input for each prerequisite -->
+                        <div id="prerequisitesInputs" class="row"></div>
+                        <button type="submit" class="btn btn-secondary mt-3" onclick="submitApplication()">Submit Application</button>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -137,5 +181,12 @@
             </div>
         </div>
     </div>
+
+
+
+
+
+
+
 </body>
 </html>

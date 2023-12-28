@@ -65,6 +65,10 @@
                                     <label for="editDate">Deadline:</label>
                                     <input type="date" class="form-control" id="editDeadline" name="deadline" required>
                                 </div>
+                                <div class="form-group">
+                                    <label for="editDescription">Prerequisites:</label>
+                                    <div id="prerequisitesCheckboxes"></div>
+                                </div>
                             </form>
                         </div>
                         <div class="modal-footer">
@@ -91,19 +95,19 @@
                     <form id="addTrainingForm" action="@Url.Action("AddTraining", "Training")" method="post">
                         <div class="form-group">
                             <label for="editTitle">Title:</label>
-                            <input type="text" class="form-control" id="editTitle" name="title" required>
+                            <input type="text" class="form-control" id="addTitle" name="title" required>
                         </div>
                         <div class="form-group">
                             <label for="editDate">Start Date:</label>
-                            <input type="date" class="form-control" id="editDate" name="startdate" required>
+                            <input type="date" class="form-control" id="addStartDate" name="startdate" required>
                         </div>
                         <div class="form-group">
                             <label for="editTitle">Description:</label>
-                            <input type="text" class="form-control" id="editDescription" name="prerequisite" required>
+                            <input type="text" class="form-control" id="addDescription" name="description" required>
                         </div>
                         <div class="form-group">
                             <label for="editDepartment">Department:</label>
-                            <select id="editDepartment" name="DepartmentName" class="form-control dd">
+                            <select id="addDepartment" name="DepartmentName" class="form-control dd">
                                 <option value="Product and Technology">Product and Technology</option>
                                 <option value="Customer Support">Customer Support</option>
                                 <option value="Human Resource">Human Resource</option>
@@ -113,12 +117,19 @@
 
                         <div class="form-group">
                             <label for="editTitle">Seat Threshold:</label>
-                            <input type="number" class="form-control" id="editThreshold" name="threshold" required>
+                            <input type="number" class="form-control" id="addThreshold" name="threshold" required>
                         </div>
                         <div class="form-group">
                             <label for="editDate">Deadline:</label>
-                            <input type="date" class="form-control" id="editDeadline" name="deadline" required>
+                            <input type="date" class="form-control" id="addDeadline" name="deadline" required>
                         </div>
+                        <div class="form-group">
+                            <label>PreRequisites:</label>
+                            <div id="trainingPrerequisites">
+                                <!-- Prerequisites checkboxes will be dynamically populated here using JavaScript -->
+                            </div>
+                        </div>
+                        <input type="hidden" name="selectedPrerequisites" id="selectedPrerequisites" value="">
                         <button type="submit" class="btn btn-secondary">Submit</button>
                     </form>
                 </div>

@@ -11,27 +11,6 @@
         },
     });
 });
-/*function displayTraining(data) {
-    var trainingCards = $('#trainingCards');
-    data.forEach(function (training) {
-        var trainingHtml = `
-           <div class="card1">
-              <div class="header">
-                <span class="icon">
-                </span>
-                <p class="alert">${training["Title"]}</p>
-              </div>
-                <p class="message"> </p>
-          <div class="actions button">
-            <button class="read" onclick="openTrainingDetails(${training["TrainingID"]})" type="button">View</button> 
-           <button type="button" onclick="openApplication(${training["TrainingID"]})" class="read">Apply</button>
-           </div>
-        </div>`;
-        trainingCards.append(trainingHtml);
-    });
-}*/
-
-
 function displayTraining(data) {
     var trainingTable = $('#trainingTable');
 
@@ -55,9 +34,9 @@ function displayTraining(data) {
         var trainingHtml = `
             <tr>
                 <td>${training["Title"]}</td>
-                 <td>${training["PreRequisite"]}</td>
+                 <td>${training["Description"]}</td>
                 <td>
-                    <button onclick="openTrainingDetails(${training["TrainingID"]})">View</button>
+                    <button class="read" onclick="openTrainingDetails(${training["TrainingID"]})" type="button">View</button> 
                     <button onclick="openApplication(${training["TrainingID"]})">Apply</button>
                 </td>
             </tr>
@@ -72,6 +51,7 @@ function displayTraining(data) {
 
 
 function openTrainingDetails(trainingId) {
+    console.log('Training ID:', trainingId);
     $.ajax({
         url: '/Training/GetTrainingById',
         type: 'GET',
@@ -82,11 +62,28 @@ function openTrainingDetails(trainingId) {
             var formattedStartDate = startDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
             var deadline = new Date(parseInt(data.trainings.Deadline.substr(6)));
             var formattedDeadline = deadline.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            // Display training details
             $('#trainingTitle').html(data.trainings.Title);
-            $('#trainingPreRequisite').html('<span>Description: </span>' +data.trainings.PreRequisite);
-            $('#trainingDeadline').html('<span>Deadline: </span>'+formattedDeadline);
-            $('#trainingSeat').html('<span>Seat Threshold: </span>' +data.trainings.Threshold);
-            $('#trainingStartDate').html('<span>Start Date: </span>' +formattedStartDate);
+            $('#trainingPreRequisite').html('<span>Description: </span>' + data.trainings.Description);
+            $('#trainingDeadline').html('<span>Deadline: </span>' + formattedDeadline);
+            $('#trainingSeat').html('<span>Seat Threshold: </span>' + data.trainings.Threshold);
+            $('#trainingStartDate').html('<span>Start Date: </span>' + formattedStartDate);
+
+            // Display prerequisites
+            var prerequisitesHtml = '<span>Prerequisites: </span>';
+            if (data.preRequisites.length > 0) {
+                prerequisitesHtml += '<ul>';
+                for (var i = 0; i < data.preRequisites.length; i++) {
+                    prerequisitesHtml += '<li>' + data.preRequisites[i] + '</li>';
+                }
+                prerequisitesHtml += '</ul>';
+            } else {
+                prerequisitesHtml += 'None';
+            }
+            $('#trainingPrerequisites').html(prerequisitesHtml);
+
+            // Show the modal
             $('#trainingDetailsModal').modal('show');
         },
         error: function (error) {
@@ -94,6 +91,7 @@ function openTrainingDetails(trainingId) {
         },
     });
 }
+
 function openApplication(trainingId) {
     $('#ApplicationModal').modal('show');
     $.ajax({
@@ -102,8 +100,25 @@ function openApplication(trainingId) {
         data: { trainingId: trainingId },
         datatype: 'json',
         success: function (data) {
-            $('#ApplicationModal').modal('show');
             $('#test').html('You are applying for: ' + data.trainings.Title);
+
+            // Clear previous inputs
+            $('#prerequisitesInputs').empty();
+
+            // Create file input for each prerequisite
+            for (var i = 0; i < data.preRequisites.length; i++) {
+                var inputHtml = '<div class="col-md-12">' +
+                    '<p>' + data.preRequisites[i] + '</p>' +
+                   
+                    '<label for="fileInput_' + i + '" class="btn btn-primary">' +
+                    'Browse' +
+                    '<input type="file" id="fileInput_' + i + '" name="fileInput_' + i + '" style="display:none;" onchange="displayFileName(this, ' + i + ')" />' +
+                    '</label>' +
+                    '<span class="prerequisite-name mt-2" id="fileName_' + i + '">No file selected</span>' +
+                    
+                    '</div>';
+                $('#prerequisitesInputs').append(inputHtml);
+            }
 
             // Set the trainingId as a data attribute in the modal
             $('#ApplicationModal').data('trainingId', trainingId);
@@ -113,10 +128,23 @@ function openApplication(trainingId) {
         },
     });
 }
+
+function displayFileName(input, index) {
+    var fileName = input.files[0] ? input.files[0].name : 'No file selected';
+    $('#fileName_' + index).html(fileName);
+}
+
+
+function displayFileName(input, index) {
+    var fileName = input.files[0] ? input.files[0].name : 'No file selected';
+    $('#fileName_' + index).html(fileName);
+}
+
+
 function submitApplication() {
     // Retrieve the trainingId from the data attribute
     var trainingId = $('#ApplicationModal').data('trainingId');
-
+    console.log('Submit Application js function');
     // Ensure that trainingId is not null or undefined
     if (!trainingId) {
         console.error('TrainingId is missing');

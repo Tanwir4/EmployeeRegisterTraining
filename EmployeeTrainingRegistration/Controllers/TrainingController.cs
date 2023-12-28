@@ -14,7 +14,7 @@ namespace EmployeeTrainingRegistration.Controllers
     public class TrainingController : Controller
     {
         private readonly ITrainingService _trainingService;
-        public TrainingController(ITrainingService trainingService) 
+        public TrainingController(ITrainingService trainingService)
         {
             _trainingService = trainingService;
         }
@@ -36,18 +36,34 @@ namespace EmployeeTrainingRegistration.Controllers
             List<Training> GetTraining = _trainingService.GetAllTraining();
             return Json(new { trainings = GetTraining }, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpGet]
+        public JsonResult GetAllPreRequisites()
+        {
+            List<string> allPreRequisites = new List<string>();
+            allPreRequisites = _trainingService.GetAllPreRequisites();
+
+            return Json(new {allPreRequisite = allPreRequisites }, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpGet]
         public JsonResult GetTrainingById(int trainingId)
         {
             Training getTrainingById = _trainingService.GetAllTrainingById(trainingId).FirstOrDefault();
+            List<string> preRequisite= new List<string>();
+            preRequisite = _trainingService.GetPrerequisitesByTrainingId(trainingId);
+
+            List<string> allPreRequisite = new List<string>();
+            allPreRequisite = _trainingService.GetAllPreRequisites();
+
             Session["TrainingId"] = getTrainingById;
-            return Json(new { trainings = getTrainingById }, JsonRequestBehavior.AllowGet);
+            return Json(new { trainings = getTrainingById, preRequisites= preRequisite, allPreRequisites= allPreRequisite }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public ActionResult UpdateTraining(Training training)
+        public ActionResult UpdateTraining(Training training,Department department, List<string> checkedPrerequisites)
         {
-            if(_trainingService.IsTrainingUpdated(training)) { return RedirectToAction("Login", "Login"); }
+            if (_trainingService.IsTrainingUpdated(training, department, checkedPrerequisites)) { return RedirectToAction("Login", "Login"); }
             else { return RedirectToAction("Register", "Register"); }
         }
 

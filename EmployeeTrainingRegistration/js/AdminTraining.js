@@ -20,7 +20,7 @@
             $('.editButton').on('click', function () {
                 var trainingId = $(this).data('training-id');
 
-                // Fetch training details by ID
+                // Fetch training details and prerequisites by ID
                 $.ajax({
                     url: '/Training/GetTrainingById',
                     type: 'GET',
@@ -29,17 +29,30 @@
                     success: function (data) {
                         // Populate the modal with the selected training details
                         $('#trainingDetailsModal').modal('show');
-                        $('#editTitle').val(data.trainings.Title); // Populate the text field with the title
-
-                        // Convert Unix timestamp to Date object
+                        $('#editTitle').val(data.trainings.Title);
                         var startDate = new Date(parseInt(data.trainings.StartDate.substr(6)));
                         var deadline = new Date(parseInt(data.trainings.Deadline.substr(6)));
-                       
-                        // Format the date and set the value directly
                         $('#editDate').val(formatDate(startDate));
                         $('#editThreshold').val(data.trainings.Threshold);
-                        $('#editDescription').val(data.trainings.PreRequisite);
+                        $('#editDescription').val(data.trainings.Description);
                         $('#editDeadline').val(formatDate(deadline));
+
+                        // Display prerequisites using checkboxes
+                        var prerequisitesHtml = '';
+                        if (data.allPreRequisites && data.allPreRequisites.length > 0) {
+                            data.allPreRequisites.forEach(function (prerequisite) {
+                                var isChecked = data.preRequisites.includes(prerequisite);
+                                prerequisitesHtml += '<div class="form-check">';
+                                prerequisitesHtml += '<input class="form-check-input" type="checkbox" value="' + prerequisite + '" id="checkbox_' + prerequisite + '"' + (isChecked ? 'checked' : '') + '>';
+                                prerequisitesHtml += '<label class="form-check-label" for="checkbox_' + prerequisite + '">' + prerequisite + '</label>';
+                                prerequisitesHtml += '</div>';
+                            });
+                        } else {
+                            prerequisitesHtml = '<p>No prerequisites</p>';
+                        }
+
+                        $('#prerequisitesCheckboxes').html(prerequisitesHtml);
+
                         populateDepartmentDropdown();
 
                         // Set the trainingId as a data attribute in the form
@@ -47,26 +60,40 @@
                     },
                     error: function (error) {
                         console.error(error);
+                        //alert('Edit button error');
                     }
                 });
             });
-
- 
 
 
             $('#saveEdit').on('click', function () {
                 var trainingId = $('#editTrainingForm').data('trainingId');
                 var editedTitle = $('#editTitle').val();
-                var editedDate = $('#editDate').val();
-           
+                var editedStartDate = $('#editDate').val();
+                var editedDeadline = $('#editDeadline').val();
+                var editedThreshold = $('#editThreshold').val();
+                var editedPreRequisite = $('#editDescription').val();
+                var editedDepartment = $('#departmentDropdown').val();
+                var checkedPrerequisites = [];
+                $('input[type="checkbox"]:checked').each(function () {
+                    checkedPrerequisites.push($(this).val());
+                });
+
+                alert('Checked Prerequisites: ' + checkedPrerequisites.join(', '));
 
                 // Prepare data to send to the server
                 var data = {
                     TrainingId: trainingId,
                     Title: editedTitle,
-                    StartDate: editedDate
-                };
+                    StartDate: editedStartDate,
+                    Threshold: editedThreshold ,
+                    Description: editedPreRequisite,
+                    DepartmentName: editedDepartment,
+                    Deadline: editedDeadline,
+                    PreRequisite: checkedPrerequisites
 
+                };
+                console.log(data);
                 // Make an AJAX request to the server
                 $.ajax({
                     type: 'POST',
@@ -114,10 +141,36 @@
 
             $('.addTrainingButton').on('click', function (event) {
                 console.log('Add Training button clicked');
-                //alert('Add Training button clicked');
+
+                // Show the modal
                 $('#AddTrainingModal').modal('show');
+
+                // Fetch prerequisites from the server
+                $.ajax({
+                    url: '/Training/GetAllPreRequisites', // Update the URL if needed
+                    type: 'GET',
+                    success: function (data) {
+                        // Clear existing checkboxes
+                        $('#trainingPrerequisites').empty();
+
+                        // Add checkboxes for each prerequisite
+                        data.allPreRequisite.forEach(function (preReq) {
+                            $('#trainingPrerequisites').append(
+                                '<div class="form-check">' +
+                                '   <input type="checkbox" class="form-check-input" name="prerequisites" value="' + preReq + '">' +
+                                '   <label class="form-check-label">' + preReq + '</label>' +
+                                '</div>'
+                            );
+                        });
+                    },
+                    error: function (error) {
+                        console.error('Error fetching prerequisites: ', error);
+                    }
+                });
+
                 event.preventDefault();
             });
+
 
         },
         error: function (error) {
