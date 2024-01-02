@@ -4,8 +4,11 @@ using DataAccessLayer.Repositories.IRepositories;
 using EmployeeTrainingRegistrationServices.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Web;
+
 namespace DataAccessLayer.Repositories
 {
     public class TrainingRepository : ITrainingRepository
@@ -16,29 +19,40 @@ namespace DataAccessLayer.Repositories
         {
             _dataAccessLayer = dataAccessLayer;
         }
+        public int GetNewTrainingId(Training training, Department department)
+        {
+            int trainingId = 0;
 
-        /*        public bool AddTraining(Training training, Department department)
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                string SQL = $@"DECLARE @DeptPriority INT
+        SET @DeptPriority = (SELECT DepartmentID FROM Department WHERE DepartmentName = @DepartmentName)
+        INSERT INTO TrainingDetails (Title, StartDate, Threshold, Description, Deadline, DepartmentPriority) 
+        VALUES (@Title, @StartDate, @Threshold, @Description, @Deadline, @DeptPriority);
+        SET @TrainingId = SCOPE_IDENTITY();";
+
+                List<SqlParameter> parameters = new List<SqlParameter>
+        {
+            new SqlParameter("@Title", SqlDbType.VarChar, 100) { Value = training.Title },
+            new SqlParameter("@StartDate", SqlDbType.Date) { Value = training.StartDate },
+            new SqlParameter("@Threshold", SqlDbType.Int) { Value = training.Threshold },
+            new SqlParameter("@Description", SqlDbType.VarChar, 100) { Value = training.Description },
+            new SqlParameter("@Deadline", SqlDbType.Date) { Value = training.Deadline },
+            new SqlParameter("@DepartmentName", SqlDbType.VarChar, 40) { Value = department.DepartmentName },
+            new SqlParameter("@TrainingId", SqlDbType.Int) { Direction = ParameterDirection.Output }
+        };
+
+                int numberOfRowsAffected = _dataAccessLayer.InsertData(SQL, parameters);
+
+                // Retrieve the value from the output parameter
+                if (parameters[6].Value != DBNull.Value)
                 {
-                    using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
-                    {
-                        string sql = $@"
-                                    DECLARE @DeptPriority INT
-                                    SET @DeptPriority=(SELECT DepartmentID FROM Department WHERE DepartmentName=@DepartmentName)
-                                    INSERT INTO TrainingDetails (Title, StartDate, Threshold, Description, Deadline, DepartmentPriority) 
-                                    VALUES (@Title, @StartDate, @Threshold, @PreRequisite, @Deadline, @DeptPriority);";
-                        List<SqlParameter> parameters = new List<SqlParameter>
-                           {
-                               new SqlParameter("@Title", SqlDbType.VarChar, 100) { Value = training.Title },
-                               new SqlParameter("@StartDate", SqlDbType.Date) { Value = training.StartDate },
-                               new SqlParameter("@Threshold", SqlDbType.Int) { Value = training.Threshold },
-                               new SqlParameter("@PreRequisite", SqlDbType.VarChar, 100) { Value = training.Description },
-                               new SqlParameter("@Deadline", SqlDbType.Date) { Value = training.Deadline },
-                               new SqlParameter("@DepartmentName", SqlDbType.VarChar, 40) { Value = department.DepartmentName }
-                           };
-                        int numberOfRowsAffected = _dataAccessLayer.InsertData(sql, parameters);
-                        return (numberOfRowsAffected > 0);
-                    }
-                }*/
+                    trainingId = Convert.ToInt32(parameters[6].Value);
+                }
+            }
+
+            return trainingId;
+        }
 
         public bool AddTraining(Training training, Department department)
         {
@@ -47,31 +61,7 @@ namespace DataAccessLayer.Repositories
 
                 try
                 {
-                    // Insert into TrainingDetails table
-                    string insertTrainingSql = @"
-                DECLARE @DeptPriority INT
-                SET @DeptPriority = (SELECT DepartmentID FROM Department WHERE DepartmentName = @DepartmentName)
-                INSERT INTO TrainingDetails (Title, StartDate, Threshold, Description, Deadline, DepartmentPriority) 
-                VALUES (@Title, @StartDate, @Threshold, @Description, @Deadline, @DeptPriority);
-                SELECT SCOPE_IDENTITY();";
-
-                    List<SqlParameter> trainingParameters = new List<SqlParameter>
-            {
-                new SqlParameter("@Title", SqlDbType.VarChar, 100) { Value = training.Title },
-                new SqlParameter("@StartDate", SqlDbType.Date) { Value = training.StartDate },
-                new SqlParameter("@Threshold", SqlDbType.Int) { Value = training.Threshold },
-                new SqlParameter("@Description", SqlDbType.VarChar, 100) { Value = training.Description },
-                new SqlParameter("@Deadline", SqlDbType.Date) { Value = training.Deadline },
-                new SqlParameter("@DepartmentName", SqlDbType.VarChar, 40) { Value = department.DepartmentName }
-            };
-
-                    int trainingId;
-
-                    using (SqlCommand cmd = new SqlCommand(insertTrainingSql, sqlConnection))
-                    {
-                        cmd.Parameters.AddRange(trainingParameters.ToArray());
-                        trainingId = Convert.ToInt32(cmd.ExecuteScalar());
-                    }
+                    int trainingId= GetNewTrainingId(training,department);
 
                     // Retrieve IDs of prerequisites
                     List<int> prerequisiteIds = new List<int>();
@@ -89,8 +79,8 @@ namespace DataAccessLayer.Repositories
 
                     // Insert into TrainingPrerequisites table
                     string insertPrerequisitesSql = @"
-                INSERT INTO TrainingPrerequisites (TrainingID, PrerequisiteID) 
-                VALUES (@TrainingID, @PrerequisiteID);";
+                INSERT INTO TrainingPreRequisite (PreRequisiteID,TrainingID) 
+                VALUES (@PreRequisiteID,@TrainingID);";
 
                     foreach (int prerequisiteId in prerequisiteIds)
                     {
@@ -302,5 +292,6 @@ namespace DataAccessLayer.Repositories
             }
         }
 
+       
     }
 }

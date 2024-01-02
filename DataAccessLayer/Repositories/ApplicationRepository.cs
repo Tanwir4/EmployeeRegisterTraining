@@ -1,10 +1,14 @@
 ﻿using DataAccessLayer.DBConnection;
+using DataAccessLayer.DTO;
 using DataAccessLayer.Models;
 using DataAccessLayer.Repositories.IRepositories;
+using EmployeeTrainingRegistrationServices.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Runtime.Remoting.Messaging;
+using System.Xml.Linq;
 
 namespace DataAccessLayer.Repositories
 {
@@ -18,25 +22,178 @@ namespace DataAccessLayer.Repositories
             _dataAccessLayer = dataAccessLayer;
             _userRepository = userRepository;
         }
-        public bool saveApplication(int trainingId, byte[] fileData)
+
+        public bool DeclineApplication(string name, string title,string declineReason)
         {
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
-                string sql = $@"INSERT INTO ApplicationDetails (ApplicationDate,Statuss,ManagerApproval,Attachment,TrainingID,UserID,DeclineReason) 
-                                              VALUES(@CurrentDate,'Pending',0,@FileData,@TrainingId,@UserId,'Processing')";
-                DateTime currentDate = DateTime.Today;
-                int userId = _userRepository.GetUserId();
+                string sql = $@"UPDATE ApplicationDetails
+                            SET Statuss = 'Declined',
+                            DeclineReason=@DeclineReason
+                        WHERE UserID IN (
+                            SELECT UserDetails.UserID
+                            FROM UserDetails
+                            INNER JOIN ApplicationDetails ON UserDetails.UserID = ApplicationDetails.UserID
+                            WHERE CONCAT(UserDetails.FirstName, ' ', UserDetails.LastName)=@FullName
+                        )
+						AND TrainingID IN(
+						SELECT TrainingDetails.TrainingID
+                            FROM ApplicationDetails                          
+                            INNER JOIN TrainingDetails ON TrainingDetails.TrainingID = ApplicationDetails.TrainingID
+                            WHERE TrainingDetails.Title = @TrainingTitle
+						);";
+                List<SqlParameter> parameters = new List<SqlParameter>
+        {
+            new SqlParameter("@FullName", SqlDbType.VarChar, 100) { Value = name },
+            new SqlParameter("@TrainingTitle", SqlDbType.VarChar, 100) { Value = title },
+            new SqlParameter("@DeclineReason", SqlDbType.VarChar, 100) { Value = declineReason }
+        };
+                int numberOfRowsAffected = _dataAccessLayer.InsertData(sql, parameters);
+                return (numberOfRowsAffected > 0);
+            }
+        }
+
+        public string ApproveApplication(string name, string title)
+        {
+            string status = null; // Initialize status to handle cases where no rows are found
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                string updateSql = $@"UPDATE ApplicationDetails
+                        SET ManagerApproval = 1,
+                            Statuss = 'Approved'
+                        WHERE UserID IN (
+                            SELECT UserDetails.UserID
+                            FROM UserDetails
+                            INNER JOIN ApplicationDetails ON UserDetails.UserID = ApplicationDetails.UserID
+                            WHERE CONCAT(UserDetails.FirstName, ' ', UserDetails.LastName)=@FullName
+                        )
+						AND TrainingID IN(
+						SELECT TrainingDetails.TrainingID
+                            FROM ApplicationDetails                          
+                            INNER JOIN TrainingDetails ON TrainingDetails.TrainingID = ApplicationDetails.TrainingID
+                            WHERE TrainingDetails.Title = @TrainingTitle
+						);";
+
+                string selectSql = @"SELECT Statuss
+                        FROM UserDetails
+                        INNER JOIN ApplicationDetails ON UserDetails.UserID = ApplicationDetails.UserID
+                        INNER JOIN TrainingDetails ON TrainingDetails.TrainingID = ApplicationDetails.TrainingID
+                        WHERE CONCAT(UserDetails.FirstName, ' ', UserDetails.LastName)=@FullName
+                        AND TrainingDetails.Title=@TrainingTitle";
+
+                List<SqlParameter> parametersUpdate = new List<SqlParameter>
+        {
+            new SqlParameter("@FullName", SqlDbType.VarChar, 100) { Value = name },
+            new SqlParameter("@TrainingTitle", SqlDbType.VarChar, 100) { Value = title }
+        };
+
+                List<SqlParameter> parametersSelect = new List<SqlParameter>
+        {
+            new SqlParameter("@FullName", SqlDbType.VarChar, 100) { Value = name },
+            new SqlParameter("@TrainingTitle", SqlDbType.VarChar, 100) { Value = title }
+        };
+
+                int numberOfRowsAffected = _dataAccessLayer.InsertData(updateSql, parametersUpdate);
+
+                // Execute the second query to retrieve the status
+                using (SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(selectSql, parametersSelect))
+                {
+                    if (reader.HasRows)
+                    {
+                        reader.Read(); // Move to the first row
+                        status = (string)reader["Statuss"];
+                    }
+                }
+            }
+
+            return status;
+        }
+
+
+
+
+        public List<DocumentDTO> GetDocumentsByApplicationID(int userID, int trainingID, int applicationID)
+        {
+            string sql = @"
+        SELECT Attachment.AttachmentID, Attachment.Attachment
+        FROM UserDetails
+        INNER JOIN ApplicationDetails ON UserDetails.UserID = ApplicationDetails.UserID
+        INNER JOIN TrainingDetails ON TrainingDetails.TrainingID = ApplicationDetails.TrainingID
+        INNER JOIN Attachment ON Attachment.ApplicationID = ApplicationDetails.ApplicationID
+        WHERE ApplicationDetails.UserID = @UserID
+          AND ApplicationDetails.TrainingID = @TrainingID
+          AND ApplicationDetails.ApplicationID = @ApplicationID;";
+
+            List<SqlParameter> parameters = new List<SqlParameter>
+    {
+        new SqlParameter("@UserID", SqlDbType.Int) { Value = userID },
+        new SqlParameter("@TrainingID", SqlDbType.Int) { Value = trainingID },
+        new SqlParameter("@ApplicationID", SqlDbType.Int) { Value = applicationID }
+    };
+
+            List<DocumentDTO> documents = new List<DocumentDTO>();
+
+            using (SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(sql, parameters))
+            {
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        DocumentDTO document = new DocumentDTO
+                        {
+                            documentId = (int)reader["AttachmentID"],
+                            //FileName = reader["FileName"] == DBNull.Value ? null : (string)reader["FileName"],
+                            fileData = reader["Attachment"] == DBNull.Value ? null : (byte[])reader["Attachment"]
+                            // Other properties
+                        };
+
+                        documents.Add(document);
+                    }
+                }
+            }
+
+            return documents;
+        }
+
+
+        public List<ManagerApplicationDTO> GetApplicationsByManagerId()
+        {
+            List<ManagerApplicationDTO> applicationList = new List<ManagerApplicationDTO>();
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                 string sql = $@"
+                                    SELECT CONCAT(UserDetails.FirstName, ' ', UserDetails.LastName) AS FullName, TrainingDetails.Title,ApplicationDetails.Statuss
+                                    FROM UserDetails
+                                    INNER JOIN ApplicationDetails ON UserDetails.UserID = ApplicationDetails.UserID
+                                    INNER JOIN TrainingDetails ON TrainingDetails.TrainingID = ApplicationDetails.TrainingID
+                                    WHERE UserDetails.ManagerUserID = @ManagerID;";
+                int managerId = _userRepository.GetUserId();
 
                 List<SqlParameter> parameters = new List<SqlParameter>
-                      {
-                          new SqlParameter("@CurrentDate", SqlDbType.Date) { Value = currentDate },
-                          new SqlParameter("@FileData", SqlDbType.VarBinary) { Value = fileData },
-                          new SqlParameter("@TrainingId", SqlDbType.Int) { Value = trainingId },
-                          new SqlParameter("@UserId", SqlDbType.Int) { Value = userId },
-                      };
-                return (_dataAccessLayer.InsertData(sql, parameters) > 0);
+        {
+            new SqlParameter("@ManagerID", SqlDbType.Int) { Value = managerId }
+        };
+
+                SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(sql, parameters);
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        ManagerApplicationDTO applicationDetailsItem = new ManagerApplicationDTO
+                        {
+                            TrainingTitle = reader["Title"] == DBNull.Value ? null : (string)reader["Title"],
+                            ApplicationStatus = reader["Statuss"] == DBNull.Value ? null : (string)reader["Statuss"],
+                            ApplicantName = reader["FullName"] == DBNull.Value ? null : (string)reader["FullName"]
+                        };
+
+                        applicationList.Add(applicationDetailsItem);
+                    }
+                }
             }
-        }                   
+            return applicationList;
+            
+        }
 
         public List<UserApplication> GetApplicationDetailsByUserId()
         {
@@ -76,5 +233,59 @@ namespace DataAccessLayer.Repositories
             return trainingDetailsList;
         }
 
+        public bool saveApplication(int trainingId, List<byte[]> fileDataList)
+        {
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+
+                using (SqlTransaction transaction = sqlConnection.BeginTransaction())
+                {
+                    try
+                    {
+                        // Insert application details
+                        string applicationSql = $@"INSERT INTO ApplicationDetails (ApplicationDate, Statuss, ManagerApproval, TrainingID, UserID, DeclineReason) 
+                                          VALUES (@CurrentDate, 'Pending', 0, @TrainingId, @UserId, 'Processing');
+                                          SELECT SCOPE_IDENTITY();";
+
+                        DateTime currentDate = DateTime.Today;
+                        int userId = _userRepository.GetUserId();
+
+                        int applicationId;
+                        using (SqlCommand cmdApplication = new SqlCommand(applicationSql, sqlConnection, transaction))
+                        {
+                            cmdApplication.Parameters.Add("@CurrentDate", SqlDbType.Date).Value = currentDate;
+                            cmdApplication.Parameters.Add("@TrainingId", SqlDbType.Int).Value = trainingId;
+                            cmdApplication.Parameters.Add("@UserId", SqlDbType.Int).Value = userId;
+
+                            applicationId = Convert.ToInt32(cmdApplication.ExecuteScalar());
+                        }
+
+                        // Insert each file data into Attachment table with the corresponding ApplicationID
+                        string attachmentSql = "INSERT INTO Attachment (Attachment, ApplicationID) VALUES (@FileData, @ApplicationId);";
+
+                        foreach (var fileData in fileDataList)
+                        {
+                            using (SqlCommand cmdAttachment = new SqlCommand(attachmentSql, sqlConnection, transaction))
+                            {
+                                cmdAttachment.Parameters.Add("@FileData", SqlDbType.VarBinary).Value = fileData;
+                                cmdAttachment.Parameters.Add("@ApplicationId", SqlDbType.Int).Value = applicationId;
+                                cmdAttachment.ExecuteNonQuery();
+                            }
+                        }
+
+                        transaction.Commit();
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        Console.WriteLine($"Error: {ex.Message}");
+                        return false;
+                    }
+                }
+            }
+        }
+
+       
     }
 }

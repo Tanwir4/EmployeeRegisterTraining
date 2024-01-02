@@ -129,19 +129,46 @@ function openApplication(trainingId) {
     });
 }
 
+/*function openApplication(trainingId) {
+    $('#ApplicationModal').modal('show');
+    $.ajax({
+        url: '/Training/GetTrainingById',
+        type: 'GET',
+        data: { trainingId: trainingId },
+        datatype: 'json',
+        success: function (data) {
+            $('#test').html('You are applying for: ' + data.trainings.Title);
+
+            // Clear previous inputs
+            $('#prerequisitesFileUploads').empty();
+
+            // Create file input for each prerequisite
+            // Iterate over prerequisites and create file input for each
+            if (Array.isArray(data.preRequisites)) {
+                data.preRequisites.forEach(function (prerequisite, index) {
+                    var fileInputHtml = `
+                        <label for="fileInput${index}">${prerequisite} File:</label>
+                        <input type="file" id="fileInput${index}" class="form-control mb-3" name="file${index}">
+                            `;
+                    $('#prerequisitesFileUploads').append(fileInputHtml);
+                });
+            }
+
+            // Set the trainingId as a data attribute in the modal
+            $('#ApplicationModal').data('trainingId', trainingId);
+        },
+        error: function (error) {
+            console.error(error);
+        },
+    });
+}
+*/
 function displayFileName(input, index) {
     var fileName = input.files[0] ? input.files[0].name : 'No file selected';
     $('#fileName_' + index).html(fileName);
 }
 
-
-function displayFileName(input, index) {
-    var fileName = input.files[0] ? input.files[0].name : 'No file selected';
-    $('#fileName_' + index).html(fileName);
-}
-
-
-function submitApplication() {
+/*function submitApplication() {
     // Retrieve the trainingId from the data attribute
     var trainingId = $('#ApplicationModal').data('trainingId');
     console.log('Submit Application js function');
@@ -166,8 +193,93 @@ function submitApplication() {
             console.error(error);
         },
     });
-}
+}*/
 
+/*function submitApplication() {*/
+/*    var trainingId = $('#ApplicationModal').data('trainingId');
+
+    if (!trainingId) {
+        console.error('TrainingId is missing');
+        return;
+    }
+
+    var formData = new FormData($('#applicationForm')[0]);
+
+    // Append each file input to the formData with a unique parameter name
+    $('#prerequisitesInputs input[type="file"]').each(function (index, input) {
+        var files = input.files;
+        for (var i = 0; i < files.length; i++) {
+            formData.append('fileInputs[' + index + ']', files[i]);
+        }
+    });*/
+
+/*
+    var trainingId = $('#ApplicationModal').data('trainingId');
+    var formData = new FormData();
+
+    // Append training ID to form data
+    formData.append('trainingId', trainingId);
+
+    // Append each file input to form data using the correct selector
+    $('[id^="fileInput"]').each(function (index, fileInput) {
+        var file = fileInput.files[0];
+        formData.append('files[]', file);
+    });
+
+    formData.append('trainingId', trainingId);
+
+    $.ajax({
+        url: '/Application/SubmitApplication',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            alert(data.message);
+            if (data.success) {
+                // Optionally, close the modal or perform other actions on success
+            }
+        },
+        error: function (error) {
+            console.error(error);
+        },
+    });
+}*/
+
+function submitApplication() {
+    var trainingId = $('#ApplicationModal').data('trainingId');
+    console.log('Submit Application js function');
+
+    if (!trainingId) {
+        console.error('TrainingId is missing');
+        return;
+    }
+
+    var formData = new FormData($('#applicationForm')[0]);
+
+    // Find all file inputs with the name 'fileInput_' and append them to formData
+    $('input[name^="fileInput_"]').each(function () {
+        var index = $(this).attr('id').split('_')[1];
+        formData.append('fileInputs', $(this)[0].files[0]);
+    });
+
+    formData.append('trainingId', trainingId);
+
+    $.ajax({
+        url: '/Application/SubmitApplication',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            // Handle success
+            alert("Successful");
+        },
+        error: function (error) {
+            console.error(error);
+        },
+    });
+}
 
 
 

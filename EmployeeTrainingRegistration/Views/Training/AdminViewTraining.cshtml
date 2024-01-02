@@ -92,7 +92,7 @@
                 </div>
                 <div class="modal-body">
                     <h4>Add New Training</h4>
-                    <form id="addTrainingForm" action="@Url.Action("AddTraining", "Training")" method="post">
+                    <form id="addTrainingForm">
                         <div class="form-group">
                             <label for="editTitle">Title:</label>
                             <input type="text" class="form-control" id="addTitle" name="title" required>
@@ -130,7 +130,7 @@
                             </div>
                         </div>
                         <input type="hidden" name="selectedPrerequisites" id="selectedPrerequisites" value="">
-                        <button type="submit" class="btn btn-secondary">Submit</button>
+                        <button type="button" id="submit" class="btn btn-secondary">Submit</button>
                     </form>
                 </div>
                 <div class="modal-footer">

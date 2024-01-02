@@ -10,5 +10,6 @@ namespace DataAccessLayer.Models
         public string DeclineReason { set; get; }
         public int TrainingId { set; get; }
         public int UserId {  set; get; }
+
     }
 }

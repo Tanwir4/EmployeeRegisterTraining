@@ -12,5 +12,7 @@ namespace DataAccessLayer.Repositories.IRepositories
        bool AddTraining(Training training, Department department);
        List<string> GetPrerequisitesByTrainingId(int trainingID);
         //List<Training> GetAllWithPrerequisites();
+
+        int GetNewTrainingId(Training training, Department department);
     }
 }

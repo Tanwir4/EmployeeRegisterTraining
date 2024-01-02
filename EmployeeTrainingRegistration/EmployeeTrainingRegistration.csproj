@@ -138,8 +138,10 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\LogOutController.cs" />
+    <Compile Include="Controllers\ManagerController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Controllers\TrainingController.cs" />
+    <Compile Include="Custom\CustomAuthorizationAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -169,6 +171,7 @@
     <Content Include="js\AdminTraining.js" />
     <Content Include="js\DisplayUserApplication.js" />
     <Content Include="js\LoginValidation.js" />
+    <Content Include="js\ManagerViewApplications.js" />
     <Content Include="js\PopulateTrainingIndex.js" />
     <Content Include="js\RegisterValidation.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
@@ -222,6 +225,7 @@
     <Content Include="Views\Shared\_LayoutPage1.cshtml" />
     <Content Include="Views\Training\AdminViewTraining.cshtml" />
     <Content Include="Views\Shared\_LayoutPage2.cshtml" />
+    <Content Include="Views\Manager\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

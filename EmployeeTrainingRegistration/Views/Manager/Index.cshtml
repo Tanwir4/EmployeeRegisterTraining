@@ -1,15 +1,14 @@
 ﻿@{
-    ViewBag.Title = "Training";
+    ViewBag.Title = "Manager";
 }
 <html lang="en">
 <head>
-    <title>Training</title>
-    <link href="~/CSS/TrainingCards.css" rel="stylesheet" />
+    <title>Manager</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="~/js/PopulateTrainingIndex.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="~/js/ManagerViewApplications.js"></script>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -18,7 +17,7 @@
             padding: 0;
         }
 
-        #trainingTable {
+        #applicationTable {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
@@ -27,24 +26,24 @@
             border-radius: 8px;
         }
 
-            #trainingTable th, #trainingTable td {
+            #applicationTable th, #trainingTable td {
                 border: 1px solid #e0e0e0;
                 padding: 15px;
                 text-align: left;
             }
 
-            #trainingTable th {
+            #applicationTable th {
                 background-color: #007bff;
                 color: #fff;
                 font-weight: bold;
             }
 
-            #trainingTable tbody tr:hover {
+            #applicationTable tbody tr:hover {
                 background-color: #e0f7fa;
                 cursor: pointer;
             }
 
-            #trainingTable td button {
+            #applicationTable td button {
                 padding: 10px 15px;
                 cursor: pointer;
                 background-color: #28a745;
@@ -55,11 +54,11 @@
                 transition: background-color 0.3s;
             }
 
-                #trainingTable td button.view-btn {
+                #applicationTable td button.view-btn {
                     margin-right: 10px; /* Adjust the margin-right as needed */
                 }
 
-                #trainingTable td button:hover {
+                #applicationTable td button:hover {
                     background-color: #218838;
                 }
 
@@ -109,6 +108,15 @@
         #applicationForm button[type="submit"] {
             width: 100%;
         }
+        .approved-row {
+            background-color: lightgreen !important; /* Important to override other styles */
+        }
+        /* Add this CSS to your stylesheet or in a <style> tag in your HTML */
+        .disabled-button {
+            background-color: #e0e0e0; /* Change this to the desired color */
+            color: #757575; /* Change this to the desired text color */
+            cursor: not-allowed;
+        }
 
     </style>
 
@@ -118,73 +126,37 @@
         Layout = "~/Views/Shared/_Layout.cshtml";
     }
 
-    <table id="trainingTable" class="table">
-      @*  <thead>
-            <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Action</th>
-            </tr>
-        </thead>*@
+    <table id="applicationTable" class="table">
         <tbody>
             <!-- Table content will be dynamically added by JavaScript -->
         </tbody>
     </table>
-    <div id="trainingCards"></div>
-
-
-    <div class="modal fade" id="trainingDetailsModal" tabindex="-1" role="dialog" aria-labelledby="trainingDetailsModalLabel" aria-hidden="true">
+    <!-- Add this HTML modal structure to your page -->
+    <div class="modal fade" id="declineModal" tabindex="-1" role="dialog" aria-labelledby="declineModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="trainingDetailsModalLabel">Training Details</h5>
+                    <h5 class="modal-title" id="declineModalLabel">Decline Application</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <h4 id="trainingTitle"></h4>
-                    <p id="trainingDescription"></p>
-                    <p id="trainingPreRequisite"></p>
-                    <p id="trainingDeadline"></p>
-                    <p id="trainingSeat"></p>
-                    <p id="trainingStartDate"></p>
-                    <p id="trainingPrerequisites"></p>
+                    <label for="declineReason">Reason for Decline:</label>
+                    <textarea id="declineReason" class="form-control" rows="3"></textarea>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-secondary">Apply</button>
+                    <button type="button" class="btn btn-danger" id="declineButton" onclick="submitDeclineReason()">Decline</button>
+
+
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal fade" id="ApplicationModal" tabindex="-1" role="dialog" aria-labelledby="trainingDetailsModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="applicationForm" enctype="multipart/form-data">
-                        <h4 id="test"></h4>
-                        <!-- Add a file input for each prerequisite -->
-                          <div id="prerequisitesInputs" class="row"></div>
-                        @* <div id="prerequisitesFileUploads"></div>*@
-                       
 
 
-                        <button type="submit" class="btn btn-secondary mt-3" onclick="submitApplication()">Submit Application</button>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-secondary">Submit</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
 </body>
 </html>
+

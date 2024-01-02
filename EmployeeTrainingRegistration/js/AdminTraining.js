@@ -116,6 +116,59 @@
                 $('#trainingDetailsModal').modal('hide');
             });
 
+            $('#submit').on('click', function () {
+                var trainingId = $('#addTrainingForm').data('trainingId');
+                var addTitle = $('#addTitle').val();
+                var addStartDate = $('#addStartDate').val();
+                var addDeadline = $('#addDeadline').val();
+                var addThreshold = $('#addThreshold').val();
+                var addDescription = $('#addDescription').val();
+                var addDepartment = $('#addDepartment').val();
+                var checkedPrerequisites = [];
+                $('input[type="checkbox"]:checked').each(function () {
+                    checkedPrerequisites.push($(this).val());
+                });
+
+                alert('Checked Prerequisites: ' + checkedPrerequisites.join(', '));
+
+                // Prepare data to send to the server
+                var data = {
+                    TrainingId: trainingId,
+                    Title: addTitle,
+                    StartDate: addStartDate,
+                    Threshold: addThreshold,
+                    Description: addDescription,
+                    DepartmentName: addDepartment,
+                    Deadline: addDeadline,
+                    PreRequisite: checkedPrerequisites
+
+                };
+                console.log(data);
+                // Make an AJAX request to the server
+                $.ajax({
+                    type: 'POST',
+                    url: '/Training/AddTraining', // Replace 'ControllerName' with your actual controller name
+                    data: data,
+                    success: function (result) {
+                        // Handle the success response from the server
+                        alert('Changes saved successfully!');
+
+                        // Reload the page to see the changes
+                        location.reload();
+                    },
+                    error: function () {
+                        // Handle the error case
+                        alert('Error occurred while saving changes.');
+                    }
+                });
+
+                // Close the modal after initiating the AJAX request
+                $('#trainingDetailsModal').modal('hide');
+            });
+
+
+
+
 
             // Handle delete button click
             $('.deleteButton').on('click', function () {

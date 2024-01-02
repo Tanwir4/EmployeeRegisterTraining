@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.Models;
 using DataAccessLayer.Repositories.IRepositories;
+using EmployeeTrainingRegistration.Custom;
 using EmployeeTrainingRegistrationServices.Interfaces;
 using System.Web.Mvc;
 namespace EmployeeTrainingRegistration.Controllers
@@ -17,6 +18,8 @@ namespace EmployeeTrainingRegistration.Controllers
         {
             return View();
         }
+
+       
         [HttpPost]
         public ActionResult Verify(Account acc)
         {
@@ -24,7 +27,8 @@ namespace EmployeeTrainingRegistration.Controllers
                 Session["Email"] = acc.Email;
                 Session["UserAccountId"] = _accountService.GetUserAccountId(acc.Email);
                 //return RedirectToAction("Index", "Training");
-                return RedirectToAction("AdminViewTraining", "Training");
+                //return RedirectToAction("AdminViewTraining", "Training");
+                return RedirectToAction("Index", "Manager");
             }
             else
             {
