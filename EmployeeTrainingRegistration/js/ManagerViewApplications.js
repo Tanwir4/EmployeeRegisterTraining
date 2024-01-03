@@ -45,7 +45,7 @@ function displayApplication(data) {
                 <td>
                     <button class="read" type="button" onclick="viewDocument('${application["ApplicantName"]}', '${application["TrainingTitle"]}')">View Document</button> 
                     <button class="read" type="button" data-toggle="modal" data-target="#declineModal" onclick="prepareDeclineModal('${application["ApplicantName"]}', '${application["TrainingTitle"]}')">Decline</button>
-                    <button class="read" type="button" onclick="approveApplication('${application["ApplicantName"]}', '${application["TrainingTitle"]}')">Approve</button>
+                    <button class="read" type="button" onclick="approveApplication('${application["ApplicantName"]}', '${application["TrainingTitle"]}','${application["ApplicationID"]}')">Approve</button>
                 </td>
             </tr>
         `;
@@ -95,10 +95,12 @@ function submitDeclineReason() {
 }
 
 // Function to handle the approve action
-function approveApplication(applicantName, trainingTitle) {
+function approveApplication(applicantName, trainingTitle,applicationId) {
     var data = {
         name: applicantName,
         title: trainingTitle,
+        applicationID: applicationId
+
     };
 
     // Send the data to the server for processing

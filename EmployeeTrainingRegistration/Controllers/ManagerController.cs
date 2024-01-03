@@ -1,6 +1,7 @@
 ﻿using DataAccessLayer.DTO;
 using DataAccessLayer.Models;
 using EmployeeTrainingRegistrationServices.Interfaces;
+using EmployeeTrainingRegistrationServices.Services;
 using System.Collections.Generic;
 using System.Web.Mvc;
 
@@ -34,9 +35,12 @@ namespace EmployeeTrainingRegistration.Controllers
         }
 
         [HttpPost]
-        public ActionResult ApproveApplication(string name, string title)
+        public ActionResult ApproveApplication(string name, string title,int applicationID)
         {
             string success= _applicationService.IsApplicationApproved(name, title);
+            EmailDTO emailDetails = _applicationService.GetManagerApprovalDetails(applicationID);
+            string applicantEmail = emailDetails.EmployeeEmail;
+            EmailNotificationService.SendApprovalEmail(applicantEmail, emailDetails.TrainingTitle);
             if (success=="Approved")
             {
                 return Json(new { success = true, message = "Application approved successfully" });

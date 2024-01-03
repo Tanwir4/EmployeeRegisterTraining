@@ -21,6 +21,10 @@ namespace EmployeeTrainingRegistrationServices.Services
             return _applicationRepository.GetApplicationsByManagerId();
         }
 
+        public EmailDTO GetManagerApprovalDetails(int applicationId) {
+            return _applicationRepository.GetManagerApprovalDetails(applicationId);
+        }
+
         public List<UserApplication> GetApplicationDetailsByUserId()
         {
            return _applicationRepository.GetApplicationDetailsByUserId();

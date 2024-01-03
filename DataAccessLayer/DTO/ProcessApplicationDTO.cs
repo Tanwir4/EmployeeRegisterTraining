@@ -14,5 +14,6 @@ namespace DataAccessLayer.DTO
         public string Status {  get; set; }
         public bool ManagerApproval {  get; set; }
         public string DeclineReason { get; set; }
+        public int ApplicationID {  get; set; }
     }
 }

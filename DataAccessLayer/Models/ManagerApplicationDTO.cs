@@ -11,5 +11,6 @@ namespace DataAccessLayer.Models
         public string ApplicantName {  get; set; }
         public string TrainingTitle { get; set; }
         public string ApplicationStatus { get; set; }
+        public int ApplicationID { get; set; }
     }
 }

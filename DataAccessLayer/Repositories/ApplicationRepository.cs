@@ -9,6 +9,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Runtime.Remoting.Messaging;
 using System.Xml.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace DataAccessLayer.Repositories
 {
@@ -21,6 +22,59 @@ namespace DataAccessLayer.Repositories
         {
             _dataAccessLayer = dataAccessLayer;
             _userRepository = userRepository;
+        }
+
+        public EmailDTO GetManagerApprovalDetails(int applicationId)
+        {
+            EmailDTO managerApprovalDetails = null;
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                string sql = @"
+	       SELECT
+    A.UserID AS ApplicantUserID,
+    U1.FirstName AS ApplicantFirstName,
+    U1.LastName AS ApplicantLastName,
+    UA.Email AS ApplicantEmail,
+    U2.UserID AS ManagerUserID,
+    U2.FirstName AS ManagerFirstName,
+    U2.LastName AS ManagerLastName,
+    UM.Email AS ManagerEmail,
+	T.Title 
+FROM
+    ApplicationDetails A
+    INNER JOIN UserDetails U1 ON A.UserID = U1.UserID
+    INNER JOIN UserAccount UA ON U1.UserID = UA.UserAccountID
+    LEFT JOIN UserDetails U2 ON U1.ManagerUserID = U2.UserID
+    LEFT JOIN UserAccount UM ON U2.UserID = UM.UserAccountID
+	INNER JOIN TrainingDetails T ON A.TrainingID=T.TrainingID
+WHERE
+    A.ApplicationID = @ApplicationId;
+    ";
+
+                List<SqlParameter> parameters = new List<SqlParameter>
+    {
+        new SqlParameter("@ApplicationId", applicationId)
+    };
+
+                using (SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(sql, parameters))
+                {
+                    if (reader.Read())
+                    {
+                        managerApprovalDetails = new EmailDTO
+                        {
+                            ApplicantName = $"{reader.GetString(reader.GetOrdinal("ApplicantFirstName"))} {reader.GetString(reader.GetOrdinal("ApplicantLastName"))}",
+                            ManagerName = $"{reader.GetString(reader.GetOrdinal("ManagerFirstName"))} {reader.GetString(reader.GetOrdinal("ManagerLastName"))}",
+                            //ApplicationStatus = reader.GetString(reader.GetOrdinal("ApplicationStatus")),
+                            TrainingTitle = reader.GetString(reader.GetOrdinal("Title")),
+                            ManagerEmail = reader.GetString(reader.GetOrdinal("ManagerEmail")),
+                            EmployeeEmail = reader.GetString(reader.GetOrdinal("ApplicantEmail"))
+
+                        };
+                    }
+                }
+
+                return managerApprovalDetails;
+            }
         }
 
         public bool DeclineApplication(string name, string title,string declineReason)
@@ -162,7 +216,7 @@ namespace DataAccessLayer.Repositories
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
                  string sql = $@"
-                                    SELECT CONCAT(UserDetails.FirstName, ' ', UserDetails.LastName) AS FullName, TrainingDetails.Title,ApplicationDetails.Statuss
+                                    SELECT CONCAT(UserDetails.FirstName, ' ', UserDetails.LastName) AS FullName, TrainingDetails.Title,ApplicationDetails.Statuss,ApplicationDetails.ApplicationID
                                     FROM UserDetails
                                     INNER JOIN ApplicationDetails ON UserDetails.UserID = ApplicationDetails.UserID
                                     INNER JOIN TrainingDetails ON TrainingDetails.TrainingID = ApplicationDetails.TrainingID
@@ -184,7 +238,8 @@ namespace DataAccessLayer.Repositories
                         {
                             TrainingTitle = reader["Title"] == DBNull.Value ? null : (string)reader["Title"],
                             ApplicationStatus = reader["Statuss"] == DBNull.Value ? null : (string)reader["Statuss"],
-                            ApplicantName = reader["FullName"] == DBNull.Value ? null : (string)reader["FullName"]
+                            ApplicantName = reader["FullName"] == DBNull.Value ? null : (string)reader["FullName"],
+                            ApplicationID= (int)reader["ApplicationID"] 
                         };
 
                         applicationList.Add(applicationDetailsItem);

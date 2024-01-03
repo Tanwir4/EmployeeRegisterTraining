@@ -13,5 +13,6 @@ namespace EmployeeTrainingRegistrationServices.Interfaces
         List<DocumentDTO> GetDocuments(int userID, int trainingID, int applicationID);
         string IsApplicationApproved(string name, string title);
         bool IsApplicationDeclined(string name, string title,string declineReason);
+        EmailDTO GetManagerApprovalDetails(int applicationId);
     }
 }

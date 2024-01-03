@@ -4,12 +4,13 @@
         type: 'GET',
         datatype: 'json',
         success: function (data) {
-            displayTraining(data.trainings);
+            displayTraining(data.trainings);  
         },
         error: function (error) {
             console.error(error);
         },
     });
+
 });
 function displayTraining(data) {
     var trainingTable = $('#trainingTable');
@@ -46,6 +47,7 @@ function displayTraining(data) {
 
     // Close the table body
     trainingTable.append(`</tbody>`);
+
 }
 
 
@@ -109,13 +111,13 @@ function openApplication(trainingId) {
             for (var i = 0; i < data.preRequisites.length; i++) {
                 var inputHtml = '<div class="col-md-12">' +
                     '<p>' + data.preRequisites[i] + '</p>' +
-                   
+
                     '<label for="fileInput_' + i + '" class="btn btn-primary">' +
                     'Browse' +
                     '<input type="file" id="fileInput_' + i + '" name="fileInput_' + i + '" style="display:none;" onchange="displayFileName(this, ' + i + ')" />' +
                     '</label>' +
                     '<span class="prerequisite-name mt-2" id="fileName_' + i + '">No file selected</span>' +
-                    
+
                     '</div>';
                 $('#prerequisitesInputs').append(inputHtml);
             }
@@ -280,13 +282,3 @@ function submitApplication() {
         },
     });
 }
-
-
-
-
-
-
-
-
-
-
