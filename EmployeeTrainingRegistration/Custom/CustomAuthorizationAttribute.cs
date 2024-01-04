@@ -25,7 +25,7 @@ namespace EmployeeTrainingRegistration.Custom
                 var currentRole = dfController.Session["CurrentRole"] as string;
                 if (!AuthorizedRoles.Contains(currentRole))
                 {
-                    filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Login", action = "Index" }));
+                    filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Login", action = "Login" }));
                 }
 
             }

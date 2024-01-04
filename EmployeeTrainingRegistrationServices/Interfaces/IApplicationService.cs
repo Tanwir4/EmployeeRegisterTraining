@@ -10,9 +10,10 @@ namespace EmployeeTrainingRegistrationServices.Interfaces
         bool IsApplicationSubmitted(int trainingId, List<byte[]> fileDataList);
         List<UserApplication> GetApplicationDetailsByUserId();
         List<ManagerApplicationDTO> GetApplicationByManagerId();
-        List<DocumentDTO> GetDocuments(int userID, int trainingID, int applicationID);
         string IsApplicationApproved(string name, string title);
         bool IsApplicationDeclined(string name, string title,string declineReason);
         EmailDTO GetManagerApprovalDetails(int applicationId);
+        List<int> GetAttachmentsByApplicationId(int applicationId);
+        byte[] GetAttachmentsById(int attachmentId);
     }
 }

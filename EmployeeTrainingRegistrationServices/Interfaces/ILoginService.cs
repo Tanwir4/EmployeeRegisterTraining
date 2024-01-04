@@ -5,5 +5,6 @@ namespace EmployeeTrainingRegistrationServices.Interfaces
     {
         bool IsAuthenticated(Account acc);
         int GetUserIdByEmail(string email);
+        string GetRoleNameByEmail(string email);
     }
 }

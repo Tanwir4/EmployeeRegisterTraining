@@ -11,12 +11,38 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#automaticProcessingBtn').on('click', function () {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Training/StartAutomaticProcessing', // Replace with your controller route
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                        } else {
+                            console.error(response.message);
+                        }
+                    },
+                    error: function (error) {
+                        console.error(error.responseText);
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
     @{
         Layout = "~/Views/Shared/_LayoutPage2.cshtml";
     }
-
+    <div>
+        <button type="button" class="btn btn-primary" id="automaticProcessingBtn" data-toggle="modal" data-target="#trainingDetailsModal">
+            Automatic Processing
+        </button>
+    </div>
     <table id="trainingTable">
         <thead>
             <tr>
@@ -135,7 +161,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              
+
                 </div>
             </div>
         </div>

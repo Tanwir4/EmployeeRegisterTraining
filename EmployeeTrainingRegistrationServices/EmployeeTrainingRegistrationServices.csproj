@@ -44,6 +44,7 @@
     <Compile Include="Class1.cs" />
     <Compile Include="Interfaces\IAccountService.cs" />
     <Compile Include="Interfaces\IApplicationService.cs" />
+    <Compile Include="Interfaces\IAutomaticProcessingService.cs" />
     <Compile Include="Interfaces\IDepartmentService.cs" />
     <Compile Include="Interfaces\ILoginService.cs" />
     <Compile Include="Interfaces\IRegisterService.cs" />
@@ -51,6 +52,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AccountService.cs" />
     <Compile Include="Services\ApplicationService.cs" />
+    <Compile Include="Services\AutomaticProcessingService.cs" />
     <Compile Include="Services\DepartmentService.cs" />
     <Compile Include="Services\EmailNotificationService.cs" />
     <Compile Include="Services\LoginService.cs" />

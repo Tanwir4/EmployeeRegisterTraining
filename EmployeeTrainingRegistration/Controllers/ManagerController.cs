@@ -1,9 +1,16 @@
 ﻿using DataAccessLayer.DTO;
 using DataAccessLayer.Models;
+using EmployeeTrainingRegistration.Custom;
 using EmployeeTrainingRegistrationServices.Interfaces;
 using EmployeeTrainingRegistrationServices.Services;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Net.Mail;
+using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Web.SessionState;
+using System.Xml.Linq;
 
 namespace EmployeeTrainingRegistration.Controllers
 {
@@ -15,23 +22,18 @@ namespace EmployeeTrainingRegistration.Controllers
             _applicationService = applicationService;
         }
         // GET: Manager
+        [CustomAuthorization("Manager")]
         public ActionResult Index()
         {
             return View();
         }
 
+        [CustomAuthorization("Manager")]
         [HttpGet]
         public JsonResult GetApplicationsByManagerId()
         {
             List<ManagerApplicationDTO> getApplicationsByManager = _applicationService.GetApplicationByManagerId();
             return Json(new { applications = getApplicationsByManager }, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpGet]
-        public JsonResult GetDocuments(int userID, int trainingID, int applicationID)
-        {
-            List<DocumentDTO> documents = _applicationService.GetDocuments(userID, trainingID, applicationID);
-            return Json(new { documents }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -52,9 +54,12 @@ namespace EmployeeTrainingRegistration.Controllers
         }
 
         [HttpPost]
-        public ActionResult DeclineApplication(string name, string title,string declineReason)
+        public ActionResult DeclineApplication(string name, string title,string declineReason,int applicationID)
         {
             bool success = _applicationService.IsApplicationDeclined(name, title, declineReason);
+            EmailDTO emailDetails = _applicationService.GetManagerApprovalDetails(applicationID);
+            string applicantEmail = emailDetails.EmployeeEmail;
+            EmailNotificationService.SendDeclineEmail(applicantEmail, emailDetails.TrainingTitle, declineReason);
             if (success)
             {
                 return Json(new { success = true, message = "Application declined successfully" });
@@ -64,5 +69,30 @@ namespace EmployeeTrainingRegistration.Controllers
                 return Json(new { success = false, message = "Failed to decline application" });
             }
         }
+        [HttpGet]
+        public ActionResult GetAttachmentsByApplicationID(int applicationID)
+        {
+            List<int> getAttachments = _applicationService.GetAttachmentsByApplicationId(applicationID);
+
+
+
+            return Json(new { success = true, Attachments= getAttachments }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+
+        public ActionResult DownloadAttachment(int attachmentID)
+        {
+
+            byte[] binaryFile = _applicationService.GetAttachmentsById(attachmentID);
+
+            string contentType = "application/octet-stream";
+
+            string fileName = Uri.UnescapeDataString("hello"); // Decode encoded file name
+
+            return  File(binaryFile, contentType, fileName);
+
+        }
+
     }
 }

@@ -170,12 +170,17 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="applicationForm" enctype="multipart/form-data">
+                    <form id="applicationForm" enctype="multipart/form-data" method="post" onsubmit="return false">
                         <h4 id="test"></h4>
                         <!-- Add a file input for each prerequisite -->
-                          <div id="prerequisitesInputs" class="row"></div>
+                        @*<div id="prerequisitesInputs" class="row"></div>*@
                         @* <div id="prerequisitesFileUploads"></div>*@
-                       
+                        <!-- Add a file input for each prerequisite -->
+                        <div id="prerequisitesInputs" class="row">
+                            <input type="file" name="fileInput_1" id="fileInput_1" class="form-control" />
+                            <!-- Add more file input fields as needed -->
+                        </div>
+
 
 
                         <button type="submit" class="btn btn-secondary mt-3" onclick="submitApplication()">Submit Application</button>

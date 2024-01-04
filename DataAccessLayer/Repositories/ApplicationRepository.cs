@@ -24,6 +24,73 @@ namespace DataAccessLayer.Repositories
             _userRepository = userRepository;
         }
 
+        public List<int> GetAttachmentsByApplicationId(int applicationId)
+        {
+            List<int> attachments = new List<int>();
+
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                string sql = @"
+                       SELECT AttachmentID
+                        FROM Attachment
+                        INNER JOIN ApplicationDetails ON ApplicationDetails.ApplicationID = Attachment.ApplicationID
+                        WHERE Attachment.ApplicationID = @ApplicationId;
+                            ";
+
+                List<SqlParameter> parameters = new List<SqlParameter>
+                {
+                    new SqlParameter("@ApplicationId", applicationId)
+                };
+
+                using (SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(sql, parameters))
+                {
+                    while (reader.Read())
+                    {
+
+
+
+                        byte attachmentId = (byte)reader["AttachmentID"];
+                        attachments.Add(attachmentId);
+
+                    }
+                }
+
+                return attachments;
+            }
+        }
+        public byte[] GetAttachmentsById(int attachmentId)
+        {
+
+            byte[] fileData = null;
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                string sql = @"
+                       SELECT Attachment
+                        FROM Attachment
+                        WHERE AttachmentID=@AttachmentID;
+                            ";
+
+                List<SqlParameter> parameters = new List<SqlParameter>
+                {
+                    new SqlParameter("@AttachmentID", attachmentId)
+                };
+
+                using (SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(sql, parameters))
+                {
+                    while (reader.Read())
+                    {
+
+
+                       fileData = reader["Attachment"] == DBNull.Value ? null : (byte[])reader["Attachment"];
+                      
+
+                    }
+                }
+
+                return fileData;
+            }
+        }
+
         public EmailDTO GetManagerApprovalDetails(int applicationId)
         {
             EmailDTO managerApprovalDetails = null;
@@ -77,13 +144,12 @@ WHERE
             }
         }
 
-        public bool DeclineApplication(string name, string title,string declineReason)
+        public bool DeclineApplication(string name, string title, string declineReason)
         {
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
                 string sql = $@"UPDATE ApplicationDetails
-                            SET Statuss = 'Declined',
-                            DeclineReason=@DeclineReason
+                            SET DeclineReason=@DeclineReason
                         WHERE UserID IN (
                             SELECT UserDetails.UserID
                             FROM UserDetails
@@ -113,8 +179,7 @@ WHERE
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
                 string updateSql = $@"UPDATE ApplicationDetails
-                        SET ManagerApproval = 1,
-                            Statuss = 'Approved'
+                        SET ManagerApproval = 1
                         WHERE UserID IN (
                             SELECT UserDetails.UserID
                             FROM UserDetails
@@ -163,59 +228,12 @@ WHERE
             return status;
         }
 
-
-
-
-        public List<DocumentDTO> GetDocumentsByApplicationID(int userID, int trainingID, int applicationID)
-        {
-            string sql = @"
-        SELECT Attachment.AttachmentID, Attachment.Attachment
-        FROM UserDetails
-        INNER JOIN ApplicationDetails ON UserDetails.UserID = ApplicationDetails.UserID
-        INNER JOIN TrainingDetails ON TrainingDetails.TrainingID = ApplicationDetails.TrainingID
-        INNER JOIN Attachment ON Attachment.ApplicationID = ApplicationDetails.ApplicationID
-        WHERE ApplicationDetails.UserID = @UserID
-          AND ApplicationDetails.TrainingID = @TrainingID
-          AND ApplicationDetails.ApplicationID = @ApplicationID;";
-
-            List<SqlParameter> parameters = new List<SqlParameter>
-    {
-        new SqlParameter("@UserID", SqlDbType.Int) { Value = userID },
-        new SqlParameter("@TrainingID", SqlDbType.Int) { Value = trainingID },
-        new SqlParameter("@ApplicationID", SqlDbType.Int) { Value = applicationID }
-    };
-
-            List<DocumentDTO> documents = new List<DocumentDTO>();
-
-            using (SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(sql, parameters))
-            {
-                if (reader.HasRows)
-                {
-                    while (reader.Read())
-                    {
-                        DocumentDTO document = new DocumentDTO
-                        {
-                            documentId = (int)reader["AttachmentID"],
-                            //FileName = reader["FileName"] == DBNull.Value ? null : (string)reader["FileName"],
-                            fileData = reader["Attachment"] == DBNull.Value ? null : (byte[])reader["Attachment"]
-                            // Other properties
-                        };
-
-                        documents.Add(document);
-                    }
-                }
-            }
-
-            return documents;
-        }
-
-
         public List<ManagerApplicationDTO> GetApplicationsByManagerId()
         {
             List<ManagerApplicationDTO> applicationList = new List<ManagerApplicationDTO>();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
-                 string sql = $@"
+                string sql = $@"
                                     SELECT CONCAT(UserDetails.FirstName, ' ', UserDetails.LastName) AS FullName, TrainingDetails.Title,ApplicationDetails.Statuss,ApplicationDetails.ApplicationID
                                     FROM UserDetails
                                     INNER JOIN ApplicationDetails ON UserDetails.UserID = ApplicationDetails.UserID
@@ -239,7 +257,7 @@ WHERE
                             TrainingTitle = reader["Title"] == DBNull.Value ? null : (string)reader["Title"],
                             ApplicationStatus = reader["Statuss"] == DBNull.Value ? null : (string)reader["Statuss"],
                             ApplicantName = reader["FullName"] == DBNull.Value ? null : (string)reader["FullName"],
-                            ApplicationID= (int)reader["ApplicationID"] 
+                            ApplicationID = (int)reader["ApplicationID"]
                         };
 
                         applicationList.Add(applicationDetailsItem);
@@ -247,7 +265,7 @@ WHERE
                 }
             }
             return applicationList;
-            
+
         }
 
         public List<UserApplication> GetApplicationDetailsByUserId()
@@ -341,6 +359,6 @@ WHERE
             }
         }
 
-       
+
     }
 }

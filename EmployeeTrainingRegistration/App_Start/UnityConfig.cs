@@ -18,11 +18,13 @@ namespace EmployeeTrainingRegistration
 			var container = new UnityContainer();
             container.RegisterType<IDataAccessLayer, DataAccessLayer.DBConnection.DataAccessLayer>();
             container.RegisterType<IUserRepository, UserRepository>();
+            container.RegisterType<IAutomaticProcessingRepository, AutomaticProcessingRepository>();
             container.RegisterType<ITrainingRepository, TrainingRepository>();
             container.RegisterType<IApplicationRepository, ApplicationRepository>();
             container.RegisterType<IDepartmentRepository, DepartmentRepository>();
             container.RegisterType<ILoginService, LoginService>();
             container.RegisterType<ITrainingService, TrainingService>();
+            container.RegisterType<IAutomaticProcessingService, AutomaticProcessingService>();
             container.RegisterType<ILoginValidation, LoginValidation>();
             container.RegisterType<IRegisterService, RegisterService>();
             container.RegisterType<IAccountService, AccountService>();

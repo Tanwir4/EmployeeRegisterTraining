@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+﻿/*$(document).ready(function () {
     $.ajax({
         url: '/Application/GetApplicationById',
         type: 'GET',
@@ -25,5 +25,37 @@ function displayApplications(data) {
                 <p class="message">Status: ${application["Status"]}</p>
         </div>`;
         applicationCards.append(applicationHtml);
+    });
+}*/
+
+$(document).ready(function () {
+    $.ajax({
+        url: '/Application/GetApplicationById',
+        type: 'GET',
+        datatype: 'json',
+        success: function (data) {
+            displayApplications(data.applications);
+            // Initialize DataTables with pagination
+            $('#applicationTable').DataTable({
+                "pageLength": 5
+            });
+        },
+        error: function (error) {
+            console.error(error);
+        },
+    });
+});
+
+function displayApplications(data) {
+    var applicationTable = $('#applicationTable');
+    var tableBody = applicationTable.find('tbody');
+    console.log('Display application function');
+    data.forEach(function (application) {
+        var rowHtml = `
+            <tr>
+                <td>${application["TrainingTitle"]}</td>
+                <td>${application["Status"]}</td>
+            </tr>`;
+        tableBody.append(rowHtml);
     });
 }

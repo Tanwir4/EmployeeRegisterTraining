@@ -248,7 +248,7 @@ function displayFileName(input, index) {
     });
 }*/
 
-function submitApplication() {
+/*function submitApplication() {
     var trainingId = $('#ApplicationModal').data('trainingId');
     console.log('Submit Application js function');
 
@@ -281,4 +281,35 @@ function submitApplication() {
             console.error(error);
         },
     });
+}*/
+
+function submitApplication() {
+    var trainingId = $('#ApplicationModal').data('trainingId');
+    console.log('Submit Application js function');
+
+    if (!trainingId) {
+        console.error('TrainingId is missing');
+        return;
+    }
+
+    var formData = new FormData($('#applicationForm')[0]);
+    formData.append('trainingId', trainingId);
+
+    $.ajax({
+        url: '/Application/SubmitApplication',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            // Handle success
+            alert("Successful");
+        },
+        error: function (error) {
+            console.error(error);
+        },
+    });
+
+    // Prevent the default form submission
+    return false;
 }

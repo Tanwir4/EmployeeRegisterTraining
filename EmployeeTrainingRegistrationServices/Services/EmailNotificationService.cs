@@ -25,5 +25,13 @@ namespace EmployeeTrainingRegistrationServices.Services
 
             return EmailSender.SendEmail(subject, body, recipientEmail);
         }
+
+        public static string SendSelectedEmail(string recipientEmail, string trainingTitle)
+        {
+            string subject = "Training Enrollment Confirmation";
+            string body = $"Hello,\n\nYou have been selected for '{trainingTitle}.";
+
+            return EmailSender.SendEmail(subject, body, recipientEmail);
+        }
     }
 }

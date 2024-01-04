@@ -26,9 +26,12 @@ namespace EmployeeTrainingRegistration.Controllers
             if (_loginService.IsAuthenticated(acc)) {
                 Session["Email"] = acc.Email;
                 Session["UserAccountId"] = _accountService.GetUserAccountId(acc.Email);
-                //return RedirectToAction("Index", "Training");
-                //return RedirectToAction("AdminViewTraining", "Training");
-                return RedirectToAction("Index", "Manager");
+               
+                string roleName = _loginService.GetRoleNameByEmail(acc.Email);
+                Session["CurrentRole"] = roleName;
+                if (roleName =="Employee") { return RedirectToAction("Index", "Training"); }
+                else if(roleName == "Manager") { return RedirectToAction("Index", "Manager"); }
+                else { return RedirectToAction("AdminViewTraining", "Training"); }
             }
             else
             {

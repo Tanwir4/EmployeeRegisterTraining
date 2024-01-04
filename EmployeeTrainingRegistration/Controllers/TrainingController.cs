@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Models;
+﻿using DataAccessLayer.DTO;
+using DataAccessLayer.Models;
 using EmployeeTrainingRegistrationServices.Entities;
 using EmployeeTrainingRegistrationServices.Interfaces;
 using EmployeeTrainingRegistrationServices.Services;
@@ -14,9 +15,11 @@ namespace EmployeeTrainingRegistration.Controllers
     public class TrainingController : Controller
     {
         private readonly ITrainingService _trainingService;
-        public TrainingController(ITrainingService trainingService)
+        private readonly IAutomaticProcessingService _automaticProcessingService;
+        public TrainingController(ITrainingService trainingService, IAutomaticProcessingService automaticProcessingService)
         {
             _trainingService = trainingService;
+            _automaticProcessingService = automaticProcessingService;
         }
         public ActionResult Index()
         {
@@ -83,5 +86,20 @@ namespace EmployeeTrainingRegistration.Controllers
                 return View("Error");
             }
         }
+
+        [HttpPost]
+        public ActionResult StartAutomaticProcessing()
+        {
+            List<EnrolledNotificationDTO> enrolledEmployeeList = _automaticProcessingService.StartAutomaticProcessing();
+
+            foreach (var enrolledEmployees in enrolledEmployeeList) {
+                EmailNotificationService.SendSelectedEmail(enrolledEmployees.Email, enrolledEmployees.Title);
+            }
+             
+                return Json(new { success = true, message = "Automatic processing started successfully." });
+            
+           
+        }
+
     }
 }

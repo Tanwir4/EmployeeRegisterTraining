@@ -30,11 +30,6 @@ namespace EmployeeTrainingRegistrationServices.Services
            return _applicationRepository.GetApplicationDetailsByUserId();
         }
 
-        public List<DocumentDTO> GetDocuments(int userID, int trainingID, int applicationID)
-        {
-            return _applicationRepository.GetDocumentsByApplicationID(userID, trainingID, applicationID);
-        }
-
         public string IsApplicationApproved(string name, string title)
         {
             return _applicationRepository.ApproveApplication( name,title);
@@ -48,6 +43,16 @@ namespace EmployeeTrainingRegistrationServices.Services
         public bool IsApplicationSubmitted(int trainingId,List<byte[]> fileDataList)
         {
             return _applicationRepository.saveApplication(trainingId, fileDataList);
+        }
+
+        public List<int> GetAttachmentsByApplicationId(int applicationId)
+        {
+            return _applicationRepository.GetAttachmentsByApplicationId(applicationId);
+        }
+
+        public byte[] GetAttachmentsById(int attachmentId)
+        {
+            return _applicationRepository.GetAttachmentsById(attachmentId);
         }
     }
 }

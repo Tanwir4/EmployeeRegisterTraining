@@ -9,5 +9,6 @@ namespace DataAccessLayer.Repositories.IRepositories
         Task<bool> Register(User user);
         int GetUserAccountIdByEmail(string email);
         int GetUserId();
+        string GetRoleByEmail(string email);
     }
 }

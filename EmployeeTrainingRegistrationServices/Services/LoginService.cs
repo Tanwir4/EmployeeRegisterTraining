@@ -22,5 +22,10 @@ namespace EmployeeTrainingRegistrationServices.Services
         {
             return _userRepository.GetUserAccountIdByEmail(email);
         }
+
+        public string GetRoleNameByEmail(string email)
+        {
+            return _userRepository.GetRoleByEmail(email);
+        }
     }
 }

@@ -50,6 +50,7 @@
     <Compile Include="DBConnection\IDataAccessLayer.cs" />
     <Compile Include="DTO\DocumentDTO.cs" />
     <Compile Include="DTO\EmailDTO.cs" />
+    <Compile Include="DTO\EnrolledNotificationDTO.cs" />
     <Compile Include="DTO\ProcessApplicationDTO.cs" />
     <Compile Include="Models\Application.cs" />
     <Compile Include="Models\ManagerApplicationDTO.cs" />
@@ -63,8 +64,10 @@
     <Compile Include="Notifications\EmailSender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\ApplicationRepository.cs" />
+    <Compile Include="Repositories\AutomaticProcessingRepository.cs" />
     <Compile Include="Repositories\DepartmentRepository.cs" />
     <Compile Include="Repositories\IRepositories\IApplicationRepository.cs" />
+    <Compile Include="Repositories\IRepositories\IAutomaticProcessingRepository.cs" />
     <Compile Include="Repositories\IRepositories\IDepartmentRepository.cs" />
     <Compile Include="Repositories\IRepositories\ITrainingRepository.cs" />
     <Compile Include="Repositories\TrainingRepository.cs" />

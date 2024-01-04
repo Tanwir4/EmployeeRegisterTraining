@@ -43,8 +43,8 @@ function displayApplication(data) {
                 <td>${application["TrainingTitle"]}</td>
                 <td>${application["ApplicationStatus"]}</td>
                 <td>
-                    <button class="read" type="button" onclick="viewDocument('${application["ApplicantName"]}', '${application["TrainingTitle"]}')">View Document</button> 
-                    <button class="read" type="button" data-toggle="modal" data-target="#declineModal" onclick="prepareDeclineModal('${application["ApplicantName"]}', '${application["TrainingTitle"]}')">Decline</button>
+                    <button class="read" type="button" onclick="viewDocument('${application["ApplicantName"]}', '${application["TrainingTitle"]}', '${application["ApplicationID"]}')">View Document</button>
+                    <button class="read" type="button" data-toggle="modal" data-target="#declineModal" onclick="prepareDeclineModal('${application["ApplicantName"]}', '${application["TrainingTitle"]}','${application["ApplicationID"]}')">Decline</button>
                     <button class="read" type="button" onclick="approveApplication('${application["ApplicantName"]}', '${application["TrainingTitle"]}','${application["ApplicationID"]}')">Approve</button>
                 </td>
             </tr>
@@ -57,9 +57,10 @@ function displayApplication(data) {
 }
 
 // Function to prepare decline modal and store values
-function prepareDeclineModal(applicant, title) {
+function prepareDeclineModal(applicant, title,applicationId) {
     applicantName = applicant;
     trainingTitle = title;
+    appID=applicationId;
 }
 
 // Function to handle the submit decline reason
@@ -68,7 +69,8 @@ function submitDeclineReason() {
     var data = {
         name: applicantName,
         title: trainingTitle,
-        declineReason: declineReason
+        declineReason: declineReason,
+        applicationID: appID
     };
 
     // Send the data to the server for processing
@@ -124,3 +126,89 @@ function approveApplication(applicantName, trainingTitle,applicationId) {
         }
     });
 }
+
+/*function viewDocument(applicantName, trainingTitle, applicationID) {
+    var message = `Applicant's Name: ${applicantName}\nTraining Title: ${trainingTitle}\nApplication ID: ${applicationID}`;
+    alert(message);
+}*/
+
+function DownloadAttachment(attachmentID) {
+    $.ajax({
+        url: `/Manager/DownloadAttachment`,
+        method: 'GET',
+        data: { attachmentID: attachmentID },
+        xhrFields: {
+            responseType: 'blob' // Set the response type to 'blob'
+        },
+        success: function (data) {
+            // Create a Blob from the response data
+            var blob = new Blob([data], { type: 'application/octet-stream' });
+
+            // Create a temporary link element
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = `attachment_${attachmentID}.pdf`; // Set the download attribute with a suitable filename
+
+            // Append the link to the document, trigger the click event, and remove the link
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        },
+        error: function () {
+            // Redirect to the error page in case of an error
+            window.location.href = "/Common/InternalServerError";
+        }
+    });
+}
+
+function viewDocument(applicantName, trainingTitle, applicationID) {
+    // Display basic information in an alert
+    var message = `Applicant's Name: ${applicantName}\nTraining Title: ${trainingTitle}\nApplication ID: ${applicationID}`;
+    alert(message);
+
+    // Fetch attachments for the specified ApplicationID
+    $.ajax({
+        url: `/Manager/GetAttachmentsByApplicationID`,
+        method: 'GET',
+        data: { applicationID: applicationID },
+        dataType: 'json',
+        success: function (data) {
+            console.log(data);
+            data.Attachments.forEach(function (attachmentID) {
+                DownloadAttachment(attachmentID);
+            });
+        },
+        error: function (xhr, status, error) {
+            // Log the error details in the console
+            console.error("Error:", xhr.responseText);
+            console.error("Status:", status);
+            console.error("Error object:", error);
+        }
+    });
+}
+
+
+
+/*function displayAttachmentsModal(attachments) {
+    // Clear existing content in the modal
+    $('#attachmentsModalBody').empty();
+
+    // Add attachments to the modal body
+    attachments.forEach(function (attachment, index) {
+        var downloadLink = document.createElement('a');
+        downloadLink.href = 'data:application/octet-stream;base64,' + attachment.content; // Assuming 'content' is the base64-encoded data
+        //downloadLink.download = `Attachment_${index + 1}.${attachment.extension}`;
+        downloadLink.download = `Attachment_${index + 1}.pdf`;// Assuming 'extension' is the file extension
+        downloadLink.textContent = `Download Attachment ${index + 1}`;
+        
+        // Append the download link to the modal body
+        $('#attachmentsModalBody').append(downloadLink);
+        $('#attachmentsModalBody').append('<br>');
+    });
+
+    // Open the attachments modal
+    $('#attachmentsModal').modal('show');
+}*/
+
+
+

@@ -17,6 +17,31 @@ namespace DataAccessLayer.Repositories
         {
             _dataAccessLayer = layer;
         }
+
+        public string GetRoleByEmail(string email)
+        {
+            string role = null;
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                string SQL = $@"SELECT RoleName
+                                FROM UserRole
+                                INNER JOIN UserAccount ON UserAccount.RoleID = UserRole.RoleID
+                                WHERE Email=@Email;";
+                List<SqlParameter> parameters = new List<SqlParameter>
+                {
+                new SqlParameter("@Email", SqlDbType.VarChar, 100) { Value = email }
+                };
+                using (SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(SQL, parameters))
+                {
+                    if (reader.Read())
+                    {
+                        role = reader.GetString(reader.GetOrdinal("RoleName"));
+                    }
+                }
+            }
+            return role;
+        }
+
         public bool Authenticate(Account user)
         {
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())

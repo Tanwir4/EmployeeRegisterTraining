@@ -11,25 +11,37 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
 </head>
 <body>
     @{
         Layout = "~/Views/Shared/_Layout.cshtml";
     }
     <h4>Applied Training Details</h4>
-    <div id="applicationCards"></div>
+    @*    <div id="applicationCards"></div>
 
-    <div class="modal fade" id="trainingDetailsModal" tabindex="-1" role="dialog" aria-labelledby="trainingDetailsModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="trainingDetailsModalLabel">Training Details</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+        <div class="modal fade" id="trainingDetailsModal" tabindex="-1" role="dialog" aria-labelledby="trainingDetailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="trainingDetailsModalLabel">Training Details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </div>*@
+
+    <table id="applicationTable" class="display">
+        <thead>
+            <tr>
+                <th>Training Title</th>
+                <th>Application Status</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 </body>
 </html>

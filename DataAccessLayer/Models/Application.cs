@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+
 namespace DataAccessLayer.Models
 {
     public class Application
@@ -10,6 +12,9 @@ namespace DataAccessLayer.Models
         public string DeclineReason { set; get; }
         public int TrainingId { set; get; }
         public int UserId {  set; get; }
+        public string FirstName {  set; get; }
+        public string LastName { set; get; }
+        public string Email { set; get; }
 
     }
 }
