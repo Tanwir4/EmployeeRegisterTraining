@@ -5,7 +5,7 @@ using System;
 using System.Web.Mvc;
 using System.Collections.Generic;
 using DataAccessLayer.Models;
- 
+
 
 namespace EmployeeTrainingRegistration.Controllers
 {
@@ -102,6 +102,6 @@ namespace EmployeeTrainingRegistration.Controllers
             return Json(new { applications = getApplicationById }, JsonRequestBehavior.AllowGet);
         }
 
-    
+
     }
 }

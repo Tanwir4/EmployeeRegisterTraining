@@ -4,10 +4,15 @@
         type: 'GET',
         datatype: 'json',
         success: function (data) {
-            displayTraining(data.trainings);  
+            try {
+                displayTraining(data.trainings);
+            }
+            catch (error) { window.location.href = '/Common/InternalServerError' }
+            //displayTraining(data.trainings);
         },
         error: function (error) {
             console.error(error);
+            window.location.href = '/Common/InternalServerError'
         },
     });
 
@@ -248,7 +253,7 @@ function displayFileName(input, index) {
     });
 }*/
 
-/*function submitApplication() {
+function submitApplication() {
     var trainingId = $('#ApplicationModal').data('trainingId');
     console.log('Submit Application js function');
 
@@ -281,9 +286,9 @@ function displayFileName(input, index) {
             console.error(error);
         },
     });
-}*/
+}
 
-function submitApplication() {
+/*function submitApplication() {
     var trainingId = $('#ApplicationModal').data('trainingId');
     console.log('Submit Application js function');
 
@@ -312,4 +317,4 @@ function submitApplication() {
 
     // Prevent the default form submission
     return false;
-}
+}*/

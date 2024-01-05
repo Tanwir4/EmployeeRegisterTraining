@@ -53,6 +53,7 @@
     <Compile Include="DTO\EnrolledNotificationDTO.cs" />
     <Compile Include="DTO\ProcessApplicationDTO.cs" />
     <Compile Include="Models\Application.cs" />
+    <Compile Include="Models\Attachments.cs" />
     <Compile Include="Models\ManagerApplicationDTO.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\Training.cs" />

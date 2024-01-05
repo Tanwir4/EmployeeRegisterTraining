@@ -16,6 +16,7 @@ namespace EmployeeTrainingRegistration
         public static void RegisterComponents()
         {
 			var container = new UnityContainer();
+            container.RegisterType<ILogger, Logger>();
             container.RegisterType<IDataAccessLayer, DataAccessLayer.DBConnection.DataAccessLayer>();
             container.RegisterType<IUserRepository, UserRepository>();
             container.RegisterType<IAutomaticProcessingRepository, AutomaticProcessingRepository>();
@@ -30,7 +31,6 @@ namespace EmployeeTrainingRegistration
             container.RegisterType<IAccountService, AccountService>();
             container.RegisterType<IDepartmentService, DepartmentService>();
             container.RegisterType<IApplicationService, ApplicationService>();
-            container.RegisterType<ILogger, Logger>();
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }
     }

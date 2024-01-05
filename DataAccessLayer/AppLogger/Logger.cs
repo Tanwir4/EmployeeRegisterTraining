@@ -10,16 +10,16 @@ namespace DataAccessLayer.AppLogger
     public class Logger : ILogger
     {
         private readonly string logFilePath;
-        private readonly string logFileName="log.txt";
-
-        public Logger()
+        public Logger(string filePath = "Logs\\log.txt")
         {
-            logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, logFileName);
+            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            logFilePath = Path.Combine(baseDirectory, filePath);
         }
 
         public void Log(string message)
         {
             string logMessage = $"{message}";
+
             try
             {
                 if (!File.Exists(logFilePath))
@@ -36,17 +36,17 @@ namespace DataAccessLayer.AppLogger
             {
                 Console.WriteLine($"Error writing to log file: {ex.Message}");
             }
-
         }
         public void LogError(Exception ex)
         {
-            string fullMessage = "----------------------------------";
+            string fullMessage = "--------------------------------------------------";
             fullMessage += Environment.NewLine + $"Timestamp: {DateTime.Now}";
             fullMessage += Environment.NewLine + $"Exception Type: {this.GetType().FullName}";
             fullMessage += Environment.NewLine + $"Message: {ex.Message}";
             fullMessage += Environment.NewLine + $"Inner Exception: {ex.InnerException}";
             fullMessage += Environment.NewLine + $"Stack Trace: {ex.StackTrace}";
-            fullMessage += "------------------------------------------";
+            fullMessage += Environment.NewLine + "--------------------------------------------------";
+
             Log(fullMessage);
         }
     }
