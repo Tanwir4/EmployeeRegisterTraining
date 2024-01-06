@@ -67,10 +67,10 @@ namespace DataAccessLayer.Repositories
                           INSERT INTO UserAccount (Email, Passwordd,RoleID) VALUES (@Email,@Passwordd,1)
 
                            SET @AccountTempID = SCOPE_IDENTITY()
-                           SET @managerId=(SELECT ManagerID FROM ManagerDetails WHERE ManagerName=@ManagerName)
+                           SET @managerId=(SELECT UserID FROM UserDetails WHERE CONCAT(FirstName, ' ',LastName)=@ManagerName)
                            SET @deptId =(SELECT DepartmentID FROM Department WHERE DepartmentName=@DepartmentName)
 
-                          INSERT INTO UserDetails (FirstName,LastName,MobileNumber,NationalIdentityCard,ManagerID,UserAccountID,DepartmentID)
+                          INSERT INTO UserDetails (FirstName,LastName,MobileNumber,NationalIdentityCard,ManagerUserID,UserAccountID,DepartmentID)
                           VALUES (@FirstName,@LastName,@MobileNumber,@NationalIdentityCard,@managerId, @AccountTempID, @deptId)";
                 List<SqlParameter> parameters = new List<SqlParameter>
                    {

@@ -12,6 +12,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
 
     <style>
@@ -51,7 +52,7 @@
             #trainingTable td button {
                 padding: 10px 15px;
                 cursor: pointer;
-                background-color: #28a745;
+                background-color: #326fb0;
                 color: #fff;
                 border: none;
                 border-radius: 5px;
@@ -64,7 +65,7 @@
                 }
 
                 #trainingTable td button:hover {
-                    background-color: #218838;
+                    background-color: #99bee6;
                 }
 
         .modal-body {
@@ -121,19 +122,34 @@
         Layout = "~/Views/Shared/_Layout.cshtml";
     }
 
-    <table id="trainingTable" class="table">
-      @*  <thead>
+    <!--<table id="trainingTable" class="display">
+
+          <thead>
             <tr>
                 <th>Title</th>
                 <th>Description</th>
                 <th>Action</th>
             </tr>
-        </thead>*@
-        <tbody>
-            <!-- Table content will be dynamically added by JavaScript -->
-        </tbody>
+        </thead>
+        <tbody>-->
+    <!-- Table content will be dynamically added by JavaScript -->
+    <!--</tbody>
+    </table>-->
+    <div class="search-container">
+        <label for="trainingSearch">Search Training Title:</label>
+        <input type="text" id="trainingSearch" placeholder="Enter training title...">
+    </div>
+
+    <table id="trainingTable" class="display">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
     </table>
-    <div id="trainingCards"></div>
 
 
     <div class="modal fade" id="trainingDetailsModal" tabindex="-1" role="dialog" aria-labelledby="trainingDetailsModalLabel" aria-hidden="true">

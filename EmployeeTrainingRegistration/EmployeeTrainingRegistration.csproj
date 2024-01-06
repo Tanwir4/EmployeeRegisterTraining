@@ -196,6 +196,7 @@
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Styles\Admin\AdminViewTraining.css" />
     <Content Include="Styles\Login\LoginPage.css" />
+    <Content Include="Styles\Manager\ManagerViewApplication.css" />
     <Content Include="Styles\Register\RegisterPage.css" />
     <Content Include="Styles\Training.css" />
     <Content Include="Styles\TrainingIndex.css" />

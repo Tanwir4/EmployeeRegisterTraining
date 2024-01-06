@@ -6,6 +6,13 @@
         success: function (data) {
             try {
                 displayTraining(data.trainings);
+                $('#trainingTable').DataTable({
+                    "pageLength": 5,
+                    "lengthChange": false,
+                    "searching": false
+
+
+                });
             }
             catch (error) { window.location.href = '/Common/InternalServerError' }
             //displayTraining(data.trainings);
@@ -17,42 +24,23 @@
     });
 
 });
+
 function displayTraining(data) {
     var trainingTable = $('#trainingTable');
-
-    // Clear existing content in the table
-    trainingTable.empty();
-
-    // Add table headers
-    trainingTable.append(`
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-    `);
-
-    // Add rows for each training entry
+    var tableBody = trainingTable.find('tbody');
+    console.log('Display trainings function');
     data.forEach(function (training) {
-        var trainingHtml = `
+        var rowHtml = `
             <tr>
-                <td>${training["Title"]}</td>
+                  <td>${training["Title"]}</td>
                  <td>${training["Description"]}</td>
                 <td>
                     <button class="read" onclick="openTrainingDetails(${training["TrainingID"]})" type="button">View</button> 
                     <button onclick="openApplication(${training["TrainingID"]})">Apply</button>
                 </td>
-            </tr>
-        `;
-        trainingTable.append(trainingHtml);
+            </tr>`;
+        tableBody.append(rowHtml);
     });
-
-    // Close the table body
-    trainingTable.append(`</tbody>`);
-
 }
 
 

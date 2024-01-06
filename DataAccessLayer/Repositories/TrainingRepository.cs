@@ -124,7 +124,10 @@ namespace DataAccessLayer.Repositories
 
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
-                string sql = "SELECT * FROM TrainingDetails WHERE IsActive=1 ORDER BY Title ASC";
+                string sql = $@"SELECT *
+                                FROM TrainingDetails
+                                WHERE IsActive = 1 AND Deadline >= GETDATE()
+                                ORDER BY Title ASC;";
 
                 using (SqlCommand command = new SqlCommand(sql, sqlConnection))
                 {

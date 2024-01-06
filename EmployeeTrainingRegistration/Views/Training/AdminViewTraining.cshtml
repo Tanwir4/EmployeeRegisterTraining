@@ -11,7 +11,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
     <script>
         $(document).ready(function () {
             $('#automaticProcessingBtn').on('click', function () {
@@ -39,7 +43,7 @@
         Layout = "~/Views/Shared/_LayoutPage2.cshtml";
     }
     <div>
-        <button type="button" class="btn btn-primary" id="automaticProcessingBtn" data-toggle="modal" data-target="#trainingDetailsModal">
+        <button type="button" class="btn btn-primary automaticProcessing" id="automaticProcessingBtn" data-toggle="modal" data-target="#trainingDetailsModal">
             Automatic Processing
         </button>
     </div>
@@ -52,60 +56,62 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Training details will be populated here -->
-            <div class="modal fade" id="trainingDetailsModal" tabindex="-1" role="dialog" aria-labelledby="trainingDetailsModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="trainingDetailsModalLabel">Edit Training Details</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="editTrainingForm">
-                                <div class="form-group">
-                                    <label for="editTitle">Title:</label>
-                                    <input type="text" class="form-control" id="editTitle" name="title" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editDate">Start Date:</label>
-                                    <input type="date" class="form-control" id="editDate" name="date" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editTitle">Threshold:</label>
-                                    <input type="text" class="form-control" id="editThreshold" name="threshold" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editTitle">Description:</label>
-                                    <input type="text" class="form-control" id="editDescription" name="prerequisite" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editDepartment">Department:</label>
-                                    <select id="departmentDropdown" name="DepartmentName" class="form-control dd">
-                                    </select>
-                                </div>
 
-
-                                <div class="form-group">
-                                    <label for="editDate">Deadline:</label>
-                                    <input type="date" class="form-control" id="editDeadline" name="deadline" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editDescription">Prerequisites:</label>
-                                    <div id="prerequisitesCheckboxes"></div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-secondary" id="saveEdit">Save</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </tbody>
     </table>
+
+    <!-- Training details will be populated here -->
+    <div class="modal fade" id="trainingDetailsModal" tabindex="-1" role="dialog" aria-labelledby="trainingDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="trainingDetailsModalLabel">Edit Training Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editTrainingForm">
+                        <div class="form-group">
+                            <label for="editTitle">Title:</label>
+                            <input type="text" class="form-control" id="editTitle" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editDate">Start Date:</label>
+                            <input type="date" class="form-control" id="editDate" name="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editTitle">Threshold:</label>
+                            <input type="text" class="form-control" id="editThreshold" name="threshold" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editTitle">Description:</label>
+                            <input type="text" class="form-control" id="editDescription" name="prerequisite" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editDepartment">Department:</label>
+                            <select id="departmentDropdown" name="DepartmentName" class="form-control dd">
+                            </select>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="editDate">Deadline:</label>
+                            <input type="date" class="form-control" id="editDeadline" name="deadline" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editDescription">Prerequisites:</label>
+                            <div id="prerequisitesCheckboxes"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" id="saveEdit">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Add Training Modal -->
 
     <div class="modal fade" id="AddTrainingModal" tabindex="-1" role="dialog" aria-labelledby="trainingDetailsModalLabel" aria-hidden="true">

@@ -37,7 +37,9 @@ $(document).ready(function () {
             displayApplications(data.applications);
             // Initialize DataTables with pagination
             $('#applicationTable').DataTable({
-                "pageLength": 5
+                "pageLength": 5,
+                "lengthChange": false,
+                "searching": false
             });
         },
         error: function (error) {

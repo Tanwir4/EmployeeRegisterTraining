@@ -9,6 +9,12 @@ $(document).ready(function () {
         datatype: 'json',
         success: function (data) {
             displayApplication(data.applications);
+            $('#applicationTable').DataTable({
+                "pageLength": 10,
+                "lengthChange": false,
+                "searching": false
+            });
+        
         },
         error: function (error) {
             console.error(error);
@@ -18,22 +24,9 @@ $(document).ready(function () {
 
 function displayApplication(data) {
     var applicationTable = $('#applicationTable');
+    var tableBody = applicationTable.find('tbody'); 
+    console.log('Display trainings function');
 
-    // Clear existing content in the table
-    applicationTable.empty();
-
-    // Add table headers
-    applicationTable.append(`
-        <thead>
-            <tr>
-                <th>Applicant's Name</th>
-                <th>Training Title</th>
-                <th>Application Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-    `);
 
     // Add rows for each training entry
     data.forEach(function (application) {
@@ -43,24 +36,21 @@ function displayApplication(data) {
                 <td>${application["TrainingTitle"]}</td>
                 <td>${application["ApplicationStatus"]}</td>
                 <td>
-                    <button class="read" type="button" onclick="viewDocument('${application["ApplicantName"]}', '${application["TrainingTitle"]}', '${application["ApplicationID"]}')">View Document</button>
-                    <button class="read" type="button" data-toggle="modal" data-target="#declineModal" onclick="prepareDeclineModal('${application["ApplicantName"]}', '${application["TrainingTitle"]}','${application["ApplicationID"]}')">Decline</button>
-                    <button class="read" type="button" onclick="approveApplication('${application["ApplicantName"]}', '${application["TrainingTitle"]}','${application["ApplicationID"]}')">Approve</button>
+                    <button class="read viewDocumentBtn" type="button" onclick="viewDocument('${application["ApplicantName"]}', '${application["TrainingTitle"]}', '${application["ApplicationID"]}')">View Document</button>
+                    <button class="read declineBtn" type="button" data-toggle="modal" data-target="#declineModal" onclick="prepareDeclineModal('${application["ApplicantName"]}', '${application["TrainingTitle"]}','${application["ApplicationID"]}')">Decline</button>
+                    <button class="read approveBtn" type="button" onclick="approveApplication('${application["ApplicantName"]}', '${application["TrainingTitle"]}','${application["ApplicationID"]}')">Approve</button>
                 </td>
             </tr>
         `;
-        applicationTable.append(trainingHtml);
+        tableBody.append(trainingHtml);
     });
-
-    // Close the table body
-    applicationTable.append(`</tbody>`);
 }
 
 // Function to prepare decline modal and store values
-function prepareDeclineModal(applicant, title,applicationId) {
+function prepareDeclineModal(applicant, title, applicationId) {
     applicantName = applicant;
     trainingTitle = title;
-    appID=applicationId;
+    appID = applicationId;
 }
 
 // Function to handle the submit decline reason
@@ -97,7 +87,7 @@ function submitDeclineReason() {
 }
 
 // Function to handle the approve action
-function approveApplication(applicantName, trainingTitle,applicationId) {
+function approveApplication(applicantName, trainingTitle, applicationId) {
     var data = {
         name: applicantName,
         title: trainingTitle,
@@ -113,11 +103,7 @@ function approveApplication(applicantName, trainingTitle,applicationId) {
         data: data,
         success: function (response) {
             // Display message in an alert box
-            if (response.success) {
                 alert('Application approved successfully!');
-            } else {
-                alert('Failed to approve application. Error: ' + response.message);
-            }
         },
         error: function (error) {
             console.error(error);
@@ -209,6 +195,3 @@ function viewDocument(applicantName, trainingTitle, applicationID) {
     // Open the attachments modal
     $('#attachmentsModal').modal('show');
 }*/
-
-
-

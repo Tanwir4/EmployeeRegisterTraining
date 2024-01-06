@@ -8,6 +8,8 @@ namespace DataAccessLayer.Repositories.IRepositories
         bool Authenticate(Account user);
         Task<bool> Register(User user);
         int GetUserAccountIdByEmail(string email);
+        //User GetUserDetailsByEmail(string email);
+        //string GetUserFirstNameByEmail(string email);
         int GetUserId();
         string GetRoleByEmail(string email);
     }

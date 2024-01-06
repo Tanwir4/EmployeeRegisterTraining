@@ -55,10 +55,12 @@ tr:hover {
 /* Add space between buttons */
 .editButton {
     margin-right: 5px;
+    width:65px;
 }
 
 .AddTrainingButton {
     background-color:blue;
+    width:115px;
 }
 
 /* Style for the delete button */
@@ -74,6 +76,7 @@ tr:hover {
     border-radius: 5px;
     transition: background-color 0.3s;
     cursor: pointer;
+    width: 65px;
 }
 
     .deleteButton:hover {
@@ -82,4 +85,8 @@ tr:hover {
 
 .input-group-append {
     cursor: pointer;
+}
+
+.automaticProcessing{
+    margin:10px;
 }

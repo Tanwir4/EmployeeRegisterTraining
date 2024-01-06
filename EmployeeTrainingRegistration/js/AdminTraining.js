@@ -1,4 +1,11 @@
 ﻿$(document).ready(function () {
+    toastr.options = {
+        closeButton: true,
+        progressBar: true,
+        positionClass: 'toast-top-right',
+        timeOut: 2000
+    };
+
     // Fetch training details from the server
     $.ajax({
         url: '/Training/GetTraining', // Replace with the actual URL
@@ -17,6 +24,7 @@
                     '</tr>';
                 trainingTableBody.append(row);
             });
+        
             $('.editButton').on('click', function () {
                 var trainingId = $(this).data('training-id');
 
@@ -65,7 +73,6 @@
                 });
             });
 
-
             $('#saveEdit').on('click', function () {
                 var trainingId = $('#editTrainingForm').data('trainingId');
                 var editedTitle = $('#editTitle').val();
@@ -79,7 +86,7 @@
                     checkedPrerequisites.push($(this).val());
                 });
 
-                alert('Checked Prerequisites: ' + checkedPrerequisites.join(', '));
+                //alert('Checked Prerequisites: ' + checkedPrerequisites.join(', '));
 
                 // Prepare data to send to the server
                 var data = {
@@ -97,21 +104,22 @@
                 // Make an AJAX request to the server
                 $.ajax({
                     type: 'POST',
-                    url: '/Training/UpdateTraining', // Replace 'ControllerName' with your actual controller name
+                    url: '/Training/UpdateTraining',
                     data: data,
                     success: function (result) {
                         // Handle the success response from the server
-                        alert('Changes saved successfully!');
+                        toastr.success('Training changes saved successfully!');
 
                         // Reload the page to see the changes
-                        location.reload();
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000);
                     },
                     error: function () {
                         // Handle the error case
-                        alert('Error occurred while saving changes.');
+                        toastr.error('Error occurred while saving changes.');
                     }
                 });
-
                 // Close the modal after initiating the AJAX request
                 $('#trainingDetailsModal').modal('hide');
             });
@@ -129,7 +137,7 @@
                     checkedPrerequisites.push($(this).val());
                 });
 
-                alert('Checked Prerequisites: ' + checkedPrerequisites.join(', '));
+                //alert('Checked Prerequisites: ' + checkedPrerequisites.join(', '));
 
                 // Prepare data to send to the server
                 var data = {
@@ -151,10 +159,14 @@
                     data: data,
                     success: function (result) {
                         // Handle the success response from the server
-                        alert('Changes saved successfully!');
+                        //alert('Changes saved successfully!');
+
+                        toastr.success('New Training added successfully!');
 
                         // Reload the page to see the changes
-                        location.reload();
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000);
                     },
                     error: function () {
                         // Handle the error case
@@ -179,8 +191,13 @@
                     data: { id: trainingId },
                     success: function (result) {
                         console.log('Training deleted successfully');
-                        alert('Training deleted successfully');
-                        location.reload();
+                        //alert('Training deleted successfully');
+                        toastr.success('Training deleted successfully!');
+
+                        // Reload the page to see the changes
+                        setTimeout(function () {
+                            location.reload();
+                        }, 2000);
 
                     },
                     error: function (error) {
@@ -192,6 +209,12 @@
                 alert('Delete button clicked for Training ID: ' + trainingId);
             });
 
+            $('#trainingTable').DataTable({
+                "pageLength": 6,
+                "lengthChange": false,
+                "searching": false
+
+            });
             $('.addTrainingButton').on('click', function (event) {
                 console.log('Add Training button clicked');
 
