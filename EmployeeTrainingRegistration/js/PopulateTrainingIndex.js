@@ -9,7 +9,7 @@
                 $('#trainingTable').DataTable({
                     "pageLength": 5,
                     "lengthChange": false,
-                    "searching": false
+                    "searching": true
 
 
                 });
@@ -30,18 +30,43 @@ function displayTraining(data) {
     var tableBody = trainingTable.find('tbody');
     console.log('Display trainings function');
     data.forEach(function (training) {
+        var isTrainingApplied = checkIfTrainingApplied(training["TrainingID"]);
+
+        var applyButton = isTrainingApplied
+            ? '<button disabled style="background-color: #4CAF50;">Already Applied</button>'
+            : '<button onclick="openApplication(' + training["TrainingID"] + ')">Apply</button>';
+
         var rowHtml = `
             <tr>
-                  <td>${training["Title"]}</td>
-                 <td>${training["Description"]}</td>
+                <td>${training["Title"]}</td>
+                <td>${training["Description"]}</td>
                 <td>
                     <button class="read" onclick="openTrainingDetails(${training["TrainingID"]})" type="button">View</button> 
-                    <button onclick="openApplication(${training["TrainingID"]})">Apply</button>
+                    ${applyButton}
                 </td>
             </tr>`;
         tableBody.append(rowHtml);
     });
 }
+
+function checkIfTrainingApplied(trainingId) {
+    // Make an Ajax call to your controller action to check if training is applied
+    var isTrainingApplied = false;
+
+    // Assuming you have an endpoint to check if training is applied
+    $.ajax({
+        url: '/Training/IsTrainingApplied',
+        type: 'GET',
+        data: { trainingId: trainingId },
+        async: false, // Synchronous call for simplicity, consider using asynchronous call
+        success: function (result) {
+            isTrainingApplied = result;
+        }
+    });
+
+    return isTrainingApplied;
+}
+
 
 
 

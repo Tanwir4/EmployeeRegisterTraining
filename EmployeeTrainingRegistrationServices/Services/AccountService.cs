@@ -18,9 +18,9 @@ namespace EmployeeTrainingRegistrationServices.Services
         {
             _userRepository = userRepository;
         }
-        public int GetUserAccountId(string email)
+        public async  Task<int> GetUserAccountIdAsync(string email)
         {
-            return _userRepository.GetUserAccountIdByEmail(email);
+            return await _userRepository.GetUserAccountIdByEmailAsync(email);
         }
     }
 }

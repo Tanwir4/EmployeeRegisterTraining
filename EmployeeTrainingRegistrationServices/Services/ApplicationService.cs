@@ -5,6 +5,7 @@ using EmployeeTrainingRegistrationServices.Entities;
 using EmployeeTrainingRegistrationServices.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace EmployeeTrainingRegistrationServices.Services
 {
@@ -16,43 +17,43 @@ namespace EmployeeTrainingRegistrationServices.Services
             _applicationRepository = applicationRepository;
         }
 
-        public List<ManagerApplicationDTO> GetApplicationByManagerId()
+        public async  Task<List<ManagerApplicationDTO>> GetApplicationByManagerId()
         {
-            return _applicationRepository.GetApplicationsByManagerId();
+            return await _applicationRepository.GetApplicationsByManagerId();
         }
 
-        public EmailDTO GetManagerApprovalDetails(int applicationId) {
-            return _applicationRepository.GetManagerApprovalDetails(applicationId);
+        public async Task<EmailDTO> GetManagerApprovalDetails(int applicationId) {
+            return await _applicationRepository.GetManagerApprovalDetails(applicationId);
         }
 
-        public List<UserApplication> GetApplicationDetailsByUserId()
+        public async Task<List<UserApplication>> GetApplicationDetailsByUserId()
         {
-           return _applicationRepository.GetApplicationDetailsByUserId();
+           return await _applicationRepository.GetApplicationDetailsByUserId();
         }
 
-        public string IsApplicationApproved(string name, string title)
+        public async Task<string> IsApplicationApproved(string name, string title)
         {
-            return _applicationRepository.ApproveApplication( name,title);
+            return await _applicationRepository.ApproveApplication( name,title);
         }
 
-        public bool IsApplicationDeclined(string name, string title, string declineReason)
+        public async Task<bool> IsApplicationDeclined(string name, string title, string declineReason)
         {
-            return _applicationRepository.DeclineApplication(name, title, declineReason);
+            return await _applicationRepository.DeclineApplication(name, title, declineReason);
         }
 
-        public bool IsApplicationSubmitted(int trainingId,List<byte[]> fileDataList)
+        public async Task<bool> IsApplicationSubmitted(int trainingId,List<byte[]> fileDataList)
         {
-            return _applicationRepository.saveApplication(trainingId, fileDataList);
+            return await _applicationRepository.saveApplication(trainingId, fileDataList);
         }
 
-        public List<int> GetAttachmentsByApplicationId(int applicationId)
+        public async Task<List<int>> GetAttachmentsByApplicationId(int applicationId)
         {
-            return _applicationRepository.GetAttachmentsByApplicationId(applicationId);
+            return await _applicationRepository.GetAttachmentsByApplicationId(applicationId);
         }
 
-        public byte[] GetAttachmentsById(int attachmentId)
+        public async Task<byte[]> GetAttachmentsById(int attachmentId)
         {
-            return _applicationRepository.GetAttachmentsById(attachmentId);
+            return await _applicationRepository.GetAttachmentsById(attachmentId);
         }
     }
 }

@@ -2,6 +2,8 @@
 using EmployeeTrainingRegistrationServices.Entities;
 using EmployeeTrainingRegistrationServices.Interfaces;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+
 namespace EmployeeTrainingRegistrationServices.Services
 {
     public class TrainingService : ITrainingService
@@ -12,23 +14,23 @@ namespace EmployeeTrainingRegistrationServices.Services
             _trainingRepository = trainingRepository;
         }
 
-        public List<string> GetAllPreRequisites()
+        public async Task<List<string>> GetAllPreRequisites()
         {
-            return _trainingRepository.GetAllPreRequisites();
+            return await _trainingRepository.GetAllPreRequisites();
         }
 
-        public List<Training> GetAllTraining()
+        public async Task<List<Training>> GetAllTrainingForEmployee()
         {
-            return _trainingRepository.GetAll();
+            return await _trainingRepository.GetAllForEmployee();
         }
-        public List<Training> GetAllTrainingById(int id)
+        public async Task<List<Training>> GetAllTrainingById(int id)
         {
-            return _trainingRepository.GetTrainingById(id);
+            return await _trainingRepository.GetTrainingById(id);
         }
 
-        public List<string> GetPrerequisitesByTrainingId(int id)
+        public async Task<List<string>> GetPrerequisitesByTrainingId(int id)
         {
-            return _trainingRepository.GetPrerequisitesByTrainingId(id);
+            return await _trainingRepository.GetPrerequisitesByTrainingId(id);
         }
 
         public bool IsTrainingAdded(Training training, Department department)
@@ -36,14 +38,24 @@ namespace EmployeeTrainingRegistrationServices.Services
             return _trainingRepository.AddTraining(training, department);
         }
 
-        public bool IsTrainingDeleted(int id)
+        public async Task<bool> IsTrainingApplied(int trainingId)
         {
-            return _trainingRepository.DeleteTraining(id);
+            return await _trainingRepository.IsTrainingApplied(trainingId);
         }
 
-        public bool IsTrainingUpdated(Training training, Department department, List<string> checkedPrerequisites)
+        public async Task<bool> IsTrainingDeleted(int id)
         {
-            return _trainingRepository.UpdateTraining(training, department, checkedPrerequisites);
+            return await _trainingRepository.DeleteTraining(id);
+        }
+
+        public async Task<bool> IsTrainingUpdated(Training training, Department department, List<string> checkedPrerequisites)
+        {
+            return await _trainingRepository.UpdateTraining(training, department, checkedPrerequisites);
+        }
+
+        public async Task<List<Training>> GetAllTrainingForAdmin()
+        {
+            return await _trainingRepository.GetAllForAdmin();
         }
     }
 }

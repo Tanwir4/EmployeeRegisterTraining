@@ -1,16 +1,20 @@
 ﻿using EmployeeTrainingRegistrationServices.Entities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+
 namespace EmployeeTrainingRegistrationServices.Interfaces
 {
     public interface ITrainingService
     {
-        List<Training> GetAllTraining();
+        Task<List<Training>> GetAllTrainingForEmployee();
+        Task<List<Training>> GetAllTrainingForAdmin();
         //List<Training> DisplayTrainingWithPrerequisites();
-        List<Training> GetAllTrainingById(int id);
-        bool IsTrainingUpdated(Training training, Department department, List<string> checkedPrerequisites);
-        bool IsTrainingDeleted(int id);
+        Task<List<Training>> GetAllTrainingById(int id);
+        Task<bool> IsTrainingUpdated(Training training, Department department, List<string> checkedPrerequisites);
+        Task<bool> IsTrainingDeleted(int id);
         bool IsTrainingAdded(Training training, Department department);
-        List<string> GetPrerequisitesByTrainingId(int id);
-        List<string> GetAllPreRequisites();
+        Task<List<string>> GetPrerequisitesByTrainingId(int id);
+        Task<List<string>> GetAllPreRequisites();
+        Task<bool> IsTrainingApplied(int trainingId);
     }
 }

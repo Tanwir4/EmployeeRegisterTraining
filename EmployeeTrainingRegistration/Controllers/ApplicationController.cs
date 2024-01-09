@@ -5,7 +5,7 @@ using System;
 using System.Web.Mvc;
 using System.Collections.Generic;
 using DataAccessLayer.Models;
-
+using System.Threading.Tasks;
 
 namespace EmployeeTrainingRegistration.Controllers
 {
@@ -53,7 +53,7 @@ namespace EmployeeTrainingRegistration.Controllers
         */
 
         [HttpPost]
-        public ActionResult SubmitApplication(int trainingId, List<HttpPostedFileBase> fileInputs)
+        public async Task<ActionResult> SubmitApplication(int trainingId, List<HttpPostedFileBase> fileInputs)
         {
             try
             {
@@ -79,7 +79,7 @@ namespace EmployeeTrainingRegistration.Controllers
                 }
 
                 // Save application details and file data
-                if (_applicationService.IsApplicationSubmitted(trainingId, fileDataList))
+                if (await _applicationService.IsApplicationSubmitted(trainingId, fileDataList))
                 {
                     return Json(new { success = true, message = "Applications Submitted" });
                 }
@@ -96,9 +96,9 @@ namespace EmployeeTrainingRegistration.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetApplicationById()
+        public async Task<JsonResult> GetApplicationById()
         {
-            List<UserApplication> getApplicationById = _applicationService.GetApplicationDetailsByUserId();
+            List<UserApplication> getApplicationById =await _applicationService.GetApplicationDetailsByUserId();
             return Json(new { applications = getApplicationById }, JsonRequestBehavior.AllowGet);
         }
 

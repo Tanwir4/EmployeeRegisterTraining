@@ -20,7 +20,7 @@ namespace DataAccessLayer.Repositories
         {
             _dataAccessLayer = layer;
         }
-        public List<Department> GetAllDepartmentName()
+        public async Task<List<Department>> GetAllDepartmentName()
         {
             List<Department> departments = new List<Department>();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -32,7 +32,7 @@ namespace DataAccessLayer.Repositories
                     {
                         if (reader.HasRows)
                         {
-                            while (reader.Read())
+                            while (await reader.ReadAsync())
                             {
                                 Department departmentItem = new Department
                                 {

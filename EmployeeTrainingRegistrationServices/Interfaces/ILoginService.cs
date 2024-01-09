@@ -1,10 +1,12 @@
 ﻿using DataAccessLayer.Models;
+using System.Threading.Tasks;
+
 namespace EmployeeTrainingRegistrationServices.Interfaces
 {
     public interface ILoginService
     {
-        bool IsAuthenticated(Account acc);
-        int GetUserIdByEmail(string email);
-        string GetRoleNameByEmail(string email);
+        Task<bool> IsAuthenticatedAsync(Account acc);
+        Task<int> GetUserIdByEmailAsync(string email);
+        Task<string> GetRoleNameByEmailAsync(string email);
     }
 }

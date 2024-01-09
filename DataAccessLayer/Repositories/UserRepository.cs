@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
 using DataAccessLayer.DBConnection;
-using System.Net;
 using System.Web;
 using System.Threading.Tasks;
 
@@ -18,7 +17,7 @@ namespace DataAccessLayer.Repositories
             _dataAccessLayer = layer;
         }
 
-        public string GetRoleByEmail(string email)
+        public async  Task<string> GetRoleByEmailAsync(string email)
         {
             string role = null;
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -31,9 +30,9 @@ namespace DataAccessLayer.Repositories
                 {
                 new SqlParameter("@Email", SqlDbType.VarChar, 100) { Value = email }
                 };
-                using (SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(SQL, parameters))
+                using (SqlDataReader reader =await _dataAccessLayer.GetDataWithConditionsAsync(SQL, parameters))
                 {
-                    if (reader.Read())
+                    if (await reader.ReadAsync())
                     {
                         role = reader.GetString(reader.GetOrdinal("RoleName"));
                     }
@@ -42,7 +41,7 @@ namespace DataAccessLayer.Repositories
             return role;
         }
 
-        public bool Authenticate(Account user)
+        public async Task<bool> AuthenticateAsync(Account user)
         {
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
@@ -52,7 +51,7 @@ namespace DataAccessLayer.Repositories
                 new SqlParameter("@EmailAddress", SqlDbType.VarChar, 100) { Value = user.Email },
                 new SqlParameter("@Password", SqlDbType.VarChar, 100) { Value = user.Password }
             };
-                SqlDataReader getData = _dataAccessLayer.GetDataWithConditions(SQL, parameters);
+                SqlDataReader getData =await _dataAccessLayer.GetDataWithConditionsAsync(SQL, parameters);
                 return (getData.HasRows);
             }
         }
@@ -87,7 +86,7 @@ namespace DataAccessLayer.Repositories
                 return (numberOfRowsAffected > 0);
             }
         }
-        public int GetUserAccountIdByEmail(string email)
+        public async Task<int> GetUserAccountIdByEmailAsync(string email)
         {
             int userAccountId = -1;
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -99,9 +98,9 @@ namespace DataAccessLayer.Repositories
                 {
                 new SqlParameter("@Email", SqlDbType.VarChar, 100) { Value = email }
                 };
-                using (SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(SQL, parameters))
+                using (SqlDataReader reader =await _dataAccessLayer.GetDataWithConditionsAsync(SQL, parameters))
                 {
-                    if (reader.Read())
+                    if (await reader.ReadAsync())
                     {
                         userAccountId = reader.GetInt32(reader.GetOrdinal("UserAccountID"));
                     }
@@ -110,7 +109,7 @@ namespace DataAccessLayer.Repositories
             return userAccountId;
         }
 
-        public int GetUserId()
+        public async Task<int> GetUserIdAsync()
         {
             int userId = 0;
 
@@ -121,9 +120,9 @@ namespace DataAccessLayer.Repositories
                                 WHERE UserAccountID=@UserAccountId";
                 List<SqlParameter> parameters = new List<SqlParameter>();
                 parameters.Add(new SqlParameter("@UserAccountId", HttpContext.Current.Session["UserAccountId"]));
-                using (SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(SQL, parameters))
+                using (SqlDataReader reader =await _dataAccessLayer.GetDataWithConditionsAsync(SQL, parameters))
                 {
-                    if (reader.Read())
+                    if (await reader.ReadAsync())
                     {
                         userId = reader.GetInt32(reader.GetOrdinal("UserID"));
                     }

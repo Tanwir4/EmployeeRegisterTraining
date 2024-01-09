@@ -11,6 +11,7 @@ namespace DataAccessLayer.DBConnection
         SqlConnection CreateConnection();
         List<string> GetAll(string sql);
         SqlDataReader GetDataWithConditions(string sql, List<SqlParameter> parameters);
+        Task<SqlDataReader> GetDataWithConditionsAsync(string sql, List<SqlParameter> parameters);
         Task<int> InsertDataAsync(string sql, List<SqlParameter> parameters);
         int InsertData(string sql, List<SqlParameter> parameters);
     }

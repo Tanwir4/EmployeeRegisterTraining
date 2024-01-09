@@ -17,9 +17,11 @@ namespace EmployeeTrainingRegistration.Controllers
     public class ManagerController : Controller
     {
         private readonly IApplicationService _applicationService;
-        public ManagerController(IApplicationService applicationService)
+        private readonly INotificationService _notificationService;
+        public ManagerController(IApplicationService applicationService, INotificationService notificationService)
         {
             _applicationService = applicationService;
+            _notificationService = notificationService;
         }
         // GET: Manager
         [CustomAuthorization("Manager")]
@@ -30,19 +32,19 @@ namespace EmployeeTrainingRegistration.Controllers
 
         [CustomAuthorization("Manager")]
         [HttpGet]
-        public JsonResult GetApplicationsByManagerId()
+        public async Task<JsonResult> GetApplicationsByManagerId()
         {
-            List<ManagerApplicationDTO> getApplicationsByManager = _applicationService.GetApplicationByManagerId();
+            List<ManagerApplicationDTO> getApplicationsByManager =await _applicationService.GetApplicationByManagerId();
             return Json(new { applications = getApplicationsByManager }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public ActionResult ApproveApplication(string name, string title,int applicationID)
+        public async Task<ActionResult> ApproveApplication(string name, string title,int applicationID)
         {
-            string success= _applicationService.IsApplicationApproved(name, title);
-            EmailDTO emailDetails = _applicationService.GetManagerApprovalDetails(applicationID);
+            string success=await _applicationService.IsApplicationApproved(name, title);
+            EmailDTO emailDetails =await _applicationService.GetManagerApprovalDetails(applicationID);
             string applicantEmail = emailDetails.EmployeeEmail;
-            EmailNotificationService.SendApprovalEmail(applicantEmail, emailDetails.TrainingTitle);
+            _notificationService.SendApprovalEmail(applicantEmail, emailDetails.TrainingTitle);
             if (success=="Approved")
             {
                 return Json(new { success = true, message = "Application approved successfully" });
@@ -54,12 +56,12 @@ namespace EmployeeTrainingRegistration.Controllers
         }
 
         [HttpPost]
-        public ActionResult DeclineApplication(string name, string title,string declineReason,int applicationID)
+        public async Task<ActionResult> DeclineApplication(string name, string title,string declineReason,int applicationID)
         {
-            bool success = _applicationService.IsApplicationDeclined(name, title, declineReason);
-            EmailDTO emailDetails = _applicationService.GetManagerApprovalDetails(applicationID);
+            bool success =await _applicationService.IsApplicationDeclined(name, title, declineReason);
+            EmailDTO emailDetails =await _applicationService.GetManagerApprovalDetails(applicationID);
             string applicantEmail = emailDetails.EmployeeEmail;
-            EmailNotificationService.SendDeclineEmail(applicantEmail, emailDetails.TrainingTitle, declineReason);
+            _notificationService.SendDeclineEmail(applicantEmail, emailDetails.TrainingTitle, declineReason);
             if (success)
             {
                 return Json(new { success = true, message = "Application declined successfully" });
@@ -70,9 +72,9 @@ namespace EmployeeTrainingRegistration.Controllers
             }
         }
         [HttpGet]
-        public ActionResult GetAttachmentsByApplicationID(int applicationID)
+        public async Task<ActionResult> GetAttachmentsByApplicationID(int applicationID)
         {
-            List<int> getAttachments = _applicationService.GetAttachmentsByApplicationId(applicationID);
+            List<int> getAttachments =await _applicationService.GetAttachmentsByApplicationId(applicationID);
 
 
 
@@ -81,10 +83,10 @@ namespace EmployeeTrainingRegistration.Controllers
 
         [HttpGet]
 
-        public ActionResult DownloadAttachment(int attachmentID)
+        public async Task<ActionResult> DownloadAttachment(int attachmentID)
         {
 
-            byte[] binaryFile = _applicationService.GetAttachmentsById(attachmentID);
+            byte[] binaryFile =await _applicationService.GetAttachmentsById(attachmentID);
 
             string contentType = "application/octet-stream";
 

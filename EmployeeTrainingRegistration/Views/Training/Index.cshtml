@@ -120,26 +120,7 @@
 <body>
     @{
         Layout = "~/Views/Shared/_Layout.cshtml";
-    }
-
-    <!--<table id="trainingTable" class="display">
-
-          <thead>
-            <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>-->
-    <!-- Table content will be dynamically added by JavaScript -->
-    <!--</tbody>
-    </table>-->
-    <div class="search-container">
-        <label for="trainingSearch">Search Training Title:</label>
-        <input type="text" id="trainingSearch" placeholder="Enter training title...">
-    </div>
-
+    }  
     <table id="trainingTable" class="display">
         <thead>
             <tr>
@@ -150,8 +131,6 @@
         </thead>
         <tbody></tbody>
     </table>
-
-
     <div class="modal fade" id="trainingDetailsModal" tabindex="-1" role="dialog" aria-labelledby="trainingDetailsModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -188,17 +167,9 @@
                 <div class="modal-body">
                     <form id="applicationForm" enctype="multipart/form-data" method="post" onsubmit="return false">
                         <h4 id="test"></h4>
-                        <!-- Add a file input for each prerequisite -->
-                        @*<div id="prerequisitesInputs" class="row"></div>*@
-                        @* <div id="prerequisitesFileUploads"></div>*@
-                        <!-- Add a file input for each prerequisite -->
                         <div id="prerequisitesInputs" class="row">
                             <input type="file" name="fileInput_1" id="fileInput_1" class="form-control" />
-                            <!-- Add more file input fields as needed -->
                         </div>
-
-
-
                         <button type="submit" class="btn btn-secondary mt-3" onclick="submitApplication()">Submit Application</button>
                     </form>
                 </div>
@@ -209,6 +180,5 @@
             </div>
         </div>
     </div>
-
 </body>
 </html>

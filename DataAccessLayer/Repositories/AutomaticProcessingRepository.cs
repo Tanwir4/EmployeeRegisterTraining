@@ -22,7 +22,48 @@ namespace DataAccessLayer.Repositories
         {
             _dataAccessLayer = dataAccessLayer;
         }
-        public List<Training> GetTrainingByDeadline()
+
+        public async Task<List<EnrolledEmployeeForExportDTO>> GetSelectedEmployeeList(int id)
+        {
+            List<EnrolledEmployeeForExportDTO> enrolledEmployeeList = new List<EnrolledEmployeeForExportDTO>();
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                string sql = $@"SELECT UD.FirstName, UD.LastName, TD.Title, UA.Email 
+                                FROM ApplicationDetails AD
+                                INNER JOIN Enrollment ON Enrollment.ApplicationID = AD.ApplicationID
+                                INNER JOIN UserDetails UD ON UD.UserID = AD.UserID
+                                INNER JOIN TrainingDetails TD ON TD.TrainingID = AD.TrainingID
+                                INNER JOIN UserAccount UA ON UA.UserAccountID=UD.UserAccountID 
+                                WHERE TD.Deadline = CONVERT(DATE, GETDATE())
+                                AND TD.TrainingID=@TrainingId
+                                GROUP BY  TD.Title,UD.FirstName, UD.LastName,UA.Email;";
+
+                List<SqlParameter> parameters = new List<SqlParameter>
+        {
+            new SqlParameter("@TrainingId", SqlDbType.Int) { Value = id}
+
+        };
+                using (SqlDataReader reader = await _dataAccessLayer.GetDataWithConditionsAsync(sql, parameters))
+                {
+
+
+                    while (await reader.ReadAsync())
+                    {
+                        EnrolledEmployeeForExportDTO enrolledEmployeeItem = new EnrolledEmployeeForExportDTO
+                        {
+                            TrainingTitle = (string)reader["Title"],
+                            FirstName = (string)reader["FirstName"],
+                            LastName = (string)reader["LastName"],
+                            Email = (string)reader["Email"]
+                        };
+                        enrolledEmployeeList.Add(enrolledEmployeeItem);
+                    }
+                }
+            }
+                return enrolledEmployeeList;
+        }
+
+        public async Task<List<Training>> GetTrainingByDeadline()
         {
 
             List<Training> trainingList = new List<Training>();
@@ -35,9 +76,9 @@ namespace DataAccessLayer.Repositories
 
                 using (SqlCommand command = new SqlCommand(sql, sqlConnection))
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (SqlDataReader reader =await command.ExecuteReaderAsync())
                     {
-                        while (reader.Read())
+                        while (await reader.ReadAsync())
                         {
                             Training trainingItem = new Training
                             {
@@ -58,9 +99,9 @@ namespace DataAccessLayer.Repositories
             return trainingList;
         }
 
-        public List<EnrolledNotificationDTO> ProcessApplication()
+        public async Task<List<EnrolledNotificationDTO>> ProcessApplication()
         {
-            List<Training> trainingList = GetTrainingByDeadline();
+            List<Training> trainingList =await GetTrainingByDeadline();
             List<EnrolledNotificationDTO> enrolledEmployee = new List<EnrolledNotificationDTO>();
             List<Application> filteredApplication = new List<Application>();
             foreach (Training training in trainingList)
@@ -99,11 +140,11 @@ namespace DataAccessLayer.Repositories
 
 
         };
-                    using (SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(sql, parameters))
+                    using (SqlDataReader reader =await _dataAccessLayer.GetDataWithConditionsAsync(sql, parameters))
                     {
 
 
-                        while (reader.Read())
+                        while (await reader.ReadAsync())
                         {
                             Application applicationItem = new Application
                             {
@@ -134,7 +175,15 @@ namespace DataAccessLayer.Repositories
             new SqlParameter("@ApplicationID", SqlDbType.Int) { Value = application.ApplicationId }
         };
 
-                            int numberOfRowsAffected = _dataAccessLayer.InsertData(approveApplicationSql, approvedApplicantParameters);
+                            int numberOfRowsAffected =await _dataAccessLayer.InsertDataAsync(approveApplicationSql, approvedApplicantParameters);
+
+
+                            string enrolledEmployeeSql = $@"INSERT INTO Enrollment (ApplicationID) VALUES (@ApplicationId);";
+                            List<SqlParameter> enrolledApplicantParameters = new List<SqlParameter>
+        {
+            new SqlParameter("@ApplicationId", SqlDbType.Int) { Value = application.ApplicationId }
+        };
+                            int numberOfRowsAffectedEnrolled = await _dataAccessLayer.InsertDataAsync(enrolledEmployeeSql, enrolledApplicantParameters);
 
                             string approvedEmployeeEmailSql = $@"SELECT Email,Title
                                                                 FROM TrainingDetails
@@ -147,9 +196,9 @@ namespace DataAccessLayer.Repositories
         {
             new SqlParameter("@ApplicationID", SqlDbType.Int) { Value = application.ApplicationId }
         };
-                            using (SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(approvedEmployeeEmailSql, approvedEmployeeEmailParameters))
+                            using (SqlDataReader reader =await _dataAccessLayer.GetDataWithConditionsAsync(approvedEmployeeEmailSql, approvedEmployeeEmailParameters))
                             {
-                                while (reader.Read())
+                                while (await reader.ReadAsync())
                                 {
                                     EnrolledNotificationDTO enrolledNotificationItem = new EnrolledNotificationDTO
                                     {

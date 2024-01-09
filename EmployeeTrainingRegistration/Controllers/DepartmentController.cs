@@ -3,6 +3,7 @@ using EmployeeTrainingRegistrationServices.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -21,11 +22,11 @@ namespace EmployeeTrainingRegistration.Controllers
             return View();
         }
         [HttpGet]
-        public JsonResult GetAllDepartmentName()
+        public async Task<JsonResult> GetAllDepartmentName()
         {
             try
             {
-                List<Department> GetDepartmentName = _departmentService.GetAllDepartmentName();
+                List<Department> GetDepartmentName =await _departmentService.GetAllDepartmentName();
                 return Json(new { departments = GetDepartmentName }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)

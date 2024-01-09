@@ -50,6 +50,7 @@
     <Compile Include="DBConnection\IDataAccessLayer.cs" />
     <Compile Include="DTO\DocumentDTO.cs" />
     <Compile Include="DTO\EmailDTO.cs" />
+    <Compile Include="DTO\EnrolledEmployeeForExportDTO.cs" />
     <Compile Include="DTO\EnrolledNotificationDTO.cs" />
     <Compile Include="DTO\ProcessApplicationDTO.cs" />
     <Compile Include="Models\Application.cs" />

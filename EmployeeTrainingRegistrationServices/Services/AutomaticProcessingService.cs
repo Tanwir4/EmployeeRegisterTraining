@@ -12,14 +12,27 @@ namespace EmployeeTrainingRegistrationServices.Services
     public class AutomaticProcessingService : IAutomaticProcessingService
     {
         private readonly IAutomaticProcessingRepository _automaticProcessingRepository;
-        public AutomaticProcessingService(IAutomaticProcessingRepository automaticProcessingRepository)
+        private readonly INotificationService _notificationService;
+
+        public AutomaticProcessingService(IAutomaticProcessingRepository automaticProcessingRepository,INotificationService notificationService)
         {
             _automaticProcessingRepository = automaticProcessingRepository;
+            _notificationService = notificationService;
         }
 
-        public List<EnrolledNotificationDTO> StartAutomaticProcessing()
+        public async Task<List<EnrolledEmployeeForExportDTO>> GetSelectedEmployeeList(int id)
         {
-            return _automaticProcessingRepository.ProcessApplication();
+            return await _automaticProcessingRepository.GetSelectedEmployeeList(id);
+        }
+
+        public async Task<List<EnrolledNotificationDTO>> StartAutomaticProcessing()
+        {
+            var enrolledEmployeeList = await _automaticProcessingRepository.ProcessApplication();
+            foreach (var enrolledEmployees in enrolledEmployeeList)
+            {
+                _notificationService.SendSelectedEmail(enrolledEmployees.Email, enrolledEmployees.Title);
+            }
+            return enrolledEmployeeList;
         }
     }
 }

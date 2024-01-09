@@ -47,6 +47,7 @@
     <Compile Include="Interfaces\IAutomaticProcessingService.cs" />
     <Compile Include="Interfaces\IDepartmentService.cs" />
     <Compile Include="Interfaces\ILoginService.cs" />
+    <Compile Include="Interfaces\INotificationService.cs" />
     <Compile Include="Interfaces\IRegisterService.cs" />
     <Compile Include="Interfaces\ITrainingService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

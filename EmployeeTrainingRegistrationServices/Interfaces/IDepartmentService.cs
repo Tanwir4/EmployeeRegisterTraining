@@ -9,6 +9,6 @@ namespace EmployeeTrainingRegistrationServices.Interfaces
 {
     public interface IDepartmentService
     {
-        List<Department> GetAllDepartmentName();
+        Task<List<Department>> GetAllDepartmentName();
     }
 }

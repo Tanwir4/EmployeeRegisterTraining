@@ -17,9 +17,9 @@ namespace EmployeeTrainingRegistrationServices.Services
         {
             _departmentRepository = departmentRepository;
         }
-        public List<Department> GetAllDepartmentName()
+        public async Task<List<Department>> GetAllDepartmentName()
         {
-            return _departmentRepository.GetAllDepartmentName();
+            return await _departmentRepository.GetAllDepartmentName();
         }
     }
 }

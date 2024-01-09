@@ -2,6 +2,8 @@
 using DataAccessLayer.Repositories.IRepositories;
 using EmployeeTrainingRegistrationServices.Interfaces;
 using EmployeeTrainingRegistrationServices.Validation.IValidation;
+using System.Threading.Tasks;
+
 namespace EmployeeTrainingRegistrationServices.Services
 {
     public class LoginService : ILoginService
@@ -13,19 +15,19 @@ namespace EmployeeTrainingRegistrationServices.Services
             _userRepository = userRepository;
             _loginValidation = loginValidation;
         }
-        public bool IsAuthenticated(Account account)
+        public async  Task<bool> IsAuthenticatedAsync(Account account)
         {
-            return _userRepository.Authenticate(account);
+            return await _userRepository.AuthenticateAsync(account);
         }
 
-        public int GetUserIdByEmail(string email)
+        public async Task<int> GetUserIdByEmailAsync(string email)
         {
-            return _userRepository.GetUserAccountIdByEmail(email);
+            return await _userRepository.GetUserAccountIdByEmailAsync(email);
         }
 
-        public string GetRoleNameByEmail(string email)
+        public async Task<string> GetRoleNameByEmailAsync(string email)
         {
-            return _userRepository.GetRoleByEmail(email);
+            return await _userRepository.GetRoleByEmailAsync(email);
         }
     }
 }

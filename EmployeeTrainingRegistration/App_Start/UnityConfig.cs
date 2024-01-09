@@ -13,6 +13,7 @@ namespace EmployeeTrainingRegistration
 {
     public static class UnityConfig
     {
+        public static IUnityContainer Container { get; private set; }
         public static void RegisterComponents()
         {
 			var container = new UnityContainer();
@@ -31,7 +32,9 @@ namespace EmployeeTrainingRegistration
             container.RegisterType<IAccountService, AccountService>();
             container.RegisterType<IDepartmentService, DepartmentService>();
             container.RegisterType<IApplicationService, ApplicationService>();
+            container.RegisterType<INotificationService, EmailNotificationService>();
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
+            Container = container;
         }
     }
 }

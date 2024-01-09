@@ -21,16 +21,16 @@ namespace DataAccessLayer.DBConnection
             try
             {
                 var connectionString = ConfigurationManager.AppSettings["DefaultConnectionString"];
-                if (string.IsNullOrEmpty(connectionString)) throw new ApplicationException("Connection string empty");              
+                if (string.IsNullOrEmpty(connectionString)) throw new ApplicationException("Connection string empty");
                 Connection = new SqlConnection(connectionString);
                 Connection.Open();
-                return Connection;               
+                return Connection;
             }
             catch (Exception exception)
             {
                 _logger.LogError(exception);
                 throw new ApplicationException("Unable to find the connection string", exception);
-            }       
+            }
         }
         public void Dispose()
         {
@@ -58,12 +58,26 @@ namespace DataAccessLayer.DBConnection
                 throw;
             }
         }
+
+        public async Task<SqlDataReader> GetDataWithConditionsAsync(string sql, List<SqlParameter> parameters)
+        {
+
+            using (SqlCommand cmd = new SqlCommand(sql))
+            {
+                cmd.Connection = Connection;
+                cmd.Parameters.AddRange(parameters.ToArray());
+                SqlDataReader reader = await cmd.ExecuteReaderAsync(CommandBehavior.CloseConnection);
+                return reader;
+            }
+
+        }
+
         public async Task<int> InsertDataAsync(string sql, List<SqlParameter> parameters)
         {
             using (SqlCommand cmd = new SqlCommand(sql, Connection))
             {
                 cmd.Parameters.AddRange(parameters.ToArray());
-                var r=await  cmd.ExecuteNonQueryAsync();
+                var r = await cmd.ExecuteNonQueryAsync();
                 return r;
             }
         }

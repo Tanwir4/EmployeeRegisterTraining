@@ -16,27 +16,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#automaticProcessingBtn').on('click', function () {
-                $.ajax({
-                    type: 'POST',
-                    url: '/Training/StartAutomaticProcessing', // Replace with your controller route
-                    dataType: 'json',
-                    success: function (response) {
-                        if (response.success) {
-                            alert(response.message);
-                        } else {
-                            console.error(response.message);
-                        }
-                    },
-                    error: function (error) {
-                        console.error(error.responseText);
-                    }
-                });
-            });
-        });
-    </script>
+
 </head>
 <body>
     @{
@@ -56,9 +36,40 @@
             </tr>
         </thead>
         <tbody>
-
         </tbody>
     </table>
+    <!-- Modal for Selected Employees to be displayed-->
+    <div class="modal fade" id="selectedEmployeesModal" tabindex="-1" role="dialog" aria-labelledby="trainingDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="trainingDetailsModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <table id="selectedEmployeesTable" class="display">
+                        <thead>
+                            <tr>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                      
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                 
+                    <button type="button" class="btn btn-secondary" id="exportBtn">Export</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Training details will be populated here -->
     <div class="modal fade" id="trainingDetailsModal" tabindex="-1" role="dialog" aria-labelledby="trainingDetailsModalLabel" aria-hidden="true">

@@ -5,12 +5,10 @@ namespace DataAccessLayer.Repositories.IRepositories
 {
     public interface IUserRepository
     {
-        bool Authenticate(Account user);
+        Task<bool> AuthenticateAsync(Account user);
         Task<bool> Register(User user);
-        int GetUserAccountIdByEmail(string email);
-        //User GetUserDetailsByEmail(string email);
-        //string GetUserFirstNameByEmail(string email);
-        int GetUserId();
-        string GetRoleByEmail(string email);
+        Task<int> GetUserAccountIdByEmailAsync(string email);
+        Task<int> GetUserIdAsync();
+        Task <string> GetRoleByEmailAsync(string email);
     }
 }

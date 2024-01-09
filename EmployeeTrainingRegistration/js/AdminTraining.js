@@ -5,10 +5,29 @@
         positionClass: 'toast-top-right',
         timeOut: 2000
     };
+    
+
+    $('#automaticProcessingBtn').on('click', function () {
+        $.ajax({
+            type: 'POST',
+            url: '/Training/StartAutomaticProcessing', // Replace with your controller route
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                } else {
+                    console.error(response.message);
+                }
+            },
+            error: function (error) {
+                console.error(error.responseText);
+            }
+        });
+    });
 
     // Fetch training details from the server
     $.ajax({
-        url: '/Training/GetTraining', // Replace with the actual URL
+        url: '/Training/GetAllTrainingForAdmin', // Replace with the actual URL
         type: 'GET',
         dataType: 'json',
         success: function (data) {
@@ -20,6 +39,7 @@
                     '<td>' +
                     '<button class="editButton" data-training-id="' + training.TrainingID + '">Edit</button> ' +
                     '<button class="deleteButton" data-training-id="' + training.TrainingID + '">Delete</button>' +
+                    '<button class="selectedEmployeeButton" data-training-id="' + training.TrainingID + '">View Selected Employees</button>' +
                     '</td>' +
                     '</tr>';
                 trainingTableBody.append(row);
@@ -209,10 +229,60 @@
                 alert('Delete button clicked for Training ID: ' + trainingId);
             });
 
+
+
+            $('.selectedEmployeeButton').on('click', function () {
+                var trainingId = $(this).data('training-id');
+                var trainingTitle = document.getElementById('trainingDetailsModalLabel');
+                console.log('Selected Employee Button clicked for Training ID: ' + trainingId);
+
+                // Fetch data for the selected training ID and populate the modal body
+                $.ajax({
+                    type: 'GET',
+                    url: '/AutomaticProcessing/GetSelectedEmployeeByTrainingId?id=' + trainingId,
+                    dataType: 'json',
+                    success: function (data) {
+                        // Check if the data is available
+                        if (data && data.selectedEmployees && data.selectedEmployees.length > 0) {
+                            // Set the training title
+                            trainingTitle.innerHTML = `<p>${data.selectedEmployees[0].TrainingTitle}</p>`;
+                            $('#selectedEmployeesTable thead').show(); 
+                            // Loop through the data and append rows to the table body
+                            $.each(data.selectedEmployees, function (index, employee) {
+                                var row = '<tr>' +
+                                    '<td>' + employee.FirstName + '</td>' +
+                                    '<td>' + employee.LastName + '</td>' +
+                                    '<td>' + employee.Email + '</td>' +
+                                    '</tr>';
+                                $('#selectedEmployeesTable tbody').append(row);
+                            });
+
+                            // Hide the table headers
+                        
+
+                            // Show the modal
+                            $('#selectedEmployeesModal').modal('show');
+                        } else {
+                            // Handle case when there are no selected employees
+                            trainingTitle.innerHTML = '<p>No selected employees for this training.</p>';
+                            $('#selectedEmployeesTable tbody').empty(); // Clear any existing rows
+                            $('#selectedEmployeesTable thead').hide(); // Hide the table headers
+                            $('#selectedEmployeesModal').modal('show');
+                        }
+                    },
+                    error: function (error) {
+                        // Handle AJAX error
+                        console.error('Error fetching data from the server: ' + error.statusText);
+                    }
+                });
+            });
+
+
+
             $('#trainingTable').DataTable({
                 "pageLength": 6,
                 "lengthChange": false,
-                "searching": false
+                "searching": true
 
             });
             $('.addTrainingButton').on('click', function (event) {

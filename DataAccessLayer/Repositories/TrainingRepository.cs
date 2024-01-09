@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace DataAccessLayer.Repositories
@@ -14,11 +15,38 @@ namespace DataAccessLayer.Repositories
     public class TrainingRepository : ITrainingRepository
     {
         private readonly IDataAccessLayer _dataAccessLayer;
+        private readonly IUserRepository _userRepository;
 
-        public TrainingRepository(IDataAccessLayer dataAccessLayer)
+        public TrainingRepository(IDataAccessLayer dataAccessLayer, IUserRepository userRepository)
         {
             _dataAccessLayer = dataAccessLayer;
+            _userRepository = userRepository;
         }
+
+        public async Task<bool> IsTrainingApplied(int trainingId)
+        {
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                string sql = $@"
+                           SELECT 1
+                            FROM ApplicationDetails AD
+                            JOIN UserDetails UD ON UD.UserID = AD.UserID
+                            JOIN TrainingDetails TD ON AD.TrainingID = TD.TrainingID
+                            WHERE UD.UserID = @UserID
+                            AND TD.TrainingID = @TrainingID;";
+                int userId =await _userRepository.GetUserIdAsync();
+                List<SqlParameter> parameters = new List<SqlParameter>
+        {
+            new SqlParameter("@TrainingID", SqlDbType.Int) { Value = trainingId },
+            new SqlParameter("@UserID", SqlDbType.Int) { Value = userId }
+
+        };
+                SqlDataReader getData =await _dataAccessLayer.GetDataWithConditionsAsync(sql, parameters);
+                return (getData.HasRows);
+            }
+             
+        }
+
         public int GetNewTrainingId(Training training, Department department)
         {
             int trainingId = 0;
@@ -88,7 +116,7 @@ namespace DataAccessLayer.Repositories
                         {
                             cmd.Parameters.AddWithValue("@TrainingID", trainingId);
                             cmd.Parameters.AddWithValue("@PrerequisiteID", prerequisiteId);
-                            cmd.ExecuteNonQuery();
+                             cmd.ExecuteNonQuery();
                         }
                     }
 
@@ -102,7 +130,7 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public bool DeleteTraining(int id)
+        public async Task<bool> DeleteTraining(int id)
         {
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
@@ -113,12 +141,11 @@ namespace DataAccessLayer.Repositories
                 {
                        new SqlParameter("@TrainingID", SqlDbType.Int) { Value = id }
                    };
-                int numberOfRowsAffected = _dataAccessLayer.InsertData(sql, parameters);
+                int numberOfRowsAffected =await _dataAccessLayer.InsertDataAsync(sql, parameters);
                 return (numberOfRowsAffected > 0);
             }
         }
-
-        public List<Training> GetAll()
+        public async Task<List<Training>> GetAllForAdmin()
         {
             List<Training> trainingList = new List<Training>();
 
@@ -126,14 +153,13 @@ namespace DataAccessLayer.Repositories
             {
                 string sql = $@"SELECT *
                                 FROM TrainingDetails
-                                WHERE IsActive = 1 AND Deadline >= GETDATE()
-                                ORDER BY Title ASC;";
+                                WHERE IsActive = 1";
 
                 using (SqlCommand command = new SqlCommand(sql, sqlConnection))
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (SqlDataReader reader =await command.ExecuteReaderAsync())
                     {
-                        while (reader.Read())
+                        while (await reader.ReadAsync())
                         {
                             Training trainingItem = new Training
                             {
@@ -151,7 +177,39 @@ namespace DataAccessLayer.Repositories
             return trainingList;
         }
 
-        public List<string> GetPrerequisitesByTrainingId(int trainingID)
+        public async Task<List<Training>> GetAllForEmployee()
+        {
+            List<Training> trainingList = new List<Training>();
+
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                string sql = $@"SELECT *
+                                FROM TrainingDetails
+                                WHERE IsActive = 1 AND Deadline >= GETDATE();";
+
+                using (SqlCommand command = new SqlCommand(sql, sqlConnection))
+                {
+                    using (SqlDataReader reader =await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            Training trainingItem = new Training
+                            {
+                                TrainingID = (int)reader["TrainingID"],
+                                Title = reader["Title"] == DBNull.Value ? null : (string)reader["Title"],
+                                Description = reader["Description"] == DBNull.Value ? null : (string)reader["Description"]
+                            };
+
+                            trainingList.Add(trainingItem);
+                        }
+                    }
+                }
+            }
+
+            return trainingList;
+        }
+
+        public async Task<List<string>> GetPrerequisitesByTrainingId(int trainingID)
         {
             List<string> preRequisites = new List<string>();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -169,11 +227,11 @@ namespace DataAccessLayer.Repositories
             new SqlParameter("@TrainingID", SqlDbType.Int) { Value = trainingID }
         };
 
-                SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(sql, parameters);
+                SqlDataReader reader =await _dataAccessLayer.GetDataWithConditionsAsync(sql, parameters);
 
                 if (reader.HasRows)
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         string preRequisite = (string)reader["PreRequisite"];
                         preRequisites.Add(preRequisite);
@@ -184,7 +242,7 @@ namespace DataAccessLayer.Repositories
             return preRequisites;
         }
 
-        public List<string> GetAllPreRequisites()
+        public async Task<List<string>> GetAllPreRequisites()
         {
             List<string> preRequisites = new List<string>();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -193,9 +251,9 @@ namespace DataAccessLayer.Repositories
 
                 using (SqlCommand command = new SqlCommand(sql, sqlConnection))
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (SqlDataReader reader =await command.ExecuteReaderAsync())
                     {
-                        while (reader.Read())
+                        while (await reader.ReadAsync())
                         {
                             string preRequisite = (string)reader["PreRequisite"];
                             preRequisites.Add(preRequisite);
@@ -208,7 +266,7 @@ namespace DataAccessLayer.Repositories
         }
 
 
-        public List<Training> GetTrainingById(int id)
+        public async Task<List<Training>> GetTrainingById(int id)
         {
             List<Training> trainingList = new List<Training>();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -218,10 +276,10 @@ namespace DataAccessLayer.Repositories
                 {
                 new SqlParameter("@TrainingID", SqlDbType.Int) { Value = id }
                 };
-                SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(SQL, parameters);
+                SqlDataReader reader =await _dataAccessLayer.GetDataWithConditionsAsync(SQL, parameters);
                 if (reader.HasRows)
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         Training trainingItem = new Training
                         {
@@ -239,7 +297,7 @@ namespace DataAccessLayer.Repositories
             }
             return trainingList;
         }
-        public bool UpdateTraining(Training training, Department department, List<string> checkedPrerequisites)
+        public async Task<bool> UpdateTraining(Training training, Department department, List<string> checkedPrerequisites)
         {
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
@@ -290,11 +348,9 @@ namespace DataAccessLayer.Repositories
                     parameters.Add(new SqlParameter($"@PreReq{i}", SqlDbType.VarChar, 100) { Value = training.PreRequisite[i] });
                 }
 
-                int numberOfRowsAffected = _dataAccessLayer.InsertData(sql, parameters);
+                int numberOfRowsAffected =await _dataAccessLayer.InsertDataAsync(sql, parameters);
                 return (numberOfRowsAffected > 0);
             }
         }
-
-       
     }
 }

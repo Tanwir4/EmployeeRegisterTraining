@@ -2,6 +2,7 @@
 using DataAccessLayer.Repositories.IRepositories;
 using EmployeeTrainingRegistration.Custom;
 using EmployeeTrainingRegistrationServices.Interfaces;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 namespace EmployeeTrainingRegistration.Controllers
 {
@@ -21,13 +22,13 @@ namespace EmployeeTrainingRegistration.Controllers
 
        
         [HttpPost]
-        public ActionResult Verify(Account acc)
+        public async Task<ActionResult> Verify(Account acc)
         {
-            if (_loginService.IsAuthenticated(acc)) {
+            if (await _loginService.IsAuthenticatedAsync(acc)) {
                 Session["Email"] = acc.Email;
-                Session["UserAccountId"] = _accountService.GetUserAccountId(acc.Email);
+                Session["UserAccountId"] =await _accountService.GetUserAccountIdAsync(acc.Email);
                
-                string roleName = _loginService.GetRoleNameByEmail(acc.Email);
+                string roleName =await _loginService.GetRoleNameByEmailAsync(acc.Email);
                 Session["CurrentRole"] = roleName;
                 if (roleName =="Employee") { return RedirectToAction("Index", "Training"); }
                 else if(roleName == "Manager") { return RedirectToAction("Index", "Manager"); }

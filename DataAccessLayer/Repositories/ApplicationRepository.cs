@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Runtime.Remoting.Messaging;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -24,7 +25,7 @@ namespace DataAccessLayer.Repositories
             _userRepository = userRepository;
         }
 
-        public List<int> GetAttachmentsByApplicationId(int applicationId)
+        public async Task<List<int>> GetAttachmentsByApplicationId(int applicationId)
         {
             List<int> attachments = new List<int>();
 
@@ -42,12 +43,10 @@ namespace DataAccessLayer.Repositories
                     new SqlParameter("@ApplicationId", applicationId)
                 };
 
-                using (SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(sql, parameters))
+                using (SqlDataReader reader =await _dataAccessLayer.GetDataWithConditionsAsync(sql, parameters))
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
-
-
 
                         byte attachmentId = (byte)reader["AttachmentID"];
                         attachments.Add(attachmentId);
@@ -58,7 +57,7 @@ namespace DataAccessLayer.Repositories
                 return attachments;
             }
         }
-        public byte[] GetAttachmentsById(int attachmentId)
+        public async Task<byte[]> GetAttachmentsById(int attachmentId)
         {
 
             byte[] fileData = null;
@@ -75,15 +74,14 @@ namespace DataAccessLayer.Repositories
                     new SqlParameter("@AttachmentID", attachmentId)
                 };
 
-                using (SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(sql, parameters))
+                using (SqlDataReader reader =await _dataAccessLayer.GetDataWithConditionsAsync(sql, parameters))
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
 
 
                        fileData = reader["Attachment"] == DBNull.Value ? null : (byte[])reader["Attachment"];
                       
-
                     }
                 }
 
@@ -91,7 +89,7 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public EmailDTO GetManagerApprovalDetails(int applicationId)
+        public async Task<EmailDTO> GetManagerApprovalDetails(int applicationId)
         {
             EmailDTO managerApprovalDetails = null;
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -123,9 +121,9 @@ WHERE
         new SqlParameter("@ApplicationId", applicationId)
     };
 
-                using (SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(sql, parameters))
+                using (SqlDataReader reader =await _dataAccessLayer.GetDataWithConditionsAsync(sql, parameters))
                 {
-                    if (reader.Read())
+                    if (await reader.ReadAsync())
                     {
                         managerApprovalDetails = new EmailDTO
                         {
@@ -144,7 +142,7 @@ WHERE
             }
         }
 
-        public bool DeclineApplication(string name, string title, string declineReason)
+        public async Task<bool> DeclineApplication(string name, string title, string declineReason)
         {
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
@@ -168,12 +166,12 @@ WHERE
             new SqlParameter("@TrainingTitle", SqlDbType.VarChar, 100) { Value = title },
             new SqlParameter("@DeclineReason", SqlDbType.VarChar, 100) { Value = declineReason }
         };
-                int numberOfRowsAffected = _dataAccessLayer.InsertData(sql, parameters);
+                int numberOfRowsAffected =await _dataAccessLayer.InsertDataAsync(sql, parameters);
                 return (numberOfRowsAffected > 0);
             }
         }
 
-        public string ApproveApplication(string name, string title)
+        public async Task<string> ApproveApplication(string name, string title)
         {
             string status = null; // Initialize status to handle cases where no rows are found
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -212,14 +210,14 @@ WHERE
             new SqlParameter("@TrainingTitle", SqlDbType.VarChar, 100) { Value = title }
         };
 
-                int numberOfRowsAffected = _dataAccessLayer.InsertData(updateSql, parametersUpdate);
+                int numberOfRowsAffected =await _dataAccessLayer.InsertDataAsync(updateSql, parametersUpdate);
 
                 // Execute the second query to retrieve the status
-                using (SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(selectSql, parametersSelect))
+                using (SqlDataReader reader =await _dataAccessLayer.GetDataWithConditionsAsync(selectSql, parametersSelect))
                 {
                     if (reader.HasRows)
                     {
-                        reader.Read(); // Move to the first row
+                        await reader.ReadAsync(); // Move to the first row
                         status = (string)reader["Statuss"];
                     }
                 }
@@ -228,7 +226,7 @@ WHERE
             return status;
         }
 
-        public List<ManagerApplicationDTO> GetApplicationsByManagerId()
+        public async Task<List<ManagerApplicationDTO>> GetApplicationsByManagerId()
         {
             List<ManagerApplicationDTO> applicationList = new List<ManagerApplicationDTO>();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -239,18 +237,18 @@ WHERE
                                     INNER JOIN ApplicationDetails ON UserDetails.UserID = ApplicationDetails.UserID
                                     INNER JOIN TrainingDetails ON TrainingDetails.TrainingID = ApplicationDetails.TrainingID
                                     WHERE UserDetails.ManagerUserID = @ManagerID;";
-                int managerId = _userRepository.GetUserId();
+                int managerId =await _userRepository.GetUserIdAsync();
 
                 List<SqlParameter> parameters = new List<SqlParameter>
         {
             new SqlParameter("@ManagerID", SqlDbType.Int) { Value = managerId }
         };
 
-                SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(sql, parameters);
+                SqlDataReader reader =await _dataAccessLayer.GetDataWithConditionsAsync(sql, parameters);
 
                 if (reader.HasRows)
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         ManagerApplicationDTO applicationDetailsItem = new ManagerApplicationDTO
                         {
@@ -268,7 +266,7 @@ WHERE
 
         }
 
-        public List<UserApplication> GetApplicationDetailsByUserId()
+        public async  Task<List<UserApplication>> GetApplicationDetailsByUserId()
         {
             List<UserApplication> trainingDetailsList = new List<UserApplication>();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -279,18 +277,18 @@ WHERE
             INNER JOIN ApplicationDetails ON TrainingDetails.TrainingID = ApplicationDetails.TrainingID
             INNER JOIN UserDetails ON UserDetails.UserID = ApplicationDetails.UserID
             WHERE ApplicationDetails.UserID = @UserID";
-                int userId = _userRepository.GetUserId();
+                int userId =await _userRepository.GetUserIdAsync();
 
                 List<SqlParameter> parameters = new List<SqlParameter>
         {
             new SqlParameter("@UserID", SqlDbType.Int) { Value = userId }
         };
 
-                SqlDataReader reader = _dataAccessLayer.GetDataWithConditions(SQL, parameters);
+                SqlDataReader reader =await _dataAccessLayer.GetDataWithConditionsAsync(SQL, parameters);
 
                 if (reader.HasRows)
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         UserApplication trainingDetailsItem = new UserApplication
                         {
@@ -306,7 +304,7 @@ WHERE
             return trainingDetailsList;
         }
 
-        public bool saveApplication(int trainingId, List<byte[]> fileDataList)
+        public async Task<bool> saveApplication(int trainingId, List<byte[]> fileDataList)
         {
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
@@ -321,7 +319,7 @@ WHERE
                                           SELECT SCOPE_IDENTITY();";
 
                         DateTime currentDate = DateTime.Today;
-                        int userId = _userRepository.GetUserId();
+                        int userId =await _userRepository.GetUserIdAsync();
 
                         int applicationId;
                         using (SqlCommand cmdApplication = new SqlCommand(applicationSql, sqlConnection, transaction))

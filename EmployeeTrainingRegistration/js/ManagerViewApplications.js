@@ -12,7 +12,7 @@ $(document).ready(function () {
             $('#applicationTable').DataTable({
                 "pageLength": 10,
                 "lengthChange": false,
-                "searching": false
+                "searching": true
             });
         
         },

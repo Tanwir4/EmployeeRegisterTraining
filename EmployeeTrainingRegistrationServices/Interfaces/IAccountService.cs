@@ -1,7 +1,9 @@
-﻿namespace EmployeeTrainingRegistrationServices.Interfaces
+﻿using System.Threading.Tasks;
+
+namespace EmployeeTrainingRegistrationServices.Interfaces
 {
     public interface IAccountService
     {
-        int GetUserAccountId(string email);
+        Task<int> GetUserAccountIdAsync(string email);
     }
 }

@@ -1,13 +1,14 @@
 ﻿using DataAccessLayer.DTO;
 using EmployeeTrainingRegistrationServices.Entities;
 using System.Collections.Generic;
-
+using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repositories.IRepositories
 {
     public interface IAutomaticProcessingRepository
     {
-        List<Training> GetTrainingByDeadline();
-        List<EnrolledNotificationDTO> ProcessApplication();
+        Task<List<Training>> GetTrainingByDeadline();
+        Task<List<EnrolledNotificationDTO>> ProcessApplication();
+        Task<List<EnrolledEmployeeForExportDTO>> GetSelectedEmployeeList(int id);
     }
 }

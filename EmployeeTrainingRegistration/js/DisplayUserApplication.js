@@ -39,7 +39,7 @@ $(document).ready(function () {
             $('#applicationTable').DataTable({
                 "pageLength": 5,
                 "lengthChange": false,
-                "searching": false
+                "searching": true
             });
         },
         error: function (error) {
