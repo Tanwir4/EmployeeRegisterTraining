@@ -2,14 +2,11 @@
 using DataAccessLayer.DTO;
 using DataAccessLayer.Models;
 using DataAccessLayer.Repositories.IRepositories;
-using EmployeeTrainingRegistrationServices.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace DataAccessLayer.Repositories
@@ -89,6 +86,8 @@ namespace DataAccessLayer.Repositories
             }
         }
 
+     
+
         public async Task<EmailDTO> GetManagerApprovalDetails(int applicationId)
         {
             EmailDTO managerApprovalDetails = null;
@@ -129,7 +128,7 @@ WHERE
                         {
                             ApplicantName = $"{reader.GetString(reader.GetOrdinal("ApplicantFirstName"))} {reader.GetString(reader.GetOrdinal("ApplicantLastName"))}",
                             ManagerName = $"{reader.GetString(reader.GetOrdinal("ManagerFirstName"))} {reader.GetString(reader.GetOrdinal("ManagerLastName"))}",
-                            //ApplicationStatus = reader.GetString(reader.GetOrdinal("ApplicationStatus")),
+                            ApplicationStatus = reader.GetString(reader.GetOrdinal("ApplicationStatus")),
                             TrainingTitle = reader.GetString(reader.GetOrdinal("Title")),
                             ManagerEmail = reader.GetString(reader.GetOrdinal("ManagerEmail")),
                             EmployeeEmail = reader.GetString(reader.GetOrdinal("ApplicantEmail"))
@@ -147,7 +146,8 @@ WHERE
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
                 string sql = $@"UPDATE ApplicationDetails
-                            SET DeclineReason=@DeclineReason
+                            SET DeclineReason=@DeclineReason,
+                            Statuss='Declined'
                         WHERE UserID IN (
                             SELECT UserDetails.UserID
                             FROM UserDetails
@@ -177,7 +177,8 @@ WHERE
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
                 string updateSql = $@"UPDATE ApplicationDetails
-                        SET ManagerApproval = 1
+                        SET ManagerApproval = 1,
+                        Statuss='Approved'
                         WHERE UserID IN (
                             SELECT UserDetails.UserID
                             FROM UserDetails
@@ -236,7 +237,7 @@ WHERE
                                     FROM UserDetails
                                     INNER JOIN ApplicationDetails ON UserDetails.UserID = ApplicationDetails.UserID
                                     INNER JOIN TrainingDetails ON TrainingDetails.TrainingID = ApplicationDetails.TrainingID
-                                    WHERE UserDetails.ManagerUserID = @ManagerID;";
+                                    WHERE UserDetails.ManagerUserID = @ManagerID AND Statuss='Pending';";
                 int managerId =await _userRepository.GetUserIdAsync();
 
                 List<SqlParameter> parameters = new List<SqlParameter>
@@ -356,7 +357,5 @@ WHERE
                 }
             }
         }
-
-
     }
 }

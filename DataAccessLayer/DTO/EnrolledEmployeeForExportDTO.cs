@@ -13,6 +13,8 @@ namespace DataAccessLayer.DTO
         public string LastName { get; set; }
         public string TrainingTitle { get; set; }
         public string Email {  get; set; }
+        public string ManagerFirstName {  get; set; }
+        public string ManagerLastName { get; set; }
 
     }
 }

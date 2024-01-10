@@ -3,10 +3,28 @@
         closeButton: true,
         progressBar: true,
         positionClass: 'toast-top-right',
-        timeOut: 2000
+        timeOut: 3000
     };
     
 
+    var selectedEmployeesTable = $('#selectedEmployeesTable').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'excel',
+                text: 'Export Excel',
+                className: 'btn btn-secondary',
+                filename: function () {
+                    return 'Export_' + ($('#trainingDetailsModalLabel p').text() || 'NoTrainingTitle');
+                }
+            }
+        ],
+        searching: false,
+        lengthChange: false,
+        info: false,
+        paging: false,
+        order: []
+    });
     $('#automaticProcessingBtn').on('click', function () {
         $.ajax({
             type: 'POST',
@@ -55,6 +73,7 @@
                     data: { trainingId: trainingId },
                     dataType: 'json',
                     success: function (data) {
+                        //console.log(data);
                         // Populate the modal with the selected training details
                         $('#trainingDetailsModal').modal('show');
                         $('#editTitle').val(data.trainings.Title);
@@ -64,6 +83,9 @@
                         $('#editThreshold').val(data.trainings.Threshold);
                         $('#editDescription').val(data.trainings.Description);
                         $('#editDeadline').val(formatDate(deadline));
+                        $('#departmentDropdown').val(data.trainings.DepartmentName);
+        
+
 
                         // Display prerequisites using checkboxes
                         var prerequisitesHtml = '';
@@ -81,7 +103,7 @@
 
                         $('#prerequisitesCheckboxes').html(prerequisitesHtml);
 
-                        populateDepartmentDropdown();
+                        //populateDepartmentDropdown();
 
                         // Set the trainingId as a data attribute in the form
                         $('#editTrainingForm').data('trainingId', trainingId);
@@ -229,55 +251,57 @@
                 alert('Delete button clicked for Training ID: ' + trainingId);
             });
 
-
-
             $('.selectedEmployeeButton').on('click', function () {
                 var trainingId = $(this).data('training-id');
-                var trainingTitle = document.getElementById('trainingDetailsModalLabel');
-                console.log('Selected Employee Button clicked for Training ID: ' + trainingId);
+                var trainingTitle = $('#trainingDetailsModalLabel');
 
-                // Fetch data for the selected training ID and populate the modal body
                 $.ajax({
                     type: 'GET',
                     url: '/AutomaticProcessing/GetSelectedEmployeeByTrainingId?id=' + trainingId,
                     dataType: 'json',
                     success: function (data) {
-                        // Check if the data is available
+                        selectedEmployeesTable.clear();
+
                         if (data && data.selectedEmployees && data.selectedEmployees.length > 0) {
-                            // Set the training title
-                            trainingTitle.innerHTML = `<p>${data.selectedEmployees[0].TrainingTitle}</p>`;
-                            $('#selectedEmployeesTable thead').show(); 
-                            // Loop through the data and append rows to the table body
+                            trainingTitle.html('<p>' + data.selectedEmployees[0].TrainingTitle + '</p>');
+                            $('#selectedEmployeesTable thead').show();
+
                             $.each(data.selectedEmployees, function (index, employee) {
-                                var row = '<tr>' +
-                                    '<td>' + employee.FirstName + '</td>' +
-                                    '<td>' + employee.LastName + '</td>' +
-                                    '<td>' + employee.Email + '</td>' +
-                                    '</tr>';
-                                $('#selectedEmployeesTable tbody').append(row);
+                                var employeeName = employee.FirstName + ' ' + employee.LastName;
+                                var managerName = employee.ManagerFirstName + ' ' + employee.ManagerLastName;
+                                selectedEmployeesTable.row.add([
+                                    employeeName,
+                                    employee.Email,
+                                    managerName
+                                
+                                ]).draw();
                             });
 
-                            // Hide the table headers
-                        
-
-                            // Show the modal
-                            $('#selectedEmployeesModal').modal('show');
+                            $('#exportBtn').show();
                         } else {
-                            // Handle case when there are no selected employees
-                            trainingTitle.innerHTML = '<p>No selected employees for this training.</p>';
-                            $('#selectedEmployeesTable tbody').empty(); // Clear any existing rows
-                            $('#selectedEmployeesTable thead').hide(); // Hide the table headers
-                            $('#selectedEmployeesModal').modal('show');
+                            trainingTitle.html('<p>No selected employees for this training.</p>');
+                            selectedEmployeesTable.clear().draw(); // Clear DataTable rows
+                            $('#selectedEmployeesTable thead').hide();
+                            $('#exportBtn').hide();
                         }
+
+                        $('#selectedEmployeesModal').modal('show');
                     },
                     error: function (error) {
-                        // Handle AJAX error
                         console.error('Error fetching data from the server: ' + error.statusText);
                     }
                 });
             });
 
 
+              // Export button click event
+    $('#exportBtn').on('click', function () {
+        // Trigger the DataTables buttons export function
+        selectedEmployeesTable.buttons(0).trigger();
+    });
+
+            // Hide the Excel button
+            $('.buttons-excel').hide();
 
             $('#trainingTable').DataTable({
                 "pageLength": 6,
@@ -334,31 +358,7 @@ function formatDate(date) {
     return `${year}-${month}-${day}`;
 }
 
-function populateDepartmentDropdown() {
-    $.ajax({
-        type: 'GET',
-        url: '/Department/GetAllDepartmentName', // Replace with your actual controller and action names
-        dataType: 'json',
-        success: function (data) {
-            if (data && data.departments) {
-                var departmentDropdown = document.getElementById("departmentDropdown");
-                departmentDropdown.innerHTML = ""; // Clear existing options
 
-                // Iterate through the departments and append options to the dropdown
-                data.departments.forEach(function (department) {
-                    // Replace 'departmentId' and 'departmentName' with your actual property names
-                    var option = document.createElement("option");
-                    option.value = department.DepartmentId;
-                    option.text = department.DepartmentName;
-                    departmentDropdown.add(option);
-                });
-                console.log("Data from server:", data);
-            } else {
-                console.error('Error retrieving department data');
-            }
-        },
-        error: function (error) {
-            console.error('Error: ' + error.responseText);
-        }
-    });
-}
+
+
+

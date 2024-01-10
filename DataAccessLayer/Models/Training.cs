@@ -13,5 +13,6 @@ namespace EmployeeTrainingRegistrationServices.Entities
         public int DepartmentPriority { set; get; }
         public DateTime Deadline { set; get; }
         public List<string> PreRequisite {  set; get; }
+        public string DepartmentName { set; get; }
     }
 }

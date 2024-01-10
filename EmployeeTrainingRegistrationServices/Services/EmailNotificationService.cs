@@ -34,5 +34,13 @@ namespace EmployeeTrainingRegistrationServices.Services
 
             return EmailSender.SendEmail(subject, body, recipientEmail);
         }
+
+        public string NotifyManager(string recipientEmail, string trainingTitle, string applicantName)
+        {
+            string subject = "New Training Application";
+            string body = $"Hello,\n\nYou have an application to process for '{trainingTitle} for {applicantName}.";
+
+            return EmailSender.SendEmail(subject, body, recipientEmail);
+        }
     }
 }

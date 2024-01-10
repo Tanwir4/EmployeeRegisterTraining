@@ -11,6 +11,7 @@ namespace EmployeeTrainingRegistrationServices.Interfaces
          string SendSelectedEmail(string recipientEmail, string trainingTitle);
         string SendApprovalEmail(string recipientEmail, string trainingTitle);
         string SendDeclineEmail(string recipientEmail, string trainingTitle, string declineReason);
+        string NotifyManager(string recipientEmail, string trainingTitle, string applicantName);
 
     }
 }

@@ -321,6 +321,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="js\AdminTraining.js" />
     <Content Include="js\AutomaticProcessing.js" />
+    <Content Include="js\Department.js" />
     <Content Include="js\DisplayUserApplication.js" />
     <Content Include="js\LoginValidation.js" />
     <Content Include="js\ManagerViewApplications.js" />

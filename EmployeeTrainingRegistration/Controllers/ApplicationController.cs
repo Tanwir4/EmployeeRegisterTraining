@@ -6,15 +6,19 @@ using System.Web.Mvc;
 using System.Collections.Generic;
 using DataAccessLayer.Models;
 using System.Threading.Tasks;
+using DataAccessLayer.DTO;
 
 namespace EmployeeTrainingRegistration.Controllers
 {
     public class ApplicationController : Controller
     {
         private readonly IApplicationService _applicationService;
-        public ApplicationController(IApplicationService applicationService)
+        private readonly INotificationService _notificationService;
+
+        public ApplicationController(IApplicationService applicationService, INotificationService notificationService)
         {
             _applicationService = applicationService;
+            _notificationService = notificationService;
         }
         public ActionResult Index()
         {
@@ -81,6 +85,7 @@ namespace EmployeeTrainingRegistration.Controllers
                 // Save application details and file data
                 if (await _applicationService.IsApplicationSubmitted(trainingId, fileDataList))
                 {
+                    
                     return Json(new { success = true, message = "Applications Submitted" });
                 }
                 else

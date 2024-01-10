@@ -3,6 +3,12 @@ var applicantName;
 var trainingTitle;
 
 $(document).ready(function () {
+    toastr.options = {
+        closeButton: true,
+        progressBar: true,
+        positionClass: 'toast-top-right',
+        timeOut: 3000
+    };
     $.ajax({
         url: '/Manager/GetApplicationsByManagerId',
         type: 'GET',
@@ -72,7 +78,13 @@ function submitDeclineReason() {
         success: function (response) {
             // Display message in an alert box
             if (response.success) {
-                alert('Application declined successfully!');
+                // Handle the success response from the server
+                toastr.success('Training successfully declined!');
+
+                // Reload the page to see the changes
+                setTimeout(function () {
+                    location.reload();
+                }, 3000);
             } else {
                 alert('Failed to decline application. Error: ' + response.message);
             }
@@ -102,8 +114,19 @@ function approveApplication(applicantName, trainingTitle, applicationId) {
         dataType: 'json',
         data: data,
         success: function (response) {
-            // Display message in an alert box
-                alert('Application approved successfully!');
+            
+
+            if (response.success) {
+                // Handle the success response from the server
+                toastr.success('Training successfully approved!');
+
+                // Reload the page to see the changes
+                setTimeout(function () {
+                    location.reload();
+                }, 3000);
+            } else {
+                alert('Failed to approve application. Error: ' + response.message);
+            }
         },
         error: function (error) {
             console.error(error);
@@ -112,11 +135,6 @@ function approveApplication(applicantName, trainingTitle, applicationId) {
         }
     });
 }
-
-/*function viewDocument(applicantName, trainingTitle, applicationID) {
-    var message = `Applicant's Name: ${applicantName}\nTraining Title: ${trainingTitle}\nApplication ID: ${applicationID}`;
-    alert(message);
-}*/
 
 function DownloadAttachment(attachmentID) {
     $.ajax({
@@ -172,26 +190,3 @@ function viewDocument(applicantName, trainingTitle, applicationID) {
         }
     });
 }
-
-
-
-/*function displayAttachmentsModal(attachments) {
-    // Clear existing content in the modal
-    $('#attachmentsModalBody').empty();
-
-    // Add attachments to the modal body
-    attachments.forEach(function (attachment, index) {
-        var downloadLink = document.createElement('a');
-        downloadLink.href = 'data:application/octet-stream;base64,' + attachment.content; // Assuming 'content' is the base64-encoded data
-        //downloadLink.download = `Attachment_${index + 1}.${attachment.extension}`;
-        downloadLink.download = `Attachment_${index + 1}.pdf`;// Assuming 'extension' is the file extension
-        downloadLink.textContent = `Download Attachment ${index + 1}`;
-        
-        // Append the download link to the modal body
-        $('#attachmentsModalBody').append(downloadLink);
-        $('#attachmentsModalBody').append('<br>');
-    });
-
-    // Open the attachments modal
-    $('#attachmentsModal').modal('show');
-}*/

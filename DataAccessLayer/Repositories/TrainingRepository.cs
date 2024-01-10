@@ -1,14 +1,11 @@
 ﻿using DataAccessLayer.DBConnection;
-using DataAccessLayer.Models;
 using DataAccessLayer.Repositories.IRepositories;
 using EmployeeTrainingRegistrationServices.Entities;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace DataAccessLayer.Repositories
 {
@@ -271,12 +268,14 @@ namespace DataAccessLayer.Repositories
             List<Training> trainingList = new List<Training>();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
-                const string SQL = "SELECT * FROM TrainingDetails WHERE TrainingID=@TrainingID";
+                 string sql = $@"SELECT * FROM TrainingDetails 
+                                INNER JOIN Department ON Department.DepartmentID=TrainingDetails.DepartmentPriority
+                                WHERE TrainingID=@TrainingID";
                 List<SqlParameter> parameters = new List<SqlParameter>
                 {
                 new SqlParameter("@TrainingID", SqlDbType.Int) { Value = id }
                 };
-                SqlDataReader reader =await _dataAccessLayer.GetDataWithConditionsAsync(SQL, parameters);
+                SqlDataReader reader =await _dataAccessLayer.GetDataWithConditionsAsync(sql, parameters);
                 if (reader.HasRows)
                 {
                     while (await reader.ReadAsync())
@@ -288,7 +287,8 @@ namespace DataAccessLayer.Repositories
                             Description = reader["Description"] == DBNull.Value ? null : (string)reader["Description"],
                             StartDate = (DateTime)reader["StartDate"],
                             Deadline = (DateTime)reader["Deadline"],
-                            Threshold = (int)reader["Threshold"]
+                            Threshold = (int)reader["Threshold"],
+                            DepartmentName = (string)reader["DepartmentName"]
 
                         };
                         trainingList.Add(trainingItem);

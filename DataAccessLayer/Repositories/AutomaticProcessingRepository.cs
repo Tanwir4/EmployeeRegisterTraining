@@ -28,15 +28,22 @@ namespace DataAccessLayer.Repositories
             List<EnrolledEmployeeForExportDTO> enrolledEmployeeList = new List<EnrolledEmployeeForExportDTO>();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
-                string sql = $@"SELECT UD.FirstName, UD.LastName, TD.Title, UA.Email 
-                                FROM ApplicationDetails AD
-                                INNER JOIN Enrollment ON Enrollment.ApplicationID = AD.ApplicationID
-                                INNER JOIN UserDetails UD ON UD.UserID = AD.UserID
-                                INNER JOIN TrainingDetails TD ON TD.TrainingID = AD.TrainingID
-                                INNER JOIN UserAccount UA ON UA.UserAccountID=UD.UserAccountID 
-                                WHERE TD.Deadline = CONVERT(DATE, GETDATE())
-                                AND TD.TrainingID=@TrainingId
-                                GROUP BY  TD.Title,UD.FirstName, UD.LastName,UA.Email;";
+                string sql = $@"SELECT
+                                U1.FirstName,
+                                U1.LastName,
+                                UA.Email,
+                                U2.FirstName AS ManagerFirstName,
+                                U2.LastName AS ManagerLastName,
+                                T.Title 
+                                FROM
+                                ApplicationDetails A
+                                INNER JOIN UserDetails U1 ON A.UserID = U1.UserID
+                                INNER JOIN UserAccount UA ON U1.UserAccountID = UA.UserAccountID
+                                LEFT JOIN UserDetails U2 ON U1.ManagerUserID = U2.UserID
+                                LEFT JOIN UserAccount UM ON U2.UserID = UM.UserAccountID
+                                INNER JOIN TrainingDetails T ON A.TrainingID=T.TrainingID
+                                WHERE
+                                T.TrainingID=@TrainingId AND T.Deadline = CONVERT(DATE, GETDATE());";
 
                 List<SqlParameter> parameters = new List<SqlParameter>
         {
@@ -54,7 +61,9 @@ namespace DataAccessLayer.Repositories
                             TrainingTitle = (string)reader["Title"],
                             FirstName = (string)reader["FirstName"],
                             LastName = (string)reader["LastName"],
-                            Email = (string)reader["Email"]
+                            Email = (string)reader["Email"],
+                            ManagerFirstName = (string)reader["ManagerFirstName"],
+                            ManagerLastName = (string)reader["ManagerLastName"]
                         };
                         enrolledEmployeeList.Add(enrolledEmployeeItem);
                     }
@@ -167,7 +176,7 @@ namespace DataAccessLayer.Repositories
                         using (SqlConnection sqlConnection1 = _dataAccessLayer.CreateConnection())
                         {
                             string approveApplicationSql = $@"UPDATE ApplicationDetails
-                                        SET Statuss='Approved'
+                                        SET Statuss='Selected'
                                         WHERE ApplicationID=@ApplicationID";
 
                             List<SqlParameter> approvedApplicantParameters = new List<SqlParameter>

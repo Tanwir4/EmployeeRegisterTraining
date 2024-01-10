@@ -1,4 +1,10 @@
 ﻿$(document).ready(function () {
+    toastr.options = {
+        closeButton: true,
+        progressBar: true,
+        positionClass: 'toast-top-right',
+        timeOut: 3000
+    };
     $.ajax({
         url: '/Training/GetTraining',
         type: 'GET',
@@ -188,87 +194,12 @@ function displayFileName(input, index) {
     $('#fileName_' + index).html(fileName);
 }
 
-/*function submitApplication() {
-    // Retrieve the trainingId from the data attribute
-    var trainingId = $('#ApplicationModal').data('trainingId');
-    console.log('Submit Application js function');
-    // Ensure that trainingId is not null or undefined
-    if (!trainingId) {
-        console.error('TrainingId is missing');
-        return;
-    }
-    var formData = new FormData($('#applicationForm')[0]);
-    formData.append('trainingId', trainingId);
-    $.ajax({
-        url: '/Application/SubmitApplication',  // Remove trainingId from the URL
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function (data) {
-            // Handle success
-            alert("Successful");
-        },
-        error: function (error) {
-            console.error(error);
-        },
-    });
-}*/
 
-/*function submitApplication() {*/
-/*    var trainingId = $('#ApplicationModal').data('trainingId');
-
-    if (!trainingId) {
-        console.error('TrainingId is missing');
-        return;
-    }
-
-    var formData = new FormData($('#applicationForm')[0]);
-
-    // Append each file input to the formData with a unique parameter name
-    $('#prerequisitesInputs input[type="file"]').each(function (index, input) {
-        var files = input.files;
-        for (var i = 0; i < files.length; i++) {
-            formData.append('fileInputs[' + index + ']', files[i]);
-        }
-    });*/
-
-/*
-    var trainingId = $('#ApplicationModal').data('trainingId');
-    var formData = new FormData();
-
-    // Append training ID to form data
-    formData.append('trainingId', trainingId);
-
-    // Append each file input to form data using the correct selector
-    $('[id^="fileInput"]').each(function (index, fileInput) {
-        var file = fileInput.files[0];
-        formData.append('files[]', file);
-    });
-
-    formData.append('trainingId', trainingId);
-
-    $.ajax({
-        url: '/Application/SubmitApplication',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function (data) {
-            alert(data.message);
-            if (data.success) {
-                // Optionally, close the modal or perform other actions on success
-            }
-        },
-        error: function (error) {
-            console.error(error);
-        },
-    });
-}*/
 
 function submitApplication() {
     var trainingId = $('#ApplicationModal').data('trainingId');
     console.log('Submit Application js function');
+    alert(applicationId);
 
     if (!trainingId) {
         console.error('TrainingId is missing');
@@ -292,8 +223,12 @@ function submitApplication() {
         processData: false,
         contentType: false,
         success: function (data) {
-            // Handle success
-            alert("Successful");
+            toastr.success('Training applied successfully!');
+
+            // Reload the page to see the changes
+            setTimeout(function () {
+                location.reload();
+            }, 3000);
         },
         error: function (error) {
             console.error(error);
@@ -301,33 +236,3 @@ function submitApplication() {
     });
 }
 
-/*function submitApplication() {
-    var trainingId = $('#ApplicationModal').data('trainingId');
-    console.log('Submit Application js function');
-
-    if (!trainingId) {
-        console.error('TrainingId is missing');
-        return;
-    }
-
-    var formData = new FormData($('#applicationForm')[0]);
-    formData.append('trainingId', trainingId);
-
-    $.ajax({
-        url: '/Application/SubmitApplication',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function (data) {
-            // Handle success
-            alert("Successful");
-        },
-        error: function (error) {
-            console.error(error);
-        },
-    });
-
-    // Prevent the default form submission
-    return false;
-}*/

@@ -15,6 +15,7 @@ namespace DataAccessLayer.Repositories.IRepositories
         Task<EmailDTO> GetManagerApprovalDetails(int applicationId);
         Task<List<int>> GetAttachmentsByApplicationId(int applicationId);
         Task<byte[]> GetAttachmentsById(int attachmentId);
+        //Task<EmailDTO> GetManagerDetailsForNotification(int applicationId);
 
 
     }
