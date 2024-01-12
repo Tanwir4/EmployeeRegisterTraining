@@ -10,5 +10,6 @@ namespace DataAccessLayer.Repositories.IRepositories
         Task<int> GetUserAccountIdByEmailAsync(string email);
         Task<int> GetUserIdAsync();
         Task <string> GetRoleByEmailAsync(string email);
+        Task<string> GetManagerEmailByApplicantID();
     }
 }

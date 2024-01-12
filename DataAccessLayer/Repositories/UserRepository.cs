@@ -6,6 +6,7 @@ using System.Data;
 using DataAccessLayer.DBConnection;
 using System.Web;
 using System.Threading.Tasks;
+using EmployeeTrainingRegistrationServices.Entities;
 
 namespace DataAccessLayer.Repositories
 {
@@ -108,6 +109,41 @@ namespace DataAccessLayer.Repositories
             }
             return userAccountId;
         }
+
+        public async Task<string> GetManagerEmailByApplicantID()
+        {
+            string email = null;
+            int userId =await GetUserIdAsync();
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                string sql = $@"SELECT DISTINCT
+                                UM.Email AS ManagerEmail
+                                FROM
+                                UserDetails U1
+                                INNER JOIN UserAccount UA ON U1.UserID = UA.UserAccountID
+                                LEFT JOIN UserDetails U2 ON U1.ManagerUserID = U2.UserID
+                                LEFT JOIN UserAccount UM ON U2.UserID = UM.UserAccountID
+                                WHERE
+                                U1.UserID = @UserID;";
+
+                List<SqlParameter> parameters = new List<SqlParameter>
+                {
+                new SqlParameter("@UserID", SqlDbType.VarChar, 100) { Value = userId }
+                };
+
+                using (SqlDataReader reader = await _dataAccessLayer.GetDataWithConditionsAsync(sql, parameters))
+                {
+                    if (await reader.ReadAsync())
+                    {
+                         email =  reader.GetString(reader.GetOrdinal("ManagerEmail"));
+                    }
+                }
+               
+            }
+            return email;
+        }
+
+
 
         public async Task<int> GetUserIdAsync()
         {

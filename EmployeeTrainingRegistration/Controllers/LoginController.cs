@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 namespace EmployeeTrainingRegistration.Controllers
 {
+    [ValidationFilter]
     public class LoginController : Controller
     {
         private readonly ILoginService _loginService;

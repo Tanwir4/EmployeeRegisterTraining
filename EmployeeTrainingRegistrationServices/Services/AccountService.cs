@@ -18,6 +18,12 @@ namespace EmployeeTrainingRegistrationServices.Services
         {
             _userRepository = userRepository;
         }
+
+        public async Task<string> GetManagerEmailByApplicantID()
+        {
+            return await _userRepository.GetManagerEmailByApplicantID();
+        }
+
         public async  Task<int> GetUserAccountIdAsync(string email)
         {
             return await _userRepository.GetUserAccountIdByEmailAsync(email);

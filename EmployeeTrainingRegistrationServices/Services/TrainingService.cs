@@ -23,7 +23,7 @@ namespace EmployeeTrainingRegistrationServices.Services
         {
             return await _trainingRepository.GetAllForEmployee();
         }
-        public async Task<List<Training>> GetAllTrainingById(int id)
+        public async Task<Training> GetAllTrainingById(int id)
         {
             return await _trainingRepository.GetTrainingById(id);
         }

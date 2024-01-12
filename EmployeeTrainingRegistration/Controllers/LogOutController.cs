@@ -1,16 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using EmployeeTrainingRegistration.Custom;
 using System.Web.Mvc;
 
 namespace EmployeeTrainingRegistration.Controllers
 {
+    [UserSession]
     public class LogOutController : Controller
     {
-        // GET: LogOut
+        [OutputCache(NoStore = true, Duration = 0, VaryByParam = "*")]
+        // GET: Logout
         public ActionResult Index()
         {
+            Session.Clear();
+            return RedirectToAction("Login", "Login");
+        }
+
+        public ActionResult LogOut()
+        {
+            Session.Clear();
             return View();
         }
     }

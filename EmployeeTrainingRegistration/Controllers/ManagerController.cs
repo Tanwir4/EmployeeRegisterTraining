@@ -14,6 +14,7 @@ using System.Xml.Linq;
 
 namespace EmployeeTrainingRegistration.Controllers
 {
+    [UserSession]
     public class ManagerController : Controller
     {
         private readonly IApplicationService _applicationService;

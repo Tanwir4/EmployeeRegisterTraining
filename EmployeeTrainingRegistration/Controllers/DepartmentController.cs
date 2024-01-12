@@ -1,4 +1,5 @@
-﻿using EmployeeTrainingRegistrationServices.Entities;
+﻿using EmployeeTrainingRegistration.Custom;
+using EmployeeTrainingRegistrationServices.Entities;
 using EmployeeTrainingRegistrationServices.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Web.Mvc;
 
 namespace EmployeeTrainingRegistration.Controllers
 {
+    [UserSession]
     public class DepartmentController : Controller
     {
         private readonly IDepartmentService _departmentService;

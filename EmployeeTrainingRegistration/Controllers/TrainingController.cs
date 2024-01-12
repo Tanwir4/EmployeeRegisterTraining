@@ -1,17 +1,13 @@
 ﻿using DataAccessLayer.DTO;
-using DataAccessLayer.Models;
+using EmployeeTrainingRegistration.Custom;
 using EmployeeTrainingRegistrationServices.Entities;
 using EmployeeTrainingRegistrationServices.Interfaces;
-using EmployeeTrainingRegistrationServices.Services;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 namespace EmployeeTrainingRegistration.Controllers
 {
+    [UserSession]
     public class TrainingController : Controller
     {
         private readonly ITrainingService _trainingService;
@@ -67,8 +63,8 @@ namespace EmployeeTrainingRegistration.Controllers
         public async Task<JsonResult> GetTrainingById(int trainingId)
         {
          
-            List<Training> getTrainingByIdList = await _trainingService.GetAllTrainingById(trainingId);
-            Training getTrainingById = getTrainingByIdList.FirstOrDefault();
+            Training getTrainingByIdList = await _trainingService.GetAllTrainingById(trainingId);
+            Training getTrainingById = getTrainingByIdList;
             List<string> preRequisite= new List<string>();
             preRequisite =await _trainingService.GetPrerequisitesByTrainingId(trainingId);
 
@@ -87,10 +83,10 @@ namespace EmployeeTrainingRegistration.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> DeleteTraining(int id)
+        public async Task<JsonResult> DeleteTraining(int id)
         {
-            if (await _trainingService.IsTrainingDeleted(id)) { return RedirectToAction("Login", "Login"); }
-            else { return RedirectToAction("Register", "Register"); }
+            if (await _trainingService.IsTrainingDeleted(id)) { return Json(new { success = true, message = "Training deleted successfully." }); }
+            else { return Json(new { success = false, message = "Training cannot be deleted." }); }
         }
 
         [HttpPost]
@@ -109,6 +105,5 @@ namespace EmployeeTrainingRegistration.Controllers
             List<EnrolledNotificationDTO> enrolledEmployeeList =await _automaticProcessingService.StartAutomaticProcessing();
                 return Json(new { success = true, message = "Automatic processing started successfully." });
         }
-
     }
 }

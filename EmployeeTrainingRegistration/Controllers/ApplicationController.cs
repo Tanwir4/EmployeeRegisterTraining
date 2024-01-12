@@ -7,55 +7,30 @@ using System.Collections.Generic;
 using DataAccessLayer.Models;
 using System.Threading.Tasks;
 using DataAccessLayer.DTO;
+using EmployeeTrainingRegistrationServices.Entities;
+using EmployeeTrainingRegistration.Custom;
 
 namespace EmployeeTrainingRegistration.Controllers
 {
+    [UserSession]
     public class ApplicationController : Controller
     {
         private readonly IApplicationService _applicationService;
         private readonly INotificationService _notificationService;
+        private readonly IAccountService _accountService;
+        private readonly ITrainingService _trainingService;
 
-        public ApplicationController(IApplicationService applicationService, INotificationService notificationService)
+        public ApplicationController(IApplicationService applicationService, INotificationService notificationService, IAccountService accountService,ITrainingService trainingService)
         {
             _applicationService = applicationService;
             _notificationService = notificationService;
+            _accountService = accountService;
+            _trainingService = trainingService;
         }
         public ActionResult Index()
         {
             return View();
         }
-        /*        [HttpPost]
-                public ActionResult SubmitApplication(HttpPostedFileBase fileInput)
-                {
-                    if (fileInput != null && fileInput.ContentLength > 0)
-                    {
-                        int trainingId = Convert.ToInt32(Request.Form["trainingId"]);
-                        Console.WriteLine($"Received trainingId: {trainingId}");
-                        // Convert file data to byte array
-                        byte[] fileData;
-                        using (var binaryReader = new BinaryReader(fileInput.InputStream))
-                        {
-                            fileData = binaryReader.ReadBytes(fileInput.ContentLength);
-                        }
-
-                        // Save application details and file data
-                        if (_applicationService.IsApplicationSubmitted(trainingId, fileData))
-                        {
-                            return Json(new { success = true, message = "Application Submitted" });
-                        }
-                        else
-                        {
-                            return View("Error");
-                        }
-                    }
-                    else
-                    {
-                        // Handle case when no file is uploaded
-                        return Json(new { success = false, message = "No file uploaded" });
-                    }
-                }
-        */
-
         [HttpPost]
         public async Task<ActionResult> SubmitApplication(int trainingId, List<HttpPostedFileBase> fileInputs)
         {
@@ -85,7 +60,10 @@ namespace EmployeeTrainingRegistration.Controllers
                 // Save application details and file data
                 if (await _applicationService.IsApplicationSubmitted(trainingId, fileDataList))
                 {
-                    
+
+                    string managerEmail = await _accountService.GetManagerEmailByApplicantID();
+                    Training training= await _trainingService.GetAllTrainingById(trainingId);
+                   _notificationService.NotifyManager(managerEmail, training.Title);
                     return Json(new { success = true, message = "Applications Submitted" });
                 }
                 else
@@ -106,7 +84,5 @@ namespace EmployeeTrainingRegistration.Controllers
             List<UserApplication> getApplicationById =await _applicationService.GetApplicationDetailsByUserId();
             return Json(new { applications = getApplicationById }, JsonRequestBehavior.AllowGet);
         }
-
-
     }
 }

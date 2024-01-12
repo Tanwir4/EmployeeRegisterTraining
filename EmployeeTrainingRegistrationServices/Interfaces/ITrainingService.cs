@@ -9,7 +9,7 @@ namespace EmployeeTrainingRegistrationServices.Interfaces
         Task<List<Training>> GetAllTrainingForEmployee();
         Task<List<Training>> GetAllTrainingForAdmin();
         //List<Training> DisplayTrainingWithPrerequisites();
-        Task<List<Training>> GetAllTrainingById(int id);
+        Task<Training> GetAllTrainingById(int id);
         Task<bool> IsTrainingUpdated(Training training, Department department, List<string> checkedPrerequisites);
         Task<bool> IsTrainingDeleted(int id);
         bool IsTrainingAdded(Training training, Department department);

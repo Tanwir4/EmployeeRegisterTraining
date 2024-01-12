@@ -1,9 +1,11 @@
 ﻿using DataAccessLayer.Models;
+using EmployeeTrainingRegistration.Custom;
 using EmployeeTrainingRegistrationServices.Interfaces;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 namespace EmployeeTrainingRegistration.Controllers
 {
+    [ValidationFilter]
     public class RegisterController : Controller
     {
         private readonly IRegisterService _registerService;

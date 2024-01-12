@@ -129,19 +129,51 @@ namespace DataAccessLayer.Repositories
 
         public async Task<bool> DeleteTraining(int id)
         {
-            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            bool IsTrainingEnrolled = await DoesTrainingExistInEnrolled(id);
+
+            // If training is not enrolled, perform the update
+            if (!IsTrainingEnrolled)
             {
-                string sql = $@"Update TrainingDetails 
-                                SET IsActive=0
-                                WHERE TrainingID=@TrainingID";
-                List<SqlParameter> parameters = new List<SqlParameter>
+                using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
                 {
-                       new SqlParameter("@TrainingID", SqlDbType.Int) { Value = id }
-                   };
-                int numberOfRowsAffected =await _dataAccessLayer.InsertDataAsync(sql, parameters);
-                return (numberOfRowsAffected > 0);
+                    string sql = $@"Update TrainingDetails 
+                            SET IsActive=0
+                            WHERE TrainingID=@TrainingID";
+
+                    List<SqlParameter> parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@TrainingID", SqlDbType.Int) { Value = id }
+            };
+
+                    int numberOfRowsAffected = await _dataAccessLayer.InsertDataAsync(sql, parameters);
+                    return (numberOfRowsAffected > 0);
+                }
+            }
+            else
+            {
+                return true;
             }
         }
+
+        public async Task<bool> DoesTrainingExistInEnrolled(int id)
+        {
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                string sql = $@"select 1 from ApplicationDetails
+                                inner join UserDetails on UserDetails.UserID=ApplicationDetails.UserID
+                                inner join Enrollment on Enrollment.ApplicationID=ApplicationDetails.ApplicationID
+                                where ApplicationDetails.TrainingID=@TrainingID";
+                List<SqlParameter> parameters = new List<SqlParameter>
+                      {
+                             new SqlParameter("@TrainingID", SqlDbType.Int) { Value = id }
+                         };
+                SqlDataReader reader = await _dataAccessLayer.GetDataWithConditionsAsync(sql, parameters);
+                if (reader.HasRows) { return true; }
+                else { return false; }
+            }
+        }
+
+
         public async Task<List<Training>> GetAllForAdmin()
         {
             List<Training> trainingList = new List<Training>();
@@ -263,9 +295,9 @@ namespace DataAccessLayer.Repositories
         }
 
 
-        public async Task<List<Training>> GetTrainingById(int id)
+        public async Task<Training> GetTrainingById(int id)
         {
-            List<Training> trainingList = new List<Training>();
+            Training trainingItem = new Training();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
                  string sql = $@"SELECT * FROM TrainingDetails 
@@ -280,22 +312,24 @@ namespace DataAccessLayer.Repositories
                 {
                     while (await reader.ReadAsync())
                     {
-                        Training trainingItem = new Training
-                        {
-                            TrainingID = (int)reader["TrainingID"],
-                            Title = reader["Title"] == DBNull.Value ? null : (string)reader["Title"],
-                            Description = reader["Description"] == DBNull.Value ? null : (string)reader["Description"],
-                            StartDate = (DateTime)reader["StartDate"],
-                            Deadline = (DateTime)reader["Deadline"],
-                            Threshold = (int)reader["Threshold"],
-                            DepartmentName = (string)reader["DepartmentName"]
 
-                        };
-                        trainingList.Add(trainingItem);
+                        trainingItem.TrainingID = (int)reader["TrainingID"];
+                        trainingItem.Title = reader["Title"] == DBNull.Value ? null : (string)reader["Title"];
+                        trainingItem.Description = reader["Description"] == DBNull.Value ? null : (string)reader["Description"];
+                        trainingItem.StartDate = (DateTime)reader["StartDate"];
+                        trainingItem.Deadline = (DateTime)reader["Deadline"];
+                            trainingItem.Threshold = (int)reader["Threshold"];
+                        trainingItem.DepartmentName = (string)reader["DepartmentName"];
+
+                       
+                     
+
                     }
+                  
                 }
+                return trainingItem;
             }
-            return trainingList;
+          
         }
         public async Task<bool> UpdateTraining(Training training, Department department, List<string> checkedPrerequisites)
         {

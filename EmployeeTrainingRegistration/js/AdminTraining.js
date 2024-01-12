@@ -173,13 +173,13 @@
                 var addDeadline = $('#addDeadline').val();
                 var addThreshold = $('#addThreshold').val();
                 var addDescription = $('#addDescription').val();
-                var addDepartment = $('#addDepartment').val();
+                var addDepartment = $('#departmentDropdown2').val();
                 var checkedPrerequisites = [];
                 $('input[type="checkbox"]:checked').each(function () {
                     checkedPrerequisites.push($(this).val());
                 });
 
-                //alert('Checked Prerequisites: ' + checkedPrerequisites.join(', '));
+                alert('Checked Prerequisites: ' + checkedPrerequisites.join(', '));
 
                 // Prepare data to send to the server
                 var data = {
@@ -221,10 +221,6 @@
             });
 
 
-
-
-
-            // Handle delete button click
             $('.deleteButton').on('click', function () {
                 var trainingId = $(this).data('training-id');
                 $.ajax({
@@ -232,23 +228,24 @@
                     type: 'POST',
                     data: { id: trainingId },
                     success: function (result) {
-                        console.log('Training deleted successfully');
-                        //alert('Training deleted successfully');
-                        toastr.success('Training deleted successfully!');
+                        if (result.success) {
+                            console.log('Training cannot be deleted');
+                            toastr.error('Training cannot be deleted!');
+                        }
+                        else {
+                            console.log('Training deleted successfully');
+                            toastr.success('Training deleted successfully!');
 
-                        // Reload the page to see the changes
-                        setTimeout(function () {
-                            location.reload();
-                        }, 2000);
-
+                            setTimeout(function () {
+                                location.reload();
+                            }, 3000);
+                             }
                     },
                     error: function (error) {
                         console.error('Error deleting training: ' + error);
                         alert('Error deleting training: ' + error);
                     }
                 });
-                console.log('Delete button clicked for Training ID: ' + trainingId);
-                alert('Delete button clicked for Training ID: ' + trainingId);
             });
 
             $('.selectedEmployeeButton').on('click', function () {
@@ -340,6 +337,8 @@
 
                 event.preventDefault();
             });
+
+
 
 
         },

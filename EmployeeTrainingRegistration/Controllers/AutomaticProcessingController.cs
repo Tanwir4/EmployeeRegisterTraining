@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.DTO;
+using EmployeeTrainingRegistration.Custom;
 using EmployeeTrainingRegistrationServices.Entities;
 using EmployeeTrainingRegistrationServices.Interfaces;
 using System;
@@ -10,6 +11,7 @@ using System.Web.Mvc;
 
 namespace EmployeeTrainingRegistration.Controllers
 {
+    [UserSession]
     public class AutomaticProcessingController : Controller
     {
         private readonly IAutomaticProcessingService _automaticProcessingService;
@@ -26,8 +28,9 @@ namespace EmployeeTrainingRegistration.Controllers
         [HttpGet]
         public async Task<JsonResult> GetSelectedEmployeeByTrainingId(int id)
         {
-            List<EnrolledEmployeeForExportDTO> selectedEmployee = new List<EnrolledEmployeeForExportDTO>();
-            selectedEmployee = await _automaticProcessingService.GetSelectedEmployeeList(id);
+            //List<EnrolledEmployeeForExportDTO> selectedEmployee = new List<EnrolledEmployeeForExportDTO>();
+            //selectedEmployee = await _automaticProcessingService.GetSelectedEmployeeList(id);
+            List<EnrolledEmployeeForExportDTO> selectedEmployee= await _automaticProcessingService.GetSelectedEmployeeList(id);
             return Json(new { selectedEmployees = selectedEmployee }, JsonRequestBehavior.AllowGet);
 
         }

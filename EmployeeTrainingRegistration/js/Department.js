@@ -6,9 +6,10 @@
             dataType: 'json',
             success: function (data) {
 
-
+                console.log(data);
                 if (data.departments) {
                     populateDepartmentDropdown(data.departments, '#departmentDropdown');
+                    populateDepartmentDropdown(data.departments, '#departmentDropdown2');
                 } else {
                     console.error('Error: Unexpected response format');
                 }

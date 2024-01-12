@@ -199,8 +199,6 @@ function displayFileName(input, index) {
 function submitApplication() {
     var trainingId = $('#ApplicationModal').data('trainingId');
     console.log('Submit Application js function');
-    alert(applicationId);
-
     if (!trainingId) {
         console.error('TrainingId is missing');
         return;

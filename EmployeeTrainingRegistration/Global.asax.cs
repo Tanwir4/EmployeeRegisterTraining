@@ -26,6 +26,11 @@ namespace EmployeeTrainingRegistration
             //BackgroundJob.Schedule<IAutomaticProcessingService>(x => x.StartAutomaticProcessing(), TimeSpan.FromMinutes(1));
 
         }
+        protected void Application_BeginRequest()
+        {
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.Cache.SetNoStore();
+        }
 
         private IEnumerable<IDisposable> GetHangfireServers()
         {
