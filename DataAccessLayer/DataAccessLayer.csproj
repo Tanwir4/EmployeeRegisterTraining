@@ -56,10 +56,10 @@
     <Compile Include="DTO\ProcessApplicationDTO.cs" />
     <Compile Include="Models\Application.cs" />
     <Compile Include="Models\Attachments.cs" />
-    <Compile Include="Models\ManagerApplicationDTO.cs" />
+    <Compile Include="DTO\ManagerApplicationDTO.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\Training.cs" />
-    <Compile Include="Models\TrainingDTO.cs" />
+    <Compile Include="DTO\TrainingDTO.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\Account.cs" />

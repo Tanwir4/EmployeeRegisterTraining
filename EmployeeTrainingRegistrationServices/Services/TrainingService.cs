@@ -14,23 +14,23 @@ namespace EmployeeTrainingRegistrationServices.Services
             _trainingRepository = trainingRepository;
         }
 
-        public async Task<List<string>> GetAllPreRequisites()
+        public async Task<List<string>> GetAllPreRequisitesAsync()
         {
-            return await _trainingRepository.GetAllPreRequisites();
+            return await _trainingRepository.GetAllPreRequisitesAsync();
         }
 
-        public async Task<List<Training>> GetAllTrainingForEmployee()
+        public async Task<List<Training>> GetAllTrainingForEmployeeAsync()
         {
-            return await _trainingRepository.GetAllForEmployee();
+            return await _trainingRepository.GetAllForEmployeeAsync();
         }
-        public async Task<Training> GetAllTrainingById(int id)
+        public async Task<Training> GetAllTrainingByIdAsync(int id)
         {
-            return await _trainingRepository.GetTrainingById(id);
+            return await _trainingRepository.GetTrainingByIdAsync(id);
         }
 
-        public async Task<List<string>> GetPrerequisitesByTrainingId(int id)
+        public async Task<List<string>> GetPrerequisitesByTrainingIdAsync(int id)
         {
-            return await _trainingRepository.GetPrerequisitesByTrainingId(id);
+            return await _trainingRepository.GetPrerequisitesByTrainingIdAsync(id);
         }
 
         public bool IsTrainingAdded(Training training, Department department)
@@ -38,24 +38,28 @@ namespace EmployeeTrainingRegistrationServices.Services
             return _trainingRepository.AddTraining(training, department);
         }
 
-        public async Task<bool> IsTrainingApplied(int trainingId)
+        public async Task<bool> IsTrainingAppliedAsync(int trainingId)
         {
-            return await _trainingRepository.IsTrainingApplied(trainingId);
+            return await _trainingRepository.IsTrainingAppliedAsync(trainingId);
+        }
+        public async Task<bool> IsTrainingExpired(int trainingId)
+        {
+            return await _trainingRepository.IsTrainingExpired(trainingId);
         }
 
-        public async Task<bool> IsTrainingDeleted(int id)
+        public async Task<bool> IsTrainingDeletedAsync(int id)
         {
-            return await _trainingRepository.DeleteTraining(id);
+            return await _trainingRepository.DeleteTrainingAsync(id);
         }
 
-        public async Task<bool> IsTrainingUpdated(Training training, Department department, List<string> checkedPrerequisites)
+        public async Task<bool> IsTrainingUpdatedAsync(Training training, Department department, List<string> checkedPrerequisites)
         {
-            return await _trainingRepository.UpdateTraining(training, department, checkedPrerequisites);
+            return await _trainingRepository.UpdateTrainingAsync(training, department, checkedPrerequisites);
         }
 
-        public async Task<List<Training>> GetAllTrainingForAdmin()
+        public async Task<List<Training>> GetAllTrainingForAdminAsync()
         {
-            return await _trainingRepository.GetAllForAdmin();
+            return await _trainingRepository.GetAllForAdminAsync();
         }
     }
 }

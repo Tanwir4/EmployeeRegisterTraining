@@ -9,6 +9,6 @@ namespace DataAccessLayer.Repositories.IRepositories
 {
     public interface IDepartmentRepository
     {
-        Task<List<Department>> GetAllDepartmentName();
+        Task<List<Department>> GetAllDepartmentNameAsync();
     }
 }

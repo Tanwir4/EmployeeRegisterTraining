@@ -7,16 +7,17 @@ namespace DataAccessLayer.Repositories.IRepositories
 {
     public interface ITrainingRepository
     {
-       Task<List<Training>> GetAllForEmployee();
-        Task<List<Training>> GetAllForAdmin();
-        Task<List<string>> GetAllPreRequisites();
-       Task<Training> GetTrainingById(int id);
-       Task<bool> UpdateTraining(Training training, Department department, List<string> checkedPrerequisites);
-       Task<bool> DeleteTraining(int id);
+       Task<List<Training>> GetAllForEmployeeAsync();
+        Task<List<Training>> GetAllForAdminAsync();
+        Task<List<string>> GetAllPreRequisitesAsync();
+       Task<Training> GetTrainingByIdAsync(int id);
+       Task<bool> UpdateTrainingAsync(Training training, Department department, List<string> checkedPrerequisites);
+       Task<bool> DeleteTrainingAsync(int id);
        bool AddTraining(Training training, Department department);
-       Task<List<string>> GetPrerequisitesByTrainingId(int trainingID);
-       Task<bool> IsTrainingApplied(int trainingId);
+       Task<List<string>> GetPrerequisitesByTrainingIdAsync(int trainingID);
+       Task<bool> IsTrainingAppliedAsync(int trainingId);
        int GetNewTrainingId(Training training, Department department);
-        Task<bool> DoesTrainingExistInEnrolled(int id);
+        Task<bool> DoesTrainingExistInEnrolledAsync(int id);
+        Task<bool> IsTrainingExpired(int id);
     }
 }

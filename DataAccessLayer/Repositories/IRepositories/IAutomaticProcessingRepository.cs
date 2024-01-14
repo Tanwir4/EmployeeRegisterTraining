@@ -7,8 +7,8 @@ namespace DataAccessLayer.Repositories.IRepositories
 {
     public interface IAutomaticProcessingRepository
     {
-        Task<List<Training>> GetTrainingByDeadline();
-        Task<List<EnrolledNotificationDTO>> ProcessApplication();
-        Task<List<EnrolledEmployeeForExportDTO>> GetSelectedEmployeeList(int id);
+        Task<List<Training>> GetTrainingByDeadlineAsync();
+        Task<List<EnrolledNotificationDTO>> ProcessApplicationAsync();
+        Task<List<EnrolledEmployeeForExportDTO>> GetSelectedEmployeeListAsync(int id);
     }
 }

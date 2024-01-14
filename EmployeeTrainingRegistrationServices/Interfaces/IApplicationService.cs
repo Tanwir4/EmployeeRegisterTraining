@@ -7,13 +7,13 @@ namespace EmployeeTrainingRegistrationServices.Interfaces
 {
     public interface IApplicationService
     {
-        Task<bool> IsApplicationSubmitted(int trainingId, List<byte[]> fileDataList);
-        Task<List<UserApplication>> GetApplicationDetailsByUserId();
-        Task<List<ManagerApplicationDTO>> GetApplicationByManagerId();
-        Task<string> IsApplicationApproved(string name, string title);
-        Task<bool> IsApplicationDeclined(string name, string title,string declineReason);
-        Task<EmailDTO> GetManagerApprovalDetails(int applicationId);
-        Task<List<int>> GetAttachmentsByApplicationId(int applicationId);
-        Task<byte[]> GetAttachmentsById(int attachmentId);
+        Task<bool> IsApplicationSubmittedAsync(int trainingId, List<byte[]> fileDataList);
+        Task<List<UserApplication>> GetApplicationDetailsByUserIdAsync();
+        Task<List<ManagerApplicationDTO>> GetApplicationByManagerIdAsync();
+        Task<string> IsApplicationApprovedAsync(string name, string title);
+        Task<bool> IsApplicationDeclinedAsync(string name, string title,string declineReason);
+        Task<EmailDTO> GetManagerApprovalDetailsAsync(int applicationId);
+        Task<List<int>> GetAttachmentsByApplicationIdAsync(int applicationId);
+        Task<byte[]> GetAttachmentsByIdAsync(int attachmentId);
     }
 }

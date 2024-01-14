@@ -20,7 +20,7 @@ namespace DataAccessLayer.Repositories
             _userRepository = userRepository;
         }
 
-        public async Task<bool> IsTrainingApplied(int trainingId)
+        public async Task<bool> IsTrainingAppliedAsync(int trainingId)
         {
 
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -43,6 +43,26 @@ namespace DataAccessLayer.Repositories
                 return (getData.HasRows);
             }
              
+        }
+
+        public async Task<bool> IsTrainingExpired(int trainingId)
+        {
+
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                string sql = $@"
+                        SELECT 1
+                        FROM TrainingDetails
+                        WHERE Deadline >= GETDATE() AND IsActive=@IsActive AND TrainingID=@TrainingID;";
+                List<SqlParameter> parameters = new List<SqlParameter>
+        {
+            new SqlParameter("@IsActive", SqlDbType.Int) { Value = 1 },
+            new SqlParameter("@TrainingID", SqlDbType.Int) { Value = trainingId }
+        };
+                SqlDataReader getData = await _dataAccessLayer.GetDataWithConditionsAsync(sql, parameters);
+                return (getData.HasRows);
+            }
+
         }
 
         public int GetNewTrainingId(Training training, Department department)
@@ -128,9 +148,9 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public async Task<bool> DeleteTraining(int id)
+        public async Task<bool> DeleteTrainingAsync(int id)
         {
-            bool IsTrainingEnrolled = await DoesTrainingExistInEnrolled(id);
+            bool IsTrainingEnrolled = await DoesTrainingExistInEnrolledAsync(id);
 
             // If training is not enrolled, perform the update
             if (!IsTrainingEnrolled)
@@ -156,7 +176,7 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public async Task<bool> DoesTrainingExistInEnrolled(int id)
+        public async Task<bool> DoesTrainingExistInEnrolledAsync(int id)
         {
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
@@ -175,7 +195,7 @@ namespace DataAccessLayer.Repositories
         }
 
 
-        public async Task<List<Training>> GetAllForAdmin()
+        public async Task<List<Training>> GetAllForAdminAsync()
         {
             List<Training> trainingList = new List<Training>();
 
@@ -207,7 +227,7 @@ namespace DataAccessLayer.Repositories
             return trainingList;
         }
 
-        public async Task<List<Training>> GetAllForEmployee()
+        public async Task<List<Training>> GetAllForEmployeeAsync()
         {
             List<Training> trainingList = new List<Training>();
 
@@ -239,7 +259,7 @@ namespace DataAccessLayer.Repositories
             return trainingList;
         }
 
-        public async Task<List<string>> GetPrerequisitesByTrainingId(int trainingID)
+        public async Task<List<string>> GetPrerequisitesByTrainingIdAsync(int trainingID)
         {
             List<string> preRequisites = new List<string>();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -272,7 +292,7 @@ namespace DataAccessLayer.Repositories
             return preRequisites;
         }
 
-        public async Task<List<string>> GetAllPreRequisites()
+        public async Task<List<string>> GetAllPreRequisitesAsync()
         {
             List<string> preRequisites = new List<string>();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -296,7 +316,7 @@ namespace DataAccessLayer.Repositories
         }
 
 
-        public async Task<Training> GetTrainingById(int id)
+        public async Task<Training> GetTrainingByIdAsync(int id)
         {
             Training trainingItem = new Training();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -332,7 +352,7 @@ namespace DataAccessLayer.Repositories
             }
           
         }
-        public async Task<bool> UpdateTraining(Training training, Department department, List<string> checkedPrerequisites)
+        public async Task<bool> UpdateTrainingAsync(Training training, Department department, List<string> checkedPrerequisites)
         {
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {

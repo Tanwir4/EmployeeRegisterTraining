@@ -7,16 +7,14 @@ namespace DataAccessLayer.Repositories.IRepositories
 {
     public interface IApplicationRepository
     {
-        Task<bool> saveApplication(int trainingId, List<byte[]> fileDataList);
-        Task<List<UserApplication>> GetApplicationDetailsByUserId();
-        Task<List<ManagerApplicationDTO>> GetApplicationsByManagerId();
-        Task<string> ApproveApplication(string name,string title);
-        Task<bool> DeclineApplication(string name, string title,string declineReason);
-        Task<EmailDTO> GetManagerApprovalDetails(int applicationId);
-        Task<List<int>> GetAttachmentsByApplicationId(int applicationId);
-        Task<byte[]> GetAttachmentsById(int attachmentId);
-        //Task<EmailDTO> GetManagerDetailsForNotification(int applicationId);
-
+        Task<bool> SaveApplicationAsync(int trainingId, List<byte[]> fileDataList);
+        Task<List<UserApplication>> GetApplicationDetailsByUserIdAsync();
+        Task<List<ManagerApplicationDTO>> GetApplicationsByManagerIdAsync();
+        Task<string> ApproveApplicationAsync(string name,string title);
+        Task<bool> DeclineApplicationAsync(string name, string title,string declineReason);
+        Task<EmailDTO> GetManagerApprovalDetailsAsync(int applicationId);
+        Task<List<int>> GetAttachmentsByApplicationIdAsync(int applicationId);
+        Task<byte[]> GetAttachmentsByIdAsync(int attachmentId);
 
     }
 }

@@ -53,15 +53,11 @@
         return true;
     }
 }
-
 function showToaster(message) {
     var toaster = document.getElementById("toaster");
     var toasterMessage = document.getElementById("toasterMessage");
-
     toasterMessage.innerText = message;
     toaster.style.display = "block";
-
-    // Hide the toaster after 3 seconds (adjust as needed)
     setTimeout(function () {
         toaster.style.display = "none";
     }, 3000);

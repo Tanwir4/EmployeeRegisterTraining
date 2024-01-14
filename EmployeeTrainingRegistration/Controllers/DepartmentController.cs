@@ -3,9 +3,7 @@ using EmployeeTrainingRegistrationServices.Entities;
 using EmployeeTrainingRegistrationServices.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace EmployeeTrainingRegistration.Controllers
@@ -26,17 +24,8 @@ namespace EmployeeTrainingRegistration.Controllers
         [HttpGet]
         public async Task<JsonResult> GetAllDepartmentName()
         {
-            try
-            {
-                List<Department> GetDepartmentName =await _departmentService.GetAllDepartmentName();
+                List<Department> GetDepartmentName =await _departmentService.GetAllDepartmentNameAsync();
                 return Json(new { departments = GetDepartmentName }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                // Log the exception
-                Console.WriteLine($"Error in GetAllDepartmentName: {ex.Message}");
-                return Json(new { error = "Internal Server Error" });
-            }
         }
     }
 }

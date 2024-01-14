@@ -1,7 +1,6 @@
 ﻿using EmployeeTrainingRegistrationServices.Interfaces;
 using System.IO;
 using System.Web;
-using System;
 using System.Web.Mvc;
 using System.Collections.Generic;
 using DataAccessLayer.Models;
@@ -32,9 +31,7 @@ namespace EmployeeTrainingRegistration.Controllers
         }
         [HttpPost]
         public async Task<ActionResult> SubmitApplication(int trainingId, List<HttpPostedFileBase> fileInputs)
-        {
-            try
-            {
+        { 
                 // Ensure that trainingId is not zero (or any default value)
                 if (trainingId <= 0)
                 {
@@ -57,11 +54,11 @@ namespace EmployeeTrainingRegistration.Controllers
                 }
 
                 // Save application details and file data
-                if (await _applicationService.IsApplicationSubmitted(trainingId, fileDataList))
+                if (await _applicationService.IsApplicationSubmittedAsync(trainingId, fileDataList))
                 {
 
-                    string managerEmail = await _accountService.GetManagerEmailByApplicantID();
-                    Training training= await _trainingService.GetAllTrainingById(trainingId);
+                    string managerEmail = await _accountService.GetManagerEmailByApplicantIDAsync();
+                    Training training= await _trainingService.GetAllTrainingByIdAsync(trainingId);
                    _notificationService.NotifyManager(managerEmail, training.Title);
                     return Json(new { success = true, message = "Applications Submitted" });
                 }
@@ -69,18 +66,12 @@ namespace EmployeeTrainingRegistration.Controllers
                 {
                     return View("Error");
                 }
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions
-                return Json(new { success = false, message = $"Error: {ex.Message}" });
-            }
         }
 
         [HttpGet]
         public async Task<JsonResult> GetApplicationById()
         {
-            List<UserApplication> getApplicationById =await _applicationService.GetApplicationDetailsByUserId();
+            List<UserApplication> getApplicationById =await _applicationService.GetApplicationDetailsByUserIdAsync();
             return Json(new { applications = getApplicationById }, JsonRequestBehavior.AllowGet);
         }
     }

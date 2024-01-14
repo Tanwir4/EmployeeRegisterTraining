@@ -6,15 +6,16 @@ namespace EmployeeTrainingRegistrationServices.Interfaces
 {
     public interface ITrainingService
     {
-        Task<List<Training>> GetAllTrainingForEmployee();
-        Task<List<Training>> GetAllTrainingForAdmin();
+        Task<List<Training>> GetAllTrainingForEmployeeAsync();
+        Task<List<Training>> GetAllTrainingForAdminAsync();
         //List<Training> DisplayTrainingWithPrerequisites();
-        Task<Training> GetAllTrainingById(int id);
-        Task<bool> IsTrainingUpdated(Training training, Department department, List<string> checkedPrerequisites);
-        Task<bool> IsTrainingDeleted(int id);
+        Task<Training> GetAllTrainingByIdAsync(int id);
+        Task<bool> IsTrainingUpdatedAsync(Training training, Department department, List<string> checkedPrerequisites);
+        Task<bool> IsTrainingDeletedAsync(int id);
         bool IsTrainingAdded(Training training, Department department);
-        Task<List<string>> GetPrerequisitesByTrainingId(int id);
-        Task<List<string>> GetAllPreRequisites();
-        Task<bool> IsTrainingApplied(int trainingId);
+        Task<List<string>> GetPrerequisitesByTrainingIdAsync(int id);
+        Task<List<string>> GetAllPreRequisitesAsync();
+        Task<bool> IsTrainingAppliedAsync(int trainingId);
+        Task<bool> IsTrainingExpired(int id);
     }
 }

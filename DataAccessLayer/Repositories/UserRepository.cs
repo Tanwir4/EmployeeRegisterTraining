@@ -20,7 +20,7 @@ namespace DataAccessLayer.Repositories
         }
 
 
-        public async Task<bool> IsEmailUnique(string email)
+        public async Task<bool> IsEmailUniqueAsync(string email)
         {
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
@@ -35,7 +35,7 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public async Task<List<string>> GetAllManagersByDepartment(string department)
+        public async Task<List<string>> GetAllManagersByDepartmentAsync(string department)
         {
             List<string> managerList = new List<string>();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -107,7 +107,7 @@ namespace DataAccessLayer.Repositories
                     return acc;
             }
         }
-        public async Task<bool> Register(User user)
+        public async Task<bool> RegisterAsync(User user)
         {
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
@@ -164,7 +164,7 @@ namespace DataAccessLayer.Repositories
             return userAccountId;
         }
 
-        public async Task<string> GetManagerEmailByApplicantID()
+        public async Task<string> GetManagerEmailByApplicantIDAsync()
         {
             string email = null;
             int userId = await GetUserIdAsync();

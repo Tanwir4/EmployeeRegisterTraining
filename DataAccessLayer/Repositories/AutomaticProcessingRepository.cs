@@ -23,7 +23,7 @@ namespace DataAccessLayer.Repositories
             _dataAccessLayer = dataAccessLayer;
         }
 
-        public async Task<List<EnrolledEmployeeForExportDTO>> GetSelectedEmployeeList(int id)
+        public async Task<List<EnrolledEmployeeForExportDTO>> GetSelectedEmployeeListAsync(int id)
         {
             List<EnrolledEmployeeForExportDTO> enrolledEmployeeList = new List<EnrolledEmployeeForExportDTO>();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -72,7 +72,7 @@ namespace DataAccessLayer.Repositories
                 return enrolledEmployeeList;
         }
 
-        public async Task<List<Training>> GetTrainingByDeadline()
+        public async Task<List<Training>> GetTrainingByDeadlineAsync()
         {
 
             List<Training> trainingList = new List<Training>();
@@ -108,9 +108,9 @@ namespace DataAccessLayer.Repositories
             return trainingList;
         }
 
-        public async Task<List<EnrolledNotificationDTO>> ProcessApplication()
+        public async Task<List<EnrolledNotificationDTO>> ProcessApplicationAsync()
         {
-            List<Training> trainingList =await GetTrainingByDeadline();
+            List<Training> trainingList =await GetTrainingByDeadlineAsync();
             List<EnrolledNotificationDTO> enrolledEmployee = new List<EnrolledNotificationDTO>();
             List<Application> filteredApplication = new List<Application>();
             foreach (Training training in trainingList)

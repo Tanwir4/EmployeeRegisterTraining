@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
+
 
 namespace DataAccessLayer.Repositories
 {
@@ -22,7 +22,7 @@ namespace DataAccessLayer.Repositories
             _userRepository = userRepository;
         }
 
-        public async Task<List<int>> GetAttachmentsByApplicationId(int applicationId)
+        public async Task<List<int>> GetAttachmentsByApplicationIdAsync(int applicationId)
         {
             List<int> attachments = new List<int>();
 
@@ -54,7 +54,7 @@ namespace DataAccessLayer.Repositories
                 return attachments;
             }
         }
-        public async Task<byte[]> GetAttachmentsById(int attachmentId)
+        public async Task<byte[]> GetAttachmentsByIdAsync(int attachmentId)
         {
 
             byte[] fileData = null;
@@ -88,7 +88,7 @@ namespace DataAccessLayer.Repositories
 
      
 
-        public async Task<EmailDTO> GetManagerApprovalDetails(int applicationId)
+        public async Task<EmailDTO> GetManagerApprovalDetailsAsync(int applicationId)
         {
             EmailDTO managerApprovalDetails = new EmailDTO();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -138,7 +138,7 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public async Task<bool> DeclineApplication(string name, string title, string declineReason)
+        public async Task<bool> DeclineApplicationAsync(string name, string title, string declineReason)
         {
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
@@ -168,7 +168,7 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public async Task<string> ApproveApplication(string name, string title)
+        public async Task<string> ApproveApplicationAsync(string name, string title)
         {
             string status = null; // Initialize status to handle cases where no rows are found
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -224,7 +224,7 @@ namespace DataAccessLayer.Repositories
             return status;
         }
 
-        public async Task<List<ManagerApplicationDTO>> GetApplicationsByManagerId()
+        public async Task<List<ManagerApplicationDTO>> GetApplicationsByManagerIdAsync()
         {
             List<ManagerApplicationDTO> applicationList = new List<ManagerApplicationDTO>();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -264,7 +264,7 @@ namespace DataAccessLayer.Repositories
 
         }
 
-        public async  Task<List<UserApplication>> GetApplicationDetailsByUserId()
+        public async  Task<List<UserApplication>> GetApplicationDetailsByUserIdAsync()
         {
             List<UserApplication> trainingDetailsList = new List<UserApplication>();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -302,7 +302,7 @@ namespace DataAccessLayer.Repositories
             return trainingDetailsList;
         }
 
-        public async Task<bool> saveApplication(int trainingId, List<byte[]> fileDataList)
+        public async Task<bool> SaveApplicationAsync(int trainingId, List<byte[]> fileDataList)
         {
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {

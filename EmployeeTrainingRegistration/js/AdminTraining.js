@@ -5,7 +5,7 @@
         positionClass: 'toast-top-right',
         timeOut: 3000
     };
-    
+
 
     var selectedEmployeesTable = $('#selectedEmployeesTable').DataTable({
         dom: 'Bfrtip',
@@ -52,7 +52,12 @@
             // Populate the table with training details
             var trainingTableBody = $('#trainingTable tbody');
             $.each(data.trainings, function (index, training) {
+                var isExpired = checkIfTrainingExpired(training.TrainingID);
+                var statusBadge = isExpired
+                    ? '<span class="badge bg-success">Active</span>'
+                    : '<span class="badge bg-danger">Expired</span>';
                 var row = '<tr>' +
+                    '<td>' + statusBadge + '</td>' +
                     '<td>' + training.Title + '</td>' +
                     '<td>' +
                     '<button class="editButton" data-training-id="' + training.TrainingID + '">Edit</button> ' +
@@ -62,7 +67,7 @@
                     '</tr>';
                 trainingTableBody.append(row);
             });
-        
+
             $('.editButton').on('click', function () {
                 var trainingId = $(this).data('training-id');
 
@@ -84,7 +89,7 @@
                         $('#editDescription').val(data.trainings.Description);
                         $('#editDeadline').val(formatDate(deadline));
                         $('#departmentDropdown').val(data.trainings.DepartmentName);
-        
+
 
 
                         // Display prerequisites using checkboxes
@@ -135,7 +140,7 @@
                     TrainingId: trainingId,
                     Title: editedTitle,
                     StartDate: editedStartDate,
-                    Threshold: editedThreshold ,
+                    Threshold: editedThreshold,
                     Description: editedPreRequisite,
                     DepartmentName: editedDepartment,
                     Deadline: editedDeadline,
@@ -224,7 +229,7 @@
             $('.deleteButton').on('click', function () {
                 var trainingId = $(this).data('training-id');
                 $.ajax({
-                    url: '/Training/DeleteTraining', 
+                    url: '/Training/DeleteTraining',
                     type: 'POST',
                     data: { id: trainingId },
                     success: function (result) {
@@ -239,7 +244,7 @@
                             setTimeout(function () {
                                 location.reload();
                             }, 3000);
-                             }
+                        }
                     },
                     error: function (error) {
                         console.error('Error deleting training: ' + error);
@@ -270,7 +275,7 @@
                                     employeeName,
                                     employee.Email,
                                     managerName
-                                
+
                                 ]).draw();
                             });
 
@@ -291,11 +296,11 @@
             });
 
 
-              // Export button click event
-    $('#exportBtn').on('click', function () {
-        // Trigger the DataTables buttons export function
-        selectedEmployeesTable.buttons(0).trigger();
-    });
+            // Export button click event
+            $('#exportBtn').on('click', function () {
+                // Trigger the DataTables buttons export function
+                selectedEmployeesTable.buttons(0).trigger();
+            });
 
             // Hide the Excel button
             $('.buttons-excel').hide();
@@ -357,7 +362,18 @@ function formatDate(date) {
     return `${year}-${month}-${day}`;
 }
 
-
-
-
-
+// Function to check if a training is expired
+function checkIfTrainingExpired(trainingId) {
+    // Make an AJAX call to the IsTrainingExpired action in the controller
+    var isExpired = false;
+    $.ajax({
+        url: '/Training/IsTrainingExpired',
+        type: 'GET',
+        data: { trainingId: trainingId },
+        async: false, // Ensure synchronous execution for simplicity
+        success: function (result) {
+            isExpired = result;
+        }
+    });
+    return isExpired;
+}

@@ -5,6 +5,6 @@ namespace EmployeeTrainingRegistrationServices.Interfaces
 {
     public interface IRegisterService
     {
-        Task<bool> IsRegistered(User user);
+        Task<bool> IsRegisteredAsync(User user);
     }
 }

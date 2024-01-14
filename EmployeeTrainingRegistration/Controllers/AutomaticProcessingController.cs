@@ -15,20 +15,15 @@ namespace EmployeeTrainingRegistration.Controllers
         {
             _automaticProcessingService = automaticProcessingService;
         }
-        // GET: AutomaticProcessing
         public ActionResult Index()
         {
             return View();
         }
-
         [HttpGet]
         public async Task<JsonResult> GetSelectedEmployeeByTrainingId(int id)
         {
-            //List<EnrolledEmployeeForExportDTO> selectedEmployee = new List<EnrolledEmployeeForExportDTO>();
-            //selectedEmployee = await _automaticProcessingService.GetSelectedEmployeeList(id);
-            List<EnrolledEmployeeForExportDTO> selectedEmployee= await _automaticProcessingService.GetSelectedEmployeeList(id);
+            List<EnrolledEmployeeForExportDTO> selectedEmployee= await _automaticProcessingService.GetSelectedEmployeeListAsync(id);
             return Json(new { selectedEmployees = selectedEmployee }, JsonRequestBehavior.AllowGet);
-
         }
 
     }

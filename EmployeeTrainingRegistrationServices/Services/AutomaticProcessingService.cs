@@ -20,14 +20,14 @@ namespace EmployeeTrainingRegistrationServices.Services
             _notificationService = notificationService;
         }
 
-        public async Task<List<EnrolledEmployeeForExportDTO>> GetSelectedEmployeeList(int id)
+        public async Task<List<EnrolledEmployeeForExportDTO>> GetSelectedEmployeeListAsync(int id)
         {
-            return await _automaticProcessingRepository.GetSelectedEmployeeList(id);
+            return await _automaticProcessingRepository.GetSelectedEmployeeListAsync(id);
         }
 
-        public async Task<List<EnrolledNotificationDTO>> StartAutomaticProcessing()
+        public async Task<List<EnrolledNotificationDTO>> StartAutomaticProcessingAsync()
         {
-            var enrolledEmployeeList = await _automaticProcessingRepository.ProcessApplication();
+            var enrolledEmployeeList = await _automaticProcessingRepository.ProcessApplicationAsync();
             foreach (var enrolledEmployees in enrolledEmployeeList)
             {
                 _notificationService.SendSelectedEmail(enrolledEmployees.Email, enrolledEmployees.Title);

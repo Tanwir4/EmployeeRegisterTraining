@@ -19,10 +19,6 @@ namespace EmployeeTrainingRegistration.Controllers
         {
             return View();
         }
-        public ActionResult Success()
-        {
-            return View();
-        }
         public ActionResult Error()
         {
             return View();
@@ -30,7 +26,7 @@ namespace EmployeeTrainingRegistration.Controllers
         [HttpGet]
         public async Task<JsonResult> IsEmailUnique(string email)
         {
-            bool isEmailUnique = await _accountService.IsEmailUnique(email);
+            bool isEmailUnique = await _accountService.IsEmailUniqueAsync(email);
             if (isEmailUnique)
             {
                 return Json(new { error = "Registration Successful!" });
@@ -40,20 +36,17 @@ namespace EmployeeTrainingRegistration.Controllers
         [HttpPost]
         public async Task<ActionResult> AddAccount(User user)
         {
-            if (await _registerService.IsRegistered(user)) { return RedirectToAction("Login", "Login"); }
+            if (await _registerService.IsRegisteredAsync(user)) { return RedirectToAction("Login", "Login"); }
             else
             {
                 return View("Error");
             }
         }
-
         [HttpGet]
         public async Task<JsonResult> ManagersByDepartment(string department)
         {
-            var Getmanagers = await _accountService.GetManagersByDepartment(department);
+            var Getmanagers = await _accountService.GetManagersByDepartmentAsync(department);
             return Json(new { managers = Getmanagers }, JsonRequestBehavior.AllowGet);
         }
-
-
     }
 }

@@ -16,18 +16,15 @@
                 }
             },
             error: function (error) {
-                //console.error('Error: ' + error.responseText);
                 console.error('Error: ', error);
             }
         });
     }
 
     function populateDepartmentDropdown(options, dropdown) {
-
-        // Check if the dropdown element exists
-        var $dropdown = $(dropdown); // Convert to jQuery object
+        var $dropdown = $(dropdown); 
         if ($dropdown.length) {
-            $dropdown.empty(); // Clear existing options
+            $dropdown.empty(); 
 
             options.forEach(function (option) {
                 var optionElement = $('<option>', { text: option.DepartmentName });
@@ -37,7 +34,5 @@
             console.error('Error: Dropdown element not found');
         }
     }
-
-
     GetDepartmentDropdown();
 });

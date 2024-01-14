@@ -9,7 +9,7 @@ namespace EmployeeTrainingRegistrationServices.Interfaces
 {
     public interface IAutomaticProcessingService
     {
-        Task<List<EnrolledNotificationDTO>> StartAutomaticProcessing();
-        Task<List<EnrolledEmployeeForExportDTO>> GetSelectedEmployeeList(int id);
+        Task<List<EnrolledNotificationDTO>> StartAutomaticProcessingAsync();
+        Task<List<EnrolledEmployeeForExportDTO>> GetSelectedEmployeeListAsync(int id);
     }
 }

@@ -20,7 +20,7 @@ namespace DataAccessLayer.Repositories
         {
             _dataAccessLayer = layer;
         }
-        public async Task<List<Department>> GetAllDepartmentName()
+        public async Task<List<Department>> GetAllDepartmentNameAsync()
         {
             List<Department> departments = new List<Department>();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())

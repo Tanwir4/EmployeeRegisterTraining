@@ -19,8 +19,6 @@ namespace EmployeeTrainingRegistration.Controllers
         {
             return View();
         }
-
-       
         [HttpPost]
         public async Task<ActionResult> Verify(Account acc)
         {

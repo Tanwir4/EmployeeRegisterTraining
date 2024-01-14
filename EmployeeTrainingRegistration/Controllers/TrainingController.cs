@@ -18,10 +18,6 @@ namespace EmployeeTrainingRegistration.Controllers
             _trainingService = trainingService;
             _automaticProcessingService = automaticProcessingService;
         }
-        public ActionResult HomePage()
-        {
-            return View();
-        }
         public ActionResult Index()
         {
             return View();
@@ -30,70 +26,66 @@ namespace EmployeeTrainingRegistration.Controllers
         {
             return View();
         }
-        public ActionResult AddTraining()
-        {
-            return View();
-        }
         [HttpGet]
         public async Task<JsonResult> GetTraining()
         {
-            List<Training> GetTraining =await _trainingService.GetAllTrainingForEmployee();
+            List<Training> GetTraining =await _trainingService.GetAllTrainingForEmployeeAsync();
             return Json(new { trainings = GetTraining }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public async Task<JsonResult> GetAllTrainingForAdmin()
         {
-            List<Training> GetTraining =await _trainingService.GetAllTrainingForAdmin();
-            return Json(new { trainings = GetTraining }, JsonRequestBehavior.AllowGet);
+            List<Training> GetTraining =await _trainingService.GetAllTrainingForAdminAsync();
+            return Json(new { trainings = GetTraining}, JsonRequestBehavior.AllowGet);
         }
-
         [HttpGet]
         public async Task<JsonResult> IsTrainingApplied(int trainingId)
         {
-            bool isApplied =await _trainingService.IsTrainingApplied(trainingId);
+            bool isApplied =await _trainingService.IsTrainingAppliedAsync(trainingId);
             return Json(isApplied, JsonRequestBehavior.AllowGet);
         }
-
+        [HttpGet]
+        public async Task<JsonResult> IsTrainingExpired(int trainingId)
+        {
+            bool isExpired = await _trainingService.IsTrainingExpired(trainingId);
+            return Json(isExpired, JsonRequestBehavior.AllowGet);
+        }
         [HttpGet]
         public async Task<JsonResult> GetAllPreRequisites()
         {
             List<string> allPreRequisites = new List<string>();
-            allPreRequisites =await _trainingService.GetAllPreRequisites();
+            allPreRequisites =await _trainingService.GetAllPreRequisitesAsync();
 
             return Json(new {allPreRequisite = allPreRequisites }, JsonRequestBehavior.AllowGet);
         }
-
         [HttpGet]
         public async Task<JsonResult> GetTrainingById(int trainingId)
         {
          
-            Training getTrainingByIdList = await _trainingService.GetAllTrainingById(trainingId);
+            Training getTrainingByIdList = await _trainingService.GetAllTrainingByIdAsync(trainingId);
             Training getTrainingById = getTrainingByIdList;
             List<string> preRequisite= new List<string>();
-            preRequisite =await _trainingService.GetPrerequisitesByTrainingId(trainingId);
+            preRequisite =await _trainingService.GetPrerequisitesByTrainingIdAsync(trainingId);
 
             List<string> allPreRequisite = new List<string>();
-            allPreRequisite =await _trainingService.GetAllPreRequisites();
+            allPreRequisite =await _trainingService.GetAllPreRequisitesAsync();
 
             Session["TrainingId"] = getTrainingById;
             return Json(new { trainings = getTrainingById, preRequisites= preRequisite, allPreRequisites= allPreRequisite }, JsonRequestBehavior.AllowGet);
         }
-
         [HttpPost]
         public async Task<ActionResult> UpdateTraining(Training training,Department department, List<string> checkedPrerequisites)
         {
-            if (await _trainingService.IsTrainingUpdated(training, department, checkedPrerequisites)) { return RedirectToAction("Login", "Login"); }
+            if (await _trainingService.IsTrainingUpdatedAsync(training, department, checkedPrerequisites)) { return RedirectToAction("Login", "Login"); }
             else { return RedirectToAction("Register", "Register"); }
         }
-
         [HttpPost]
         public async Task<JsonResult> DeleteTraining(int id)
         {
-            if (await _trainingService.IsTrainingDeleted(id)) { return Json(new { success = true, message = "Training deleted successfully." }); }
+            if (await _trainingService.IsTrainingDeletedAsync(id)) { return Json(new { success = true, message = "Training deleted successfully." }); }
             else { return Json(new { success = false, message = "Training cannot be deleted." }); }
         }
-
         [HttpPost]
         public ActionResult AddTraining(Training training, Department department)
         {
@@ -103,11 +95,10 @@ namespace EmployeeTrainingRegistration.Controllers
                 return View("Error");
             }
         }
-
         [HttpPost]
         public async Task<ActionResult> StartAutomaticProcessing()
         {
-            List<EnrolledNotificationDTO> enrolledEmployeeList =await _automaticProcessingService.StartAutomaticProcessing();
+            List<EnrolledNotificationDTO> enrolledEmployeeList =await _automaticProcessingService.StartAutomaticProcessingAsync();
                 return Json(new { success = true, message = "Automatic processing started successfully." });
         }
     }

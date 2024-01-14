@@ -20,14 +20,14 @@ namespace EmployeeTrainingRegistrationServices.Services
             _userRepository = userRepository;
         }
 
-        public async Task<string> GetManagerEmailByApplicantID()
+        public async Task<string> GetManagerEmailByApplicantIDAsync()
         {
-            return await _userRepository.GetManagerEmailByApplicantID();
+            return await _userRepository.GetManagerEmailByApplicantIDAsync();
         }
 
-        public async Task<List<string>> GetManagersByDepartment(string department)
+        public async Task<List<string>> GetManagersByDepartmentAsync(string department)
         {
-            return await _userRepository.GetAllManagersByDepartment(department);
+            return await _userRepository.GetAllManagersByDepartmentAsync(department);
         }
 
         public async  Task<int> GetUserAccountIdAsync(string email)
@@ -35,9 +35,9 @@ namespace EmployeeTrainingRegistrationServices.Services
             return await _userRepository.GetUserAccountIdByEmailAsync(email);
         }
 
-        public async Task<bool> IsEmailUnique(string email)
+        public async Task<bool> IsEmailUniqueAsync(string email)
         {
-            return await _userRepository.IsEmailUnique(email);
+            return await _userRepository.IsEmailUniqueAsync(email);
         }
     }
 }

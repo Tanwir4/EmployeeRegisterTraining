@@ -7,8 +7,8 @@ namespace EmployeeTrainingRegistrationServices.Interfaces
     public interface IAccountService
     {
         Task<int> GetUserAccountIdAsync(string email);
-        Task<string> GetManagerEmailByApplicantID();
-        Task<List<string>> GetManagersByDepartment(string department);
-        Task<bool> IsEmailUnique(string email);
+        Task<string> GetManagerEmailByApplicantIDAsync();
+        Task<List<string>> GetManagersByDepartmentAsync(string department);
+        Task<bool> IsEmailUniqueAsync(string email);
     }
 }

@@ -1,41 +1,10 @@
-﻿/*$(document).ready(function () {
+﻿$(document).ready(function () {
     $.ajax({
         url: '/Application/GetApplicationById',
         type: 'GET',
         datatype: 'json',
         success: function (data) {
             displayApplications(data.applications);
-        },
-        error: function (error) {
-            console.error(error);
-        },
-    });
-});
-
-function displayApplications(data) {
-    var applicationCards = $('#applicationCards');
-    data.forEach(function (application) {
-        var applicationHtml = `
-           <div class="card2">
-              <div class="header">
-                <span class="icon">
-                </span>
-                <p class="alert">${application["TrainingTitle"]}</p>
-              </div>
-                <p class="message">Status: ${application["Status"]}</p>
-        </div>`;
-        applicationCards.append(applicationHtml);
-    });
-}*/
-
-$(document).ready(function () {
-    $.ajax({
-        url: '/Application/GetApplicationById',
-        type: 'GET',
-        datatype: 'json',
-        success: function (data) {
-            displayApplications(data.applications);
-            // Initialize DataTables with pagination
             $('#applicationTable').DataTable({
                 "pageLength": 5,
                 "lengthChange": false,
@@ -47,16 +16,33 @@ $(document).ready(function () {
         },
     });
 });
-
 function displayApplications(data) {
     var applicationTable = $('#applicationTable');
     var tableBody = applicationTable.find('tbody');
     console.log('Display application function');
+
     data.forEach(function (application) {
+        // Define badge based on application status
+        var statusBadgeClass;
+        switch (application["Status"]) {
+            case "Approved":
+                statusBadgeClass = 'bg-success';
+                break;
+            case "Declined":
+                statusBadgeClass = 'bg-danger';
+                break;
+            case "Pending":
+                statusBadgeClass = 'bg-warning';
+                break;
+            default:
+                statusBadgeClass = 'bg-secondary';
+        }
+        var statusBadge = `<span class="badge ${statusBadgeClass} badge-font-size">${application["Status"]}</span>`;
+
         var rowHtml = `
             <tr>
                 <td>${application["TrainingTitle"]}</td>
-                <td>${application["Status"]}</td>
+                <td>${statusBadge}</td>
             </tr>`;
         tableBody.append(rowHtml);
     });

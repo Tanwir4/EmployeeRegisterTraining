@@ -13,7 +13,6 @@ namespace EmployeeTrainingRegistration.Controllers
             Session.Clear();
             return RedirectToAction("Login", "Login");
         }
-
         public ActionResult LogOut()
         {
             Session.Clear();
