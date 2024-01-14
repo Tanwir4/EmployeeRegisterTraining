@@ -22,6 +22,7 @@ namespace DataAccessLayer.Repositories
 
         public async Task<bool> IsTrainingApplied(int trainingId)
         {
+
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
                 string sql = $@"

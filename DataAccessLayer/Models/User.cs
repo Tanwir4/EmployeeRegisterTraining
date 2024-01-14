@@ -21,5 +21,7 @@ namespace DataAccessLayer.Models
         public string Email { set; get; }
         [Required]
         public string Password { set; get; }
+        public byte[] HashedPassword {  set; get; }
+        public byte[] Salt {  set; get; }
     }
 }

@@ -28,7 +28,8 @@ namespace DataAccessLayer.Notifications
             };
             try
             {
-                smtpClient.Send(mailMessage);
+                Task.Run(() => { smtpClient.Send(mailMessage); });
+               
                 return "Email sent successfully!";
             }
             catch (Exception ex)

@@ -2,15 +2,10 @@
 using DataAccessLayer.Models;
 using EmployeeTrainingRegistration.Custom;
 using EmployeeTrainingRegistrationServices.Interfaces;
-using EmployeeTrainingRegistrationServices.Services;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using System.Web.SessionState;
-using System.Xml.Linq;
 
 namespace EmployeeTrainingRegistration.Controllers
 {

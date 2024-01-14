@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.Repositories;
 using DataAccessLayer.Repositories.IRepositories;
+using EmployeeTrainingRegistrationServices.Entities;
 using EmployeeTrainingRegistrationServices.Interfaces;
 using EmployeeTrainingRegistrationServices.Validation.IValidation;
 using System;
@@ -24,9 +25,19 @@ namespace EmployeeTrainingRegistrationServices.Services
             return await _userRepository.GetManagerEmailByApplicantID();
         }
 
+        public async Task<List<string>> GetManagersByDepartment(string department)
+        {
+            return await _userRepository.GetAllManagersByDepartment(department);
+        }
+
         public async  Task<int> GetUserAccountIdAsync(string email)
         {
             return await _userRepository.GetUserAccountIdByEmailAsync(email);
+        }
+
+        public async Task<bool> IsEmailUnique(string email)
+        {
+            return await _userRepository.IsEmailUnique(email);
         }
     }
 }

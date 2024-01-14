@@ -1,5 +1,4 @@
 ﻿using DataAccessLayer.Models;
-using DataAccessLayer.Repositories.IRepositories;
 using EmployeeTrainingRegistration.Custom;
 using EmployeeTrainingRegistrationServices.Interfaces;
 using System.Threading.Tasks;
@@ -31,7 +30,10 @@ namespace EmployeeTrainingRegistration.Controllers
                
                 string roleName =await _loginService.GetRoleNameByEmailAsync(acc.Email);
                 Session["CurrentRole"] = roleName;
-                if (roleName =="Employee") { return RedirectToAction("Index", "Training"); }
+                if (roleName =="Employee") {
+                    return RedirectToAction("Index", "Training");
+                   
+                }
                 else if(roleName == "Manager") { return RedirectToAction("Index", "Manager"); }
                 else { return RedirectToAction("AdminViewTraining", "Training"); }
             }

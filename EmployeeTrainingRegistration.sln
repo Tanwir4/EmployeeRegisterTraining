@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeTrainingRegistratio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessLayer", "DataAccessLayer\DataAccessLayer.csproj", "{68EA96D6-B1DC-4376-B250-80792A48658A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeTrainingRegistrationTest", "EmployeeTrainingRegistrationTest\EmployeeTrainingRegistrationTest.csproj", "{1EF4C907-2A5A-43DA-AEBE-DD90AD9463E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{68EA96D6-B1DC-4376-B250-80792A48658A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68EA96D6-B1DC-4376-B250-80792A48658A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68EA96D6-B1DC-4376-B250-80792A48658A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EF4C907-2A5A-43DA-AEBE-DD90AD9463E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EF4C907-2A5A-43DA-AEBE-DD90AD9463E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EF4C907-2A5A-43DA-AEBE-DD90AD9463E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EF4C907-2A5A-43DA-AEBE-DD90AD9463E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

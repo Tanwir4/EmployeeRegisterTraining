@@ -204,6 +204,13 @@ function submitApplication() {
         return;
     }
 
+    var fileInputs = $('input[name^="fileInput_"]');
+    if (fileInputs.length === 0 || fileInputs[0].files.length === 0) {
+        console.error('Please upload at least one file.');
+        toastr.error('Files missing!');
+        return;
+    }
+
     var formData = new FormData($('#applicationForm')[0]);
 
     // Find all file inputs with the name 'fileInput_' and append them to formData

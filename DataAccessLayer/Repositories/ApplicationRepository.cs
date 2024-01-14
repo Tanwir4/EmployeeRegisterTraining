@@ -90,27 +90,27 @@ namespace DataAccessLayer.Repositories
 
         public async Task<EmailDTO> GetManagerApprovalDetails(int applicationId)
         {
-            EmailDTO managerApprovalDetails = null;
+            EmailDTO managerApprovalDetails = new EmailDTO();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
                 string sql = @"
                             SELECT
-                            A.UserID AS ApplicantUserID,
-                            CONCAT(U1.FirstName,' ',U1.LastName) AS ApplicantName, 
-                            CONCAT(U2.FirstName,' ',U2.LastName) AS ManagertName, 
-                            UA.Email AS ApplicantEmail,
-                            U2.UserID AS ManagerUserID,
-                            UM.Email AS ManagerEmail,
-                            T.Title 
-                            FROM
-                            ApplicationDetails A
-                            INNER JOIN UserDetails U1 ON A.UserID = U1.UserID
-                            INNER JOIN UserAccount UA ON U1.UserID = UA.UserAccountID
-                            LEFT JOIN UserDetails U2 ON U1.ManagerUserID = U2.UserID
-                            LEFT JOIN UserAccount UM ON U2.UserID = UM.UserAccountID
-                            INNER JOIN TrainingDetails T ON A.TrainingID=T.TrainingID
-                            WHERE A.ApplicationID = @ApplicationId;
-                                ";
+                             A.UserID AS ApplicantUserID,
+                             CONCAT(U1.FirstName,' ',U1.LastName) AS ApplicantName, 
+                             CONCAT(U2.FirstName,' ',U2.LastName) AS ManagertName, 
+                             UA.Email AS ApplicantEmail,
+                             U2.UserID AS ManagerUserID,
+                             UM.Email AS ManagerEmail,
+                             T.Title 
+                             FROM
+                             ApplicationDetails A
+                             INNER JOIN UserDetails U1 ON A.UserID = U1.UserID
+                             INNER JOIN UserAccount UA ON U1.UserAccountID = UA.UserAccountID
+                             LEFT JOIN UserDetails U2 ON U1.ManagerUserID = U2.UserID
+                             LEFT JOIN UserAccount UM ON U2.UserID = UM.UserAccountID
+                             INNER JOIN TrainingDetails T ON A.TrainingID=T.TrainingID
+                             WHERE A.ApplicationID = @ApplicationId;
+                                                            ";
 
                 List<SqlParameter> parameters = new List<SqlParameter>
     {
@@ -127,7 +127,7 @@ namespace DataAccessLayer.Repositories
                             ManagerName = (string)reader["ManagertName"],
                             //ApplicationStatus = reader.GetString(reader.GetOrdinal("ApplicationStatus")),
                             TrainingTitle = reader.GetString(reader.GetOrdinal("Title")),
-                            ManagerEmail = reader.GetString(reader.GetOrdinal("ManagerEmail")),
+                            //ManagerEmail = reader.GetString(reader.GetOrdinal("ManagerEmail")),
                             EmployeeEmail = reader.GetString(reader.GetOrdinal("ApplicantEmail"))
 
                         };

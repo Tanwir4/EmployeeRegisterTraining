@@ -352,6 +352,7 @@
     <Content Include="Styles\Manager\ManagerViewApplication.css" />
     <Content Include="Styles\Register\RegisterPage.css" />
     <Content Include="Styles\Training.css" />
+    <Content Include="Styles\TrainingHomePage.css" />
     <Content Include="Styles\TrainingIndex.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -385,9 +386,11 @@
     <Content Include="Views\Common\NotFound.cshtml" />
     <Content Include="Views\AutomaticProcessing\Index.cshtml" />
     <Content Include="Views\LogOut\LogOut.cshtml" />
+    <Content Include="Views\Training\HomePage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Styles\NewFolder1\" />
     <Folder Include="Views\Department\" />
   </ItemGroup>
   <ItemGroup>

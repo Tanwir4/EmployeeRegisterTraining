@@ -5,13 +5,50 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="~/Styles/Register/RegisterPage.css" rel="stylesheet" />
-    <script src="~/js/LoginValidation.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="~/js/RegisterValidation.js"></script>
+    @*    <script src="~/js/Department.js"></script>*@
+
+
+    <script>
+        $(document).ready(function () {
+            $('#department').on('change', function () {
+                var selectedDepartment = $(this).val();
+                $.ajax({
+                    type: 'GET',
+                    url: '/Register/ManagersByDepartment',
+                    data: { department: selectedDepartment },
+                    success: function (data) {
+                        console.log(data);
+                        // Clear existing options
+                        $('#manager').empty();
+
+                        // Populate manager dropdown with new options
+                        $.each(data.managers, function (index, manager) {
+                            $('#manager').append($('<option>').text(manager).attr('value', manager));
+                        });
+                    },
+
+                    error: function (error) {
+                        console.error('Error fetching managers:', error);
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
 </head>
+<html>
 <body>
-   
+    <div id="toaster" class="toaster">
+        <p id="toasterMessage"></p>
+    </div>
+
+
     <div class="container" id="container">
-        <form action="@Url.Action("AddAccount", "Register")" method="post" onsubmit="return validateRegisterForm()">
+        <form id="registerForm" action="@Url.Action("AddAccount", "Register")" method="post" onsubmit="return validateRegisterForm()">
             <h1>REGISTER</h1>
             <div id="errorMessages" style="color: red;"></div>
             <label class="label" for="name">First Name:</label>
@@ -22,8 +59,6 @@
             <input type="text" class="form-control" placeholder="Enter Mobile Number" name="MobileNumber">
             <label class="label" for="name">National Identity Card </label>
             <input type="text" class="form-control" placeholder="Enter NIC" name="NationalIdentityCard">
-            <label class="label" for="name">Manager Name </label>
-            <input type="text" class="form-control" placeholder="Enter Manager Name" name="ManagerName">
 
             <label for="department" class="label">Department:</label>
             <select id="department" name="DepartmentName" class="form-control dd">
@@ -32,6 +67,15 @@
                 <option value="Human Resource">Human Resource</option>
                 <option value="Other">Other</option>
             </select>
+
+            <label for="manager" class="label">Manager:</label>
+            <select id="manager" name="ManagerName" class="form-control dd"></select>
+
+
+            @*     <div class="form-group">
+                    <label for="editDepartment">Department:</label>
+                    <select id="departmentDropdown3" name="DepartmentName" class="form-control dd"></select>
+                </div>*@
 
             <label class="label" for="name">Email:</label>
             <input type="text" name="Email" placeholder="Enter your Email" />

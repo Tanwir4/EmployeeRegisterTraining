@@ -8,6 +8,7 @@ using System.Web.Mvc;
 namespace EmployeeTrainingRegistration.Controllers
 {
     [UserSession]
+    [ValidationFilter]
     public class TrainingController : Controller
     {
         private readonly ITrainingService _trainingService;
@@ -16,6 +17,10 @@ namespace EmployeeTrainingRegistration.Controllers
         {
             _trainingService = trainingService;
             _automaticProcessingService = automaticProcessingService;
+        }
+        public ActionResult HomePage()
+        {
+            return View();
         }
         public ActionResult Index()
         {

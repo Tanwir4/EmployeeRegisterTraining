@@ -10,12 +10,14 @@
                 if (data.departments) {
                     populateDepartmentDropdown(data.departments, '#departmentDropdown');
                     populateDepartmentDropdown(data.departments, '#departmentDropdown2');
+                    populateDepartmentDropdown(data.departments, '#department');
                 } else {
                     console.error('Error: Unexpected response format');
                 }
             },
             error: function (error) {
-                console.error('Error: ' + error.responseText);
+                //console.error('Error: ' + error.responseText);
+                console.error('Error: ', error);
             }
         });
     }

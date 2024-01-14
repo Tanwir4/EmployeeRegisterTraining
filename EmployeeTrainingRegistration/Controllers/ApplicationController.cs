@@ -6,7 +6,6 @@ using System.Web.Mvc;
 using System.Collections.Generic;
 using DataAccessLayer.Models;
 using System.Threading.Tasks;
-using DataAccessLayer.DTO;
 using EmployeeTrainingRegistrationServices.Entities;
 using EmployeeTrainingRegistration.Custom;
 

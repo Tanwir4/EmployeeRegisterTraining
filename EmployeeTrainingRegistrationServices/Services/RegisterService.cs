@@ -1,6 +1,7 @@
 ﻿using DataAccessLayer.Models;
 using DataAccessLayer.Repositories.IRepositories;
 using EmployeeTrainingRegistrationServices.Interfaces;
+using EmployeeTrainingRegistrationServices.Security;
 using System.Threading.Tasks;
 
 namespace EmployeeTrainingRegistrationServices.Services
@@ -14,6 +15,11 @@ namespace EmployeeTrainingRegistrationServices.Services
         }
         public async Task<bool> IsRegistered(User user)
         {
+            //user.HashedPassword= PasswordHashing.ComputeStringToSha256Hash(user.Password);
+            user.Salt = PasswordHashing.GenerateSalt();
+
+            // Combine the password and salt before hashing
+            user.HashedPassword = PasswordHashing.ComputeStringToSha256Hash(user.Password, user.Salt);
             return await _userRepository.Register(user);
         }
     }

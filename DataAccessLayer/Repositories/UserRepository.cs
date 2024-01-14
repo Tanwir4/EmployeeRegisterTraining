@@ -7,6 +7,7 @@ using DataAccessLayer.DBConnection;
 using System.Web;
 using System.Threading.Tasks;
 using EmployeeTrainingRegistrationServices.Entities;
+using System.Runtime.Remoting.Messaging;
 
 namespace DataAccessLayer.Repositories
 {
@@ -16,6 +17,49 @@ namespace DataAccessLayer.Repositories
         public UserRepository(IDataAccessLayer layer)
         {
             _dataAccessLayer = layer;
+        }
+
+
+        public async Task<bool> IsEmailUnique(string email)
+        {
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                string sql = $@"select 1 from UserAccount where Email=@Email";
+
+                List<SqlParameter> parameters = new List<SqlParameter>
+                   {
+                       new SqlParameter("@Email", SqlDbType.VarChar, 100) { Value = email }
+                   };
+                SqlDataReader reader = await _dataAccessLayer.GetDataWithConditionsAsync(sql, parameters);
+                return (reader.HasRows);
+            }
+        }
+
+        public async Task<List<string>> GetAllManagersByDepartment(string department)
+        {
+            List<string> managerList = new List<string>();
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                string sql = $@"select concat(FirstName,' ',LastName) As ManagerName 
+                                from UserDetails
+                                inner join Department on Department.DepartmentID=UserDetails.DepartmentID
+                                where DepartmentName=@DepartmentName AND ManagerUserID IS NULL;
+                                ";
+                List<SqlParameter> parameters = new List<SqlParameter>
+                {
+                new SqlParameter("@DepartmentName", SqlDbType.VarChar, 100) { Value = department }
+                };
+                using (SqlDataReader reader = await _dataAccessLayer.GetDataWithConditionsAsync(sql, parameters))
+                {
+                    string managerName;
+                   while (await reader.ReadAsync())
+                    {
+                        managerName = reader.GetString(reader.GetOrdinal("ManagerName"));
+                        managerList.Add(managerName);
+                    }
+                }
+            }
+            return managerList;
         }
 
         public async  Task<string> GetRoleByEmailAsync(string email)
@@ -42,18 +86,25 @@ namespace DataAccessLayer.Repositories
             return role;
         }
 
-        public async Task<bool> AuthenticateAsync(Account user)
+        public async Task<Account> AuthenticateAsync(Account account)
         {
+            Account acc = new Account();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
-                const string SQL = "SELECT 1 FROM UserAccount WHERE Email=@EmailAddress AND Passwordd=@Password";
+                const string SQL = "SELECT HashedPassword,Salt FROM UserAccount WHERE Email=@EmailAddress";
                 List<SqlParameter> parameters = new List<SqlParameter>
             {
-                new SqlParameter("@EmailAddress", SqlDbType.VarChar, 100) { Value = user.Email },
-                new SqlParameter("@Password", SqlDbType.VarChar, 100) { Value = user.Password }
+                new SqlParameter("@EmailAddress", SqlDbType.VarChar, 100) { Value = account.Email }
+               
             };
                 SqlDataReader getData =await _dataAccessLayer.GetDataWithConditionsAsync(SQL, parameters);
-                return (getData.HasRows);
+
+                if (await getData.ReadAsync())
+                {
+                    acc.HashedPassword = (byte[])getData["HashedPassword"];
+                    acc.Salt = (byte[])getData["Salt"];
+                }
+                    return acc;
             }
         }
         public async Task<bool> Register(User user)
@@ -61,17 +112,18 @@ namespace DataAccessLayer.Repositories
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
                 string sql = $@"
-                          DECLARE @AccountTempID INT
-                          DECLARE @managerId INT
-                          DECLARE @deptId INT
-                          INSERT INTO UserAccount (Email, Passwordd,RoleID) VALUES (@Email,@Passwordd,1)
+                           DECLARE @AccountTempID INT
+                           DECLARE @managerId INT
+                           DECLARE @deptId INT
+                           INSERT INTO UserAccount (Email, Passwordd,HashedPassword,Salt,RoleID) VALUES (@Email,@Passwordd,@HashedPassword,@Salt,1)
 
-                           SET @AccountTempID = SCOPE_IDENTITY()
-                           SET @managerId=(SELECT UserID FROM UserDetails WHERE CONCAT(FirstName, ' ',LastName)=@ManagerName)
-                           SET @deptId =(SELECT DepartmentID FROM Department WHERE DepartmentName=@DepartmentName)
+                            SET @AccountTempID = SCOPE_IDENTITY()
+                            SET @managerId=(SELECT UserID FROM UserDetails WHERE CONCAT(FirstName, ' ',LastName)=@ManagerName)
+                            SET @deptId =(SELECT DepartmentID FROM Department WHERE DepartmentName=@DepartmentName)
 
-                          INSERT INTO UserDetails (FirstName,LastName,MobileNumber,NationalIdentityCard,ManagerUserID,UserAccountID,DepartmentID)
-                          VALUES (@FirstName,@LastName,@MobileNumber,@NationalIdentityCard,@managerId, @AccountTempID, @deptId)";
+                           INSERT INTO UserDetails (FirstName,LastName,MobileNumber,NationalIdentityCard,ManagerUserID,UserAccountID,DepartmentID)
+                           VALUES (@FirstName,@LastName,@MobileNumber,@NationalIdentityCard,@managerId, @AccountTempID, @deptId)";
+
                 List<SqlParameter> parameters = new List<SqlParameter>
                    {
                        new SqlParameter("@Email", SqlDbType.VarChar, 100) { Value = user.Email },
@@ -81,7 +133,9 @@ namespace DataAccessLayer.Repositories
                        new SqlParameter("@MobileNumber", SqlDbType.VarChar, 20) { Value = user.MobileNumber },
                        new SqlParameter("@NationalIdentityCard", SqlDbType.VarChar, 15) { Value = user.NationalIdentityCard },
                        new SqlParameter("@ManagerName", SqlDbType.VarChar, 80) { Value = user.ManagerName },
-                       new SqlParameter("@DepartmentName", SqlDbType.VarChar, 40) { Value = user.DepartmentName }
+                       new SqlParameter("@DepartmentName", SqlDbType.VarChar, 40) { Value = user.DepartmentName },
+                       new SqlParameter("@HashedPassword", SqlDbType.VarBinary) { Value = user.HashedPassword },
+                        new SqlParameter("@Salt", SqlDbType.VarBinary) { Value = user.Salt }
                    };
                 int numberOfRowsAffected = await _dataAccessLayer.InsertDataAsync(sql, parameters);
                 return (numberOfRowsAffected > 0);
@@ -113,18 +167,16 @@ namespace DataAccessLayer.Repositories
         public async Task<string> GetManagerEmailByApplicantID()
         {
             string email = null;
-            int userId =await GetUserIdAsync();
+            int userId = await GetUserIdAsync();
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
-                string sql = $@"SELECT DISTINCT
-                                UM.Email AS ManagerEmail
-                                FROM
-                                UserDetails U1
-                                INNER JOIN UserAccount UA ON U1.UserID = UA.UserAccountID
-                                LEFT JOIN UserDetails U2 ON U1.ManagerUserID = U2.UserID
-                                LEFT JOIN UserAccount UM ON U2.UserID = UM.UserAccountID
-                                WHERE
-                                U1.UserID = @UserID;";
+                string sql = $@"declare @ManagerUserID int
+                                declare @ManagerUserAccountID int
+                                declare @ManagerEmail varchar(max)
+                                set @ManagerUserID=(select ManagerUserID from UserDetails where UserID=@UserID)
+                                set @ManagerUserAccountID=(select UserAccountID from UserDetails where UserID=@ManagerUserID)
+                                set @ManagerEmail=(select Email from UserAccount where UserAccountID=@ManagerUserAccountID)
+                                select @ManagerEmail as ManagerEmail;";
 
                 List<SqlParameter> parameters = new List<SqlParameter>
                 {
@@ -135,10 +187,10 @@ namespace DataAccessLayer.Repositories
                 {
                     if (await reader.ReadAsync())
                     {
-                         email =  reader.GetString(reader.GetOrdinal("ManagerEmail"));
+                        email = reader.GetString(reader.GetOrdinal("ManagerEmail"));
                     }
                 }
-               
+
             }
             return email;
         }

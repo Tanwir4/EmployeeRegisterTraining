@@ -38,7 +38,7 @@ namespace EmployeeTrainingRegistrationServices.Services
         public string NotifyManager(string recipientEmail, string trainingTitle)
         {
             string subject = "New Training Application";
-            string body = $"Hello,\n\nYou have an application to process for '{trainingTitle}.";
+            string body = $"Hello,\n\nYou have an application to process for '{trainingTitle}'.";
 
             return EmailSender.SendEmail(subject, body, recipientEmail);
         }
