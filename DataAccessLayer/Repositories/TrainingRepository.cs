@@ -53,7 +53,7 @@ namespace DataAccessLayer.Repositories
                 string sql = $@"
                         SELECT 1
                         FROM TrainingDetails
-                        WHERE Deadline >= GETDATE() AND IsActive=@IsActive AND TrainingID=@TrainingID;";
+                        WHERE Deadline > GETDATE() AND IsActive=@IsActive AND TrainingID=@TrainingID;";
                 List<SqlParameter> parameters = new List<SqlParameter>
         {
             new SqlParameter("@IsActive", SqlDbType.Int) { Value = 1 },

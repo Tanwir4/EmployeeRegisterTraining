@@ -89,7 +89,7 @@ namespace EmployeeTrainingRegistration.Controllers
         [HttpPost]
         public ActionResult AddTraining(Training training, Department department)
         {
-            if (_trainingService.IsTrainingAdded(training, department)) { return RedirectToAction("Login", "Login"); }
+            if (_trainingService.IsTrainingAdded(training, department)) { return RedirectToAction("AdminViewTraining", "Training"); }
             else
             {
                 return View("Error");

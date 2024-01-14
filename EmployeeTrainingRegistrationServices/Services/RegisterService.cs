@@ -15,10 +15,8 @@ namespace EmployeeTrainingRegistrationServices.Services
         }
         public async Task<bool> IsRegisteredAsync(User user)
         {
-            //user.HashedPassword= PasswordHashing.ComputeStringToSha256Hash(user.Password);
             user.Salt = PasswordHashing.GenerateSalt();
 
-            // Combine the password and salt before hashing
             user.HashedPassword = PasswordHashing.ComputeStringToSha256Hash(user.Password, user.Salt);
             return await _userRepository.RegisterAsync(user);
         }

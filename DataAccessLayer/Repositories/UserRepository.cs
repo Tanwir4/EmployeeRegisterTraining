@@ -6,8 +6,6 @@ using System.Data;
 using DataAccessLayer.DBConnection;
 using System.Web;
 using System.Threading.Tasks;
-using EmployeeTrainingRegistrationServices.Entities;
-using System.Runtime.Remoting.Messaging;
 
 namespace DataAccessLayer.Repositories
 {

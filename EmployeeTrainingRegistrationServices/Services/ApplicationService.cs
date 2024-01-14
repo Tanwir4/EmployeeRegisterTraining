@@ -1,11 +1,8 @@
 ﻿using DataAccessLayer.DTO;
 using DataAccessLayer.Models;
 using DataAccessLayer.Repositories.IRepositories;
-using EmployeeTrainingRegistrationServices.Entities;
 using EmployeeTrainingRegistrationServices.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace EmployeeTrainingRegistrationServices.Services

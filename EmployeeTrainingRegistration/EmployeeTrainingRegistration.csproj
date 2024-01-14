@@ -295,6 +295,8 @@
     <Compile Include="Custom\GlobalExceptionFilter.cs" />
     <Compile Include="Custom\UserSessionAttribute.cs" />
     <Compile Include="Custom\ValidationFilter.cs" />
+    <Compile Include="Enums\ApplicationStatus.cs" />
+    <Compile Include="Enums\Role.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

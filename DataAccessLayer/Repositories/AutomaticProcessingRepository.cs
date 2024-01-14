@@ -7,10 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Globalization;
-using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repositories
@@ -42,6 +38,7 @@ namespace DataAccessLayer.Repositories
                                 LEFT JOIN UserDetails U2 ON U1.ManagerUserID = U2.UserID
                                 LEFT JOIN UserAccount UM ON U2.UserID = UM.UserAccountID
                                 INNER JOIN TrainingDetails T ON A.TrainingID=T.TrainingID
+                                INNER JOIN Enrollment E ON E.ApplicationID=A.ApplicationID
                                 WHERE
                                 T.TrainingID=@TrainingId AND T.Deadline = CONVERT(DATE, GETDATE());";
 

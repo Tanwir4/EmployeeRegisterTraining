@@ -1,6 +1,7 @@
 ﻿using DataAccessLayer.DTO;
 using DataAccessLayer.Models;
 using EmployeeTrainingRegistration.Custom;
+using EmployeeTrainingRegistration.Enums;
 using EmployeeTrainingRegistrationServices.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,6 @@ namespace EmployeeTrainingRegistration.Controllers
         {
             return View();
         }
-
         [CustomAuthorization("Manager")]
         [HttpGet]
         public async Task<JsonResult> GetApplicationsByManagerId()
@@ -39,14 +39,10 @@ namespace EmployeeTrainingRegistration.Controllers
             EmailDTO emailDetails =await _applicationService.GetManagerApprovalDetailsAsync(applicationID);
             string applicantEmail = emailDetails.EmployeeEmail;
             _notificationService.SendApprovalEmail(applicantEmail, emailDetails.TrainingTitle);
-            if (success=="Approved")
-            {
-                return Json(new { success = true, message = "Application approved successfully" });
-            }
-            else
-            {
-                return Json(new { success = false, message = "Failed to approve application" });
-            }
+            Enum.TryParse(success, out ApplicationStatus status);
+            if (status == ApplicationStatus.Approved){return Json(new { success = true, message = "Application approved successfully" });}
+            else if (status == ApplicationStatus.Declined){return Json(new { success = false, message = "Failed to approve application" });}
+            return Json(new { success = false, message = "An error occurred while processing the application." });
         }
         [HttpPost]
         public async Task<ActionResult> DeclineApplication(string name, string title,string declineReason,int applicationID)
@@ -55,14 +51,8 @@ namespace EmployeeTrainingRegistration.Controllers
             EmailDTO emailDetails =await _applicationService.GetManagerApprovalDetailsAsync(applicationID);
             string applicantEmail = emailDetails.EmployeeEmail;
             _notificationService.SendDeclineEmail(applicantEmail, emailDetails.TrainingTitle, declineReason);
-            if (success)
-            {
-                return Json(new { success = true, message = "Application declined successfully" });
-            }
-            else
-            {
-                return Json(new { success = false, message = "Failed to decline application" });
-            }
+            if (success){return Json(new { success = true, message = "Application declined successfully" });}
+            else{return Json(new { success = false, message = "Failed to decline application" });}
         }
         [HttpGet]
         public async Task<ActionResult> GetAttachmentsByApplicationID(int applicationID)
@@ -75,7 +65,7 @@ namespace EmployeeTrainingRegistration.Controllers
         {
             byte[] binaryFile =await _applicationService.GetAttachmentsByIdAsync(attachmentID);
             string contentType = "application/octet-stream";
-            string fileName = Uri.UnescapeDataString("hello"); // Decode encoded file name
+            string fileName = Uri.UnescapeDataString("hello");
             return  File(binaryFile, contentType, fileName);
         }
     }

@@ -5,8 +5,6 @@
         positionClass: 'toast-top-right',
         timeOut: 3000
     };
-
-
     var selectedEmployeesTable = $('#selectedEmployeesTable').DataTable({
         dom: 'Bfrtip',
         buttons: [
@@ -28,7 +26,7 @@
     $('#automaticProcessingBtn').on('click', function () {
         $.ajax({
             type: 'POST',
-            url: '/Training/StartAutomaticProcessing', // Replace with your controller route
+            url: '/Training/StartAutomaticProcessing',
             dataType: 'json',
             success: function (response) {
                 if (response.success) {
@@ -42,14 +40,11 @@
             }
         });
     });
-
-    // Fetch training details from the server
     $.ajax({
-        url: '/Training/GetAllTrainingForAdmin', // Replace with the actual URL
+        url: '/Training/GetAllTrainingForAdmin', 
         type: 'GET',
         dataType: 'json',
         success: function (data) {
-            // Populate the table with training details
             var trainingTableBody = $('#trainingTable tbody');
             $.each(data.trainings, function (index, training) {
                 var isExpired = checkIfTrainingExpired(training.TrainingID);
@@ -70,8 +65,6 @@
 
             $('.editButton').on('click', function () {
                 var trainingId = $(this).data('training-id');
-
-                // Fetch training details and prerequisites by ID
                 $.ajax({
                     url: '/Training/GetTrainingById',
                     type: 'GET',
@@ -90,9 +83,6 @@
                         $('#editDeadline').val(formatDate(deadline));
                         $('#departmentDropdown').val(data.trainings.DepartmentName);
 
-
-
-                        // Display prerequisites using checkboxes
                         var prerequisitesHtml = '';
                         if (data.allPreRequisites && data.allPreRequisites.length > 0) {
                             data.allPreRequisites.forEach(function (prerequisite) {
@@ -107,15 +97,10 @@
                         }
 
                         $('#prerequisitesCheckboxes').html(prerequisitesHtml);
-
-                        //populateDepartmentDropdown();
-
-                        // Set the trainingId as a data attribute in the form
                         $('#editTrainingForm').data('trainingId', trainingId);
                     },
                     error: function (error) {
                         console.error(error);
-                        //alert('Edit button error');
                     }
                 });
             });
@@ -132,10 +117,6 @@
                 $('input[type="checkbox"]:checked').each(function () {
                     checkedPrerequisites.push($(this).val());
                 });
-
-                //alert('Checked Prerequisites: ' + checkedPrerequisites.join(', '));
-
-                // Prepare data to send to the server
                 var data = {
                     TrainingId: trainingId,
                     Title: editedTitle,
@@ -148,26 +129,20 @@
 
                 };
                 console.log(data);
-                // Make an AJAX request to the server
                 $.ajax({
                     type: 'POST',
                     url: '/Training/UpdateTraining',
                     data: data,
                     success: function (result) {
-                        // Handle the success response from the server
                         toastr.success('Training changes saved successfully!');
-
-                        // Reload the page to see the changes
                         setTimeout(function () {
                             location.reload();
                         }, 1000);
                     },
                     error: function () {
-                        // Handle the error case
                         toastr.error('Error occurred while saving changes.');
                     }
                 });
-                // Close the modal after initiating the AJAX request
                 $('#trainingDetailsModal').modal('hide');
             });
 
@@ -185,8 +160,6 @@
                 });
 
                 alert('Checked Prerequisites: ' + checkedPrerequisites.join(', '));
-
-                // Prepare data to send to the server
                 var data = {
                     TrainingId: trainingId,
                     Title: addTitle,
@@ -199,33 +172,22 @@
 
                 };
                 console.log(data);
-                // Make an AJAX request to the server
                 $.ajax({
                     type: 'POST',
-                    url: '/Training/AddTraining', // Replace 'ControllerName' with your actual controller name
+                    url: '/Training/AddTraining',
                     data: data,
                     success: function (result) {
-                        // Handle the success response from the server
-                        //alert('Changes saved successfully!');
-
                         toastr.success('New Training added successfully!');
-
-                        // Reload the page to see the changes
                         setTimeout(function () {
                             location.reload();
                         }, 1000);
                     },
                     error: function () {
-                        // Handle the error case
                         alert('Error occurred while saving changes.');
                     }
                 });
-
-                // Close the modal after initiating the AJAX request
                 $('#trainingDetailsModal').modal('hide');
             });
-
-
             $('.deleteButton').on('click', function () {
                 var trainingId = $(this).data('training-id');
                 $.ajax({
@@ -234,12 +196,12 @@
                     data: { id: trainingId },
                     success: function (result) {
                         if (result.success) {
-                            console.log('Training cannot be deleted');
-                            toastr.error('Training cannot be deleted!');
+                            //console.log('Training cannot be deleted');
+                            toastr.success('Training successfully deleted!');
                         }
                         else {
-                            console.log('Training deleted successfully');
-                            toastr.success('Training deleted successfully!');
+                            //console.log('Training deleted successfully');
+                            toastr.error('Training cannot be deleted!');
 
                             setTimeout(function () {
                                 location.reload();
@@ -282,7 +244,7 @@
                             $('#exportBtn').show();
                         } else {
                             trainingTitle.html('<p>No selected employees for this training.</p>');
-                            selectedEmployeesTable.clear().draw(); // Clear DataTable rows
+                            selectedEmployeesTable.clear().draw();
                             $('#selectedEmployeesTable thead').hide();
                             $('#exportBtn').hide();
                         }
@@ -295,14 +257,9 @@
                 });
             });
 
-
-            // Export button click event
             $('#exportBtn').on('click', function () {
-                // Trigger the DataTables buttons export function
                 selectedEmployeesTable.buttons(0).trigger();
             });
-
-            // Hide the Excel button
             $('.buttons-excel').hide();
 
             $('#trainingTable').DataTable({
@@ -313,19 +270,12 @@
             });
             $('.addTrainingButton').on('click', function (event) {
                 console.log('Add Training button clicked');
-
-                // Show the modal
                 $('#AddTrainingModal').modal('show');
-
-                // Fetch prerequisites from the server
                 $.ajax({
-                    url: '/Training/GetAllPreRequisites', // Update the URL if needed
+                    url: '/Training/GetAllPreRequisites', 
                     type: 'GET',
                     success: function (data) {
-                        // Clear existing checkboxes
                         $('#trainingPrerequisites').empty();
-
-                        // Add checkboxes for each prerequisite
                         data.allPreRequisite.forEach(function (preReq) {
                             $('#trainingPrerequisites').append(
                                 '<div class="form-check">' +
@@ -342,19 +292,12 @@
 
                 event.preventDefault();
             });
-
-
-
-
         },
         error: function (error) {
             console.error('Error fetching training details: ', error);
         }
     });
 });
-
-
-// Function to format date as 'YYYY-MM-DD'
 function formatDate(date) {
     var year = date.getFullYear();
     var month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -362,15 +305,13 @@ function formatDate(date) {
     return `${year}-${month}-${day}`;
 }
 
-// Function to check if a training is expired
 function checkIfTrainingExpired(trainingId) {
-    // Make an AJAX call to the IsTrainingExpired action in the controller
     var isExpired = false;
     $.ajax({
         url: '/Training/IsTrainingExpired',
         type: 'GET',
         data: { trainingId: trainingId },
-        async: false, // Ensure synchronous execution for simplicity
+        async: false,
         success: function (result) {
             isExpired = result;
         }

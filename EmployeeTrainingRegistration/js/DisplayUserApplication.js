@@ -20,9 +20,7 @@ function displayApplications(data) {
     var applicationTable = $('#applicationTable');
     var tableBody = applicationTable.find('tbody');
     console.log('Display application function');
-
     data.forEach(function (application) {
-        // Define badge based on application status
         var statusBadgeClass;
         switch (application["Status"]) {
             case "Approved":
@@ -35,7 +33,7 @@ function displayApplications(data) {
                 statusBadgeClass = 'bg-warning';
                 break;
             default:
-                statusBadgeClass = 'bg-secondary';
+                statusBadgeClass = 'bg-info';
         }
         var statusBadge = `<span class="badge ${statusBadgeClass} badge-font-size">${application["Status"]}</span>`;
 

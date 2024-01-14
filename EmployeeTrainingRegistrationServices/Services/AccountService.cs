@@ -1,12 +1,6 @@
-﻿using DataAccessLayer.Repositories;
-using DataAccessLayer.Repositories.IRepositories;
-using EmployeeTrainingRegistrationServices.Entities;
+﻿using DataAccessLayer.Repositories.IRepositories;
 using EmployeeTrainingRegistrationServices.Interfaces;
-using EmployeeTrainingRegistrationServices.Validation.IValidation;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EmployeeTrainingRegistrationServices.Services
