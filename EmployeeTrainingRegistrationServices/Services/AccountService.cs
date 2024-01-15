@@ -29,9 +29,9 @@ namespace EmployeeTrainingRegistrationServices.Services
             return await _userRepository.GetUserAccountIdByEmailAsync(email);
         }
 
-        public async Task<bool> IsEmailUniqueAsync(string email)
+        public bool IsEmailUniqueAsync(string email)
         {
-            return await _userRepository.IsEmailUniqueAsync(email);
+            return  _userRepository.IsEmailUniqueAsync(email);
         }
     }
 }

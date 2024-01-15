@@ -13,6 +13,6 @@ namespace DataAccessLayer.Repositories.IRepositories
         Task <string> GetRoleByEmailAsync(string email);
         Task<string> GetManagerEmailByApplicantIDAsync();
         Task<List<string>> GetAllManagersByDepartmentAsync(string department);
-        Task<bool> IsEmailUniqueAsync(string email);
+        bool IsEmailUniqueAsync(string email);
     }
 }

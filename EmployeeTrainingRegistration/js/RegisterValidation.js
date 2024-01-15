@@ -1,4 +1,4 @@
-﻿function validateRegisterForm() {
+﻿ function validateRegisterForm() {
     var firstName = document.getElementsByName("FirstName")[0].value;
     var lastName = document.getElementsByName("LastName")[0].value;
     var mobileNumber = document.getElementsByName("MobileNumber")[0].value;
@@ -25,10 +25,37 @@
     }
     if (department === "Other") {
         errors.department = "Please select a valid department.";
-    }
-    if (!email.trim()) {
-        errors.email = "Please enter Email.";
-    }
+     }
+
+/*     if (!email.trim()) {
+         errors.email = "Please enter Email.";
+     } else {
+         isEmailUnique(email)
+             .then(isUnique => {
+                 if (!isUnique) {
+                     errors.email = "Email already exists.";
+                 }
+             })
+             .catch(error => {
+                 // Handle the error if needed
+             });
+     }*/
+    
+     if (!email.trim()) {
+         errors.email = "Please enter Email.";
+     }
+
+     if (email.trim()) {
+         var isUnique = isEmailUnique(email);
+         if (isUnique.success === false) { errors.emailUniqueness = isUnique.message; }
+     }
+     
+//    isEmailUnique(email, function (isUnique) {
+//        if (!isUnique) {
+//            errors.email = "Email already exists.";
+//        }
+
+//})
     if (nic.trim() && !/^[A-Za-z]/.test(nic.trim())) {
         errors.nicFormat = "NIC should start with a letter.";
     }
@@ -38,6 +65,7 @@
     if (!password.trim()) {
         errors.password = "Please enter Password.";
     }
+
     var errorDiv = document.getElementById("errorMessages");
     errorDiv.innerHTML = "";
     if (Object.keys(errors).length > 0) {
@@ -62,3 +90,59 @@ function showToaster(message) {
         toaster.style.display = "none";
     }, 3000);
 }
+
+//function isEmailUnique(email, callback) {
+//    $.ajax({
+//        url: `/Register/IsEmailUnique?email=${email}`,
+//        type: 'GET',
+//        dataType: 'json',
+//        success: function (data) {
+//            callback(data.success);
+//        },
+//        error: function () {
+//            callback(false);
+//        }
+//    });
+
+
+//}
+
+/*function isEmailUnique(email) {
+
+    var formData = new FormData()
+    formData.append('email', email)
+    fetch('/Register/IsEmailUnique', {
+        method: 'get',
+        body: formData,
+        async:false
+    })
+        .then(response => response.json())
+        .then(data => {
+            return data.success
+        })
+        .catch((error) => {
+            console.error("Error, ", error)
+            return false
+        })
+}*/
+
+function isEmailUnique(email) {
+    var isEmailUnique = false;
+    $.ajax({
+        url: '/Register/IsEmailUnique',
+        type: 'GET',
+        data: { email: email },
+        async: false,
+        success: function (result) {
+            isEmailUnique = result;
+        }
+    });
+    return isEmailUnique;
+}
+
+
+
+
+
+
+

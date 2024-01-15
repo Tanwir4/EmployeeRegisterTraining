@@ -24,14 +24,14 @@ namespace EmployeeTrainingRegistration.Controllers
             return View();
         }
         [HttpGet]
-        public async Task<JsonResult> IsEmailUnique(string email)
-        {
-            bool isEmailUnique = await _accountService.IsEmailUniqueAsync(email);
-            if (isEmailUnique)
+        public JsonResult IsEmailUnique(string email)
+       {
+            bool isEmailUnique =  _accountService.IsEmailUniqueAsync(email);
+            if (!isEmailUnique)
             {
-                return Json(new { error = "Registration Successful!" });
+                return Json(new { success =true,message= "Registration successful!" },JsonRequestBehavior.AllowGet);
             }
-            else return Json(new { error = "Email already exists." });
+            else return Json(new { success=false, message = "Email already exists!" }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public async Task<ActionResult> AddAccount(User user)

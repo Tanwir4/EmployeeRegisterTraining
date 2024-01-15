@@ -18,7 +18,7 @@ namespace DataAccessLayer.Repositories
         }
 
 
-        public async Task<bool> IsEmailUniqueAsync(string email)
+        public bool IsEmailUniqueAsync(string email)
         {
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
@@ -28,7 +28,7 @@ namespace DataAccessLayer.Repositories
                    {
                        new SqlParameter("@Email", SqlDbType.VarChar, 100) { Value = email }
                    };
-                SqlDataReader reader = await _dataAccessLayer.GetDataWithConditionsAsync(sql, parameters);
+                SqlDataReader reader =  _dataAccessLayer.GetDataWithConditions(sql, parameters);
                 return (reader.HasRows);
             }
         }
