@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-
 namespace EmployeeTrainingRegistration.Controllers
 {
     [UserSession]
@@ -16,7 +15,6 @@ namespace EmployeeTrainingRegistration.Controllers
         {
             _departmentService = departmentService;
         }
-        // GET: Department
         public ActionResult Index()
         {
             return View();

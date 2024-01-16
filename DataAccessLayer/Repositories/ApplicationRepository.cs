@@ -309,8 +309,7 @@ namespace DataAccessLayer.Repositories
 
                 using (SqlTransaction transaction = sqlConnection.BeginTransaction())
                 {
-                    try
-                    {
+                    
                         // Insert application details
                         string applicationSql = $@"INSERT INTO ApplicationDetails (ApplicationDate, Statuss, ManagerApproval, TrainingID, UserID, DeclineReason) 
                                           VALUES (@CurrentDate, 'Pending', 0, @TrainingId, @UserId, 'Processing');
@@ -341,16 +340,8 @@ namespace DataAccessLayer.Repositories
                                 cmdAttachment.ExecuteNonQuery();
                             }
                         }
-
                         transaction.Commit();
                         return true;
-                    }
-                    catch (Exception ex)
-                    {
-                        transaction.Rollback();
-                        Console.WriteLine($"Error: {ex.Message}");
-                        return false;
-                    }
                 }
             }
         }

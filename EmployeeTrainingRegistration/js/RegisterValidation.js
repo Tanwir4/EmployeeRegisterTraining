@@ -15,8 +15,12 @@
         errors.lastName = "Please enter Last Name.";
     }
     if (!mobileNumber.trim()) {
-        errors.mobileNumber = "Please enter Mobile Number.";
-    }
+        errors.mobNum = "Please enter Mobile Number.";
+     }
+     if (mobileNumber.trim()) {
+         var isUnique = isMobileNumberUnique(mobileNumber);
+         if (isUnique.success === false) { errors.mobNumUniqueness = isUnique.message; }
+     }
     if (!nic.trim()) {
         errors.nic = "Please enter NIC.";
     }
@@ -25,22 +29,7 @@
     }
     if (department === "Other") {
         errors.department = "Please select a valid department.";
-     }
-
-/*     if (!email.trim()) {
-         errors.email = "Please enter Email.";
-     } else {
-         isEmailUnique(email)
-             .then(isUnique => {
-                 if (!isUnique) {
-                     errors.email = "Email already exists.";
-                 }
-             })
-             .catch(error => {
-                 // Handle the error if needed
-             });
-     }*/
-    
+     }    
      if (!email.trim()) {
          errors.email = "Please enter Email.";
      }
@@ -49,19 +38,16 @@
          var isUnique = isEmailUnique(email);
          if (isUnique.success === false) { errors.emailUniqueness = isUnique.message; }
      }
-     
-//    isEmailUnique(email, function (isUnique) {
-//        if (!isUnique) {
-//            errors.email = "Email already exists.";
-//        }
-
-//})
     if (nic.trim() && !/^[A-Za-z]/.test(nic.trim())) {
         errors.nicFormat = "NIC should start with a letter.";
     }
     if (nic.trim() && !/^[A-Za-z][0-9]{14}$/.test(nic.trim())) {
         errors.nicLength = "NIC should have a total length of 15 characters.";
-    }
+     }
+     if (nic.trim()) {
+         var isUnique = isNicUnique(nic);
+         if (isUnique.success === false) { errors.nicUniqueness = isUnique.message; }
+     }
     if (!password.trim()) {
         errors.password = "Please enter Password.";
     }
@@ -90,42 +76,6 @@ function showToaster(message) {
         toaster.style.display = "none";
     }, 3000);
 }
-
-//function isEmailUnique(email, callback) {
-//    $.ajax({
-//        url: `/Register/IsEmailUnique?email=${email}`,
-//        type: 'GET',
-//        dataType: 'json',
-//        success: function (data) {
-//            callback(data.success);
-//        },
-//        error: function () {
-//            callback(false);
-//        }
-//    });
-
-
-//}
-
-/*function isEmailUnique(email) {
-
-    var formData = new FormData()
-    formData.append('email', email)
-    fetch('/Register/IsEmailUnique', {
-        method: 'get',
-        body: formData,
-        async:false
-    })
-        .then(response => response.json())
-        .then(data => {
-            return data.success
-        })
-        .catch((error) => {
-            console.error("Error, ", error)
-            return false
-        })
-}*/
-
 function isEmailUnique(email) {
     var isEmailUnique = false;
     $.ajax({
@@ -138,6 +88,32 @@ function isEmailUnique(email) {
         }
     });
     return isEmailUnique;
+}
+function isNicUnique(nic) {
+    var isNicUnique = false;
+    $.ajax({
+        url: '/Register/IsNicUnique',
+        type: 'GET',
+        data: { nic: nic },
+        async: false,
+        success: function (result) {
+            isNicUnique = result;
+        }
+    });
+    return isNicUnique;
+}
+function isMobileNumberUnique(mobileNumber) {
+    var isMobileNumberUnique = false;
+    $.ajax({
+        url: '/Register/IsMobileUnique',
+        type: 'GET',
+        data: { mobileNumber: mobileNumber },
+        async: false,
+        success: function (result) {
+            isMobileNumberUnique = result;
+        }
+    });
+    return isMobileNumberUnique;
 }
 
 

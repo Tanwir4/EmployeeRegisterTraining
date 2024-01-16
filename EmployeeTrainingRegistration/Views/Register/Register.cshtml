@@ -7,38 +7,7 @@
     <link href="~/Styles/Register/RegisterPage.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="~/js/RegisterValidation.js"></script>
-    @*    <script src="~/js/Department.js"></script>*@
-
-
-    <script>
-        $(document).ready(function () {
-            $('#department').on('change', function () {
-                var selectedDepartment = $(this).val();
-                $.ajax({
-                    type: 'GET',
-                    url: '/Register/ManagersByDepartment',
-                    data: { department: selectedDepartment },
-                    success: function (data) {
-                        console.log(data);
-                        // Clear existing options
-                        $('#manager').empty();
-
-                        // Populate manager dropdown with new options
-                        $.each(data.managers, function (index, manager) {
-                            $('#manager').append($('<option>').text(manager).attr('value', manager));
-                        });
-                    },
-
-                    error: function (error) {
-                        console.error('Error fetching managers:', error);
-                    }
-                });
-            });
-        });
-    </script>
-
-
-
+    <script src="~/js/ManagerDropdown.js"></script>
 </head>
 <html>
 <body>
@@ -70,12 +39,6 @@
 
             <label for="manager" class="label">Manager:</label>
             <select id="manager" name="ManagerName" class="form-control dd"></select>
-
-
-            @*     <div class="form-group">
-                    <label for="editDepartment">Department:</label>
-                    <select id="departmentDropdown3" name="DepartmentName" class="form-control dd"></select>
-                </div>*@
 
             <label class="label" for="name">Email:</label>
             <input type="text" name="Email" placeholder="Enter your Email" />

@@ -10,5 +10,7 @@ namespace EmployeeTrainingRegistrationServices.Interfaces
         Task<string> GetManagerEmailByApplicantIDAsync();
         Task<List<string>> GetManagersByDepartmentAsync(string department);
         bool IsEmailUniqueAsync(string email);
+        Task<bool> IsNicUniqueAsync(string nic);
+        Task<bool> IsMobileNumberUniqueAsync(string mobNum);
     }
 }

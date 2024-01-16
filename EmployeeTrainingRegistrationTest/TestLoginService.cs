@@ -42,7 +42,9 @@ namespace EmployeeTrainingRegistrationTest
 
         [Test]
         [TestCase("nasweerah@gmail.com", "fakepassword123",ExpectedResult =true)]
-        public async Task<bool> IsAuthenticatedAsyncTest_AuthenticatedUser_ShouldGetAuthenticated(string email,string password)
+        [TestCase("nasweerah@gmail.com", "fakepassword12345", ExpectedResult = false)]
+        [TestCase("andy@gmail.com", "fakepassword12345", ExpectedResult = false)]
+        public async Task<bool> IsAuthenticatedAsyncTest(string email,string password)
         {
             //Arrange
 
@@ -59,29 +61,5 @@ namespace EmployeeTrainingRegistrationTest
             return IsAuthenticated;
 
         }
-
-        [Test]
-        [TestCase("nasweerah@gmail.com", "fakepassword12345", ExpectedResult = false)]
-        public async Task<bool> IsAuthenticatedAsyncTest_AuthenticatedUser_ShouldNotGetAuthenticated(string email, string password)
-        {
-            //Arrange
-
-            Account loginAccount = new Account()
-            {
-                Email = email,
-                Password = password
-            };
-
-            //Act
-            bool IsAuthenticated = await _loginService.IsAuthenticatedAsync(loginAccount);
-
-            //Assert
-            return IsAuthenticated;
-
-        }
-
-
-
-
     }
 }

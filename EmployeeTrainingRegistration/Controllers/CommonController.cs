@@ -1,5 +1,4 @@
 ﻿using System.Web.Mvc;
-
 namespace EmployeeTrainingRegistration.Controllers
 {
     public class CommonController : Controller

@@ -32,7 +32,6 @@ namespace EmployeeTrainingRegistration.Controllers
             List<Training> GetTraining =await _trainingService.GetAllTrainingForEmployeeAsync();
             return Json(new { trainings = GetTraining }, JsonRequestBehavior.AllowGet);
         }
-
         [HttpGet]
         public async Task<JsonResult> GetAllTrainingForAdmin()
         {
@@ -77,14 +76,12 @@ namespace EmployeeTrainingRegistration.Controllers
         [HttpPost]
         public async Task<ActionResult> UpdateTraining(Training training,Department department, List<string> checkedPrerequisites)
         {
-            if (await _trainingService.IsTrainingUpdatedAsync(training, department, checkedPrerequisites)) { return RedirectToAction("Login", "Login"); }
-            else { return RedirectToAction("Register", "Register"); }
+            return await _trainingService.IsTrainingUpdatedAsync(training, department, checkedPrerequisites)? RedirectToAction("Login", "Login"): RedirectToAction("Register", "Register");
         }
         [HttpPost]
         public async Task<JsonResult> DeleteTraining(int id)
         {
-            if (await _trainingService.IsTrainingDeletedAsync(id)) { return Json(new { success = true, message = "Training deleted successfully." }); }
-            else { return Json(new { success = false, message = "Training cannot be deleted." }); }
+            return await _trainingService.IsTrainingDeletedAsync(id)? Json(new { success = true, message = "Training deleted successfully." }): Json(new { success = false, message = "Training cannot be deleted." });
         }
         [HttpPost]
         public ActionResult AddTraining(Training training, Department department)

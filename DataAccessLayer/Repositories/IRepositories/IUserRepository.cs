@@ -14,5 +14,7 @@ namespace DataAccessLayer.Repositories.IRepositories
         Task<string> GetManagerEmailByApplicantIDAsync();
         Task<List<string>> GetAllManagersByDepartmentAsync(string department);
         bool IsEmailUniqueAsync(string email);
+        Task<bool> IsNicUniqueAsync(string nic);
+        Task<bool> IsMobileNumberUniqueAsync(string mobNum);
     }
 }

@@ -4,7 +4,6 @@ using EmployeeTrainingRegistrationServices.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-
 namespace EmployeeTrainingRegistration.Controllers
 {
     [UserSession]

@@ -13,16 +13,13 @@ namespace DataAccessLayer.Repositories
     {
         private readonly IDataAccessLayer _dataAccessLayer;
         private readonly IUserRepository _userRepository;
-
         public TrainingRepository(IDataAccessLayer dataAccessLayer, IUserRepository userRepository)
         {
             _dataAccessLayer = dataAccessLayer;
             _userRepository = userRepository;
         }
-
         public async Task<bool> IsTrainingAppliedAsync(int trainingId)
         {
-
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
                 string sql = $@"
@@ -44,10 +41,8 @@ namespace DataAccessLayer.Repositories
             }
              
         }
-
         public async Task<bool> IsTrainingExpired(int trainingId)
         {
-
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
                 string sql = $@"
@@ -64,7 +59,6 @@ namespace DataAccessLayer.Repositories
             }
 
         }
-
         public int GetNewTrainingId(Training training, Department department)
         {
             int trainingId = 0;
@@ -87,10 +81,7 @@ namespace DataAccessLayer.Repositories
             new SqlParameter("@DepartmentName", SqlDbType.VarChar, 40) { Value = department.DepartmentName },
             new SqlParameter("@TrainingId", SqlDbType.Int) { Direction = ParameterDirection.Output }
         };
-
                 int numberOfRowsAffected = _dataAccessLayer.InsertData(SQL, parameters);
-
-                // Retrieve the value from the output parameter
                 if (parameters[6].Value != DBNull.Value)
                 {
                     trainingId = Convert.ToInt32(parameters[6].Value);
@@ -99,20 +90,13 @@ namespace DataAccessLayer.Repositories
 
             return trainingId;
         }
-
         public bool AddTraining(Training training, Department department)
         {
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
-
-                try
-                {
                     int trainingId= GetNewTrainingId(training,department);
-
-                    // Retrieve IDs of prerequisites
                     List<int> prerequisiteIds = new List<int>();
                     string selectPrerequisiteIdSql = "SELECT PreRequisiteID FROM PreRequisite WHERE PreRequisite = @PrerequisiteName;";
-
                     foreach (string prerequisite in training.PreRequisite)
                     {
                         using (SqlCommand cmd = new SqlCommand(selectPrerequisiteIdSql, sqlConnection))
@@ -122,8 +106,6 @@ namespace DataAccessLayer.Repositories
                             prerequisiteIds.Add(prerequisiteId);
                         }
                     }
-
-                    // Insert into TrainingPrerequisites table
                     string insertPrerequisitesSql = @"
                 INSERT INTO TrainingPreRequisite (PreRequisiteID,TrainingID) 
                 VALUES (@PreRequisiteID,@TrainingID);";
@@ -138,21 +120,13 @@ namespace DataAccessLayer.Repositories
                         }
                     }
 
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error adding training with prerequisites: " + ex.Message);
-                    return false;
-                }
+                    return true; 
             }
         }
 
         public async Task<bool> DeleteTrainingAsync(int id)
         {
             bool IsTrainingEnrolled = await DoesTrainingExistInEnrolledAsync(id);
-
-            // If training is not enrolled, perform the update
             if (!IsTrainingEnrolled)
             {
                 using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -175,7 +149,6 @@ namespace DataAccessLayer.Repositories
                 return true;
             }
         }
-
         public async Task<bool> DoesTrainingExistInEnrolledAsync(int id)
         {
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -193,8 +166,6 @@ namespace DataAccessLayer.Repositories
                 else { return false; }
             }
         }
-
-
         public async Task<List<Training>> GetAllForAdminAsync()
         {
             List<Training> trainingList = new List<Training>();
@@ -226,7 +197,6 @@ namespace DataAccessLayer.Repositories
 
             return trainingList;
         }
-
         public async Task<List<Training>> GetAllForEmployeeAsync()
         {
             List<Training> trainingList = new List<Training>();
@@ -291,7 +261,6 @@ namespace DataAccessLayer.Repositories
 
             return preRequisites;
         }
-
         public async Task<List<string>> GetAllPreRequisitesAsync()
         {
             List<string> preRequisites = new List<string>();
@@ -314,8 +283,6 @@ namespace DataAccessLayer.Repositories
             }
             return preRequisites;
         }
-
-
         public async Task<Training> GetTrainingByIdAsync(int id)
         {
             Training trainingItem = new Training();
@@ -341,16 +308,10 @@ namespace DataAccessLayer.Repositories
                         trainingItem.Deadline = (DateTime)reader["Deadline"];
                             trainingItem.Threshold = (int)reader["Threshold"];
                         trainingItem.DepartmentName = (string)reader["DepartmentName"];
-
-                       
-                     
-
                     }
-                  
                 }
                 return trainingItem;
             }
-          
         }
         public async Task<bool> UpdateTrainingAsync(Training training, Department department, List<string> checkedPrerequisites)
         {
@@ -366,11 +327,7 @@ namespace DataAccessLayer.Repositories
                             Deadline=@Deadline,
                             DepartmentPriority=@DeptPriority
                         WHERE TrainingID=@TrainingID;
-
-                        -- Delete existing prerequisites for the training
                         DELETE FROM TrainingPreRequisite WHERE TrainingID=@TrainingID;
-
-                        -- Insert new prerequisites
                         INSERT INTO TrainingPreRequisite (TrainingID, PreRequisiteID)
                         VALUES ";
 

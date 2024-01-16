@@ -24,23 +24,27 @@ namespace EmployeeTrainingRegistration.Controllers
             return View();
         }
         [HttpGet]
+        public async Task<JsonResult> IsMobileUnique(string mobileNumber)
+        {
+            bool isMobileNumberUnique = await _accountService.IsMobileNumberUniqueAsync(mobileNumber);
+            return Json(!isMobileNumberUnique? new { success = true, message = "Registration successful!" }: new { success = false, message = "Mobile number already exists!" }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public async Task<JsonResult> IsNicUnique(string nic)
+        {
+            bool isNicUnique = await _accountService.IsNicUniqueAsync(nic);
+            return Json(!isNicUnique? new { success = true, message = "Registration successful!" }: new { success = false, message = "NIC number already exists!" }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
         public JsonResult IsEmailUnique(string email)
        {
             bool isEmailUnique =  _accountService.IsEmailUniqueAsync(email);
-            if (!isEmailUnique)
-            {
-                return Json(new { success =true,message= "Registration successful!" },JsonRequestBehavior.AllowGet);
-            }
-            else return Json(new { success=false, message = "Email already exists!" }, JsonRequestBehavior.AllowGet);
+            return Json(!isEmailUnique? new { success = true, message = "Registration successful!" }: new { success = false, message = "Email already exists!" }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public async Task<ActionResult> AddAccount(User user)
         {
-            if (await _registerService.IsRegisteredAsync(user)) { return RedirectToAction("Login", "Login"); }
-            else
-            {
-                return View("Error");
-            }
+            return await _registerService.IsRegisteredAsync(user)? RedirectToAction("Login", "Login"): (ActionResult)View("Error");
         }
         [HttpGet]
         public async Task<JsonResult> ManagersByDepartment(string department)

@@ -51,8 +51,7 @@ namespace EmployeeTrainingRegistration.Controllers
             EmailDTO emailDetails =await _applicationService.GetManagerApprovalDetailsAsync(applicationID);
             string applicantEmail = emailDetails.EmployeeEmail;
             _notificationService.SendDeclineEmail(applicantEmail, emailDetails.TrainingTitle, declineReason);
-            if (success){return Json(new { success = true, message = "Application declined successfully" });}
-            else{return Json(new { success = false, message = "Failed to decline application" });}
+            return success? Json(new { success = true, message = "Application declined successfully" }): Json(new { success = false, message = "Failed to decline application" });
         }
         [HttpGet]
         public async Task<ActionResult> GetAttachmentsByApplicationID(int applicationID)

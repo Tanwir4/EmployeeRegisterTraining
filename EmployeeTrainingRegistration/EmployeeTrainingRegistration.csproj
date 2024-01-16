@@ -328,6 +328,7 @@
     <Content Include="js\Department.js" />
     <Content Include="js\DisplayUserApplication.js" />
     <Content Include="js\LoginValidation.js" />
+    <Content Include="js\ManagerDropdown.js" />
     <Content Include="js\ManagerViewApplications.js" />
     <Content Include="js\PopulateTrainingIndex.js" />
     <Content Include="js\RegisterValidation.js" />

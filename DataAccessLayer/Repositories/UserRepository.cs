@@ -16,8 +16,34 @@ namespace DataAccessLayer.Repositories
         {
             _dataAccessLayer = layer;
         }
+        public async Task<bool> IsMobileNumberUniqueAsync(string mobNum)
+        {
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                string sql = $@"select 1 from UserDetails where MobileNumber=@MobileNumber";
 
+                List<SqlParameter> parameters = new List<SqlParameter>
+                   {
+                       new SqlParameter("@MobileNumber", SqlDbType.VarChar, 100) { Value = mobNum }
+                   };
+                SqlDataReader reader = await _dataAccessLayer.GetDataWithConditionsAsync(sql, parameters);
+                return (reader.HasRows);
+            }
+        }
+        public async Task<bool> IsNicUniqueAsync(string nic)
+        {
+            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
+            {
+                string sql = $@"select 1 from UserDetails where NationalIdentityCard=@Nic";
 
+                List<SqlParameter> parameters = new List<SqlParameter>
+                   {
+                       new SqlParameter("@Nic", SqlDbType.VarChar, 100) { Value = nic }
+                   };
+                SqlDataReader reader =await _dataAccessLayer.GetDataWithConditionsAsync(sql, parameters);
+                return (reader.HasRows);
+            }
+        }
         public bool IsEmailUniqueAsync(string email)
         {
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -32,7 +58,6 @@ namespace DataAccessLayer.Repositories
                 return (reader.HasRows);
             }
         }
-
         public async Task<List<string>> GetAllManagersByDepartmentAsync(string department)
         {
             List<string> managerList = new List<string>();
@@ -59,7 +84,6 @@ namespace DataAccessLayer.Repositories
             }
             return managerList;
         }
-
         public async  Task<string> GetRoleByEmailAsync(string email)
         {
             string role = null;
@@ -83,7 +107,6 @@ namespace DataAccessLayer.Repositories
             }
             return role;
         }
-
         public async Task<Account> AuthenticateAsync(Account account)
         {
             Account acc = new Account();
@@ -161,7 +184,6 @@ namespace DataAccessLayer.Repositories
             }
             return userAccountId;
         }
-
         public async Task<string> GetManagerEmailByApplicantIDAsync()
         {
             string email = null;
@@ -192,9 +214,6 @@ namespace DataAccessLayer.Repositories
             }
             return email;
         }
-
-
-
         public async Task<int> GetUserIdAsync()
         {
             int userId = 0;

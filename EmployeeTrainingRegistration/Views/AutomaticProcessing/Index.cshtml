@@ -1,4 +1,5 @@
-﻿<table id="enrolledEmployeesTable">
+﻿
+<table id="enrolledEmployeesTable">
     <thead>
         <tr>
             <th>Training Title</th>
@@ -7,39 +8,8 @@
         </tr>
     </thead>
     <tbody>
-        <!-- Table rows will be dynamically added here -->
     </tbody>
 </table>
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script>
-    $(document).ready(function () {
-        // Fetch data from the server
-        $.ajax({
-            url: '/AutomaticProcessing/GetEnrolledEmployeesForExport',
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                // Check if the data is available
-                if (data && data.enrolledEmployees) {
-                    // Loop through the data and append rows to the table
-                    $.each(data.enrolledEmployees, function (index, employee) {
-                        var row = '<tr>' +
-                            '<td>' + employee.TrainingTitle + '</td>' +
-                            '<td>' + employee.FirstName + '</td>' +
-                            '<td>' + employee.LastName + '</td>' +
-                            '</tr>';
-                        $('#enrolledEmployeesTable tbody').append(row);
-                    });
-                } else {
-                    // Handle empty or invalid data
-                    console.error('Invalid or empty data returned from the server.');
-                }
-            },
-            error: function (error) {
-                // Handle AJAX error
-                console.error('Error fetching data from the server: ' + error.statusText);
-            }
-        });
-    });
-</script>
+<script src="~/js/AutomaticProcessing.js"></script>
