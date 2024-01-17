@@ -87,6 +87,9 @@ p {
 span {
     font-size: 12px;
 }
+.error-message {
+    color: red;
+}
 
 a {
     color: #333;

@@ -136,7 +136,7 @@ namespace DataAccessLayer.Repositories
                            DECLARE @AccountTempID INT
                            DECLARE @managerId INT
                            DECLARE @deptId INT
-                           INSERT INTO UserAccount (Email, Passwordd,HashedPassword,Salt,RoleID) VALUES (@Email,@Passwordd,@HashedPassword,@Salt,1)
+                           INSERT INTO UserAccount (Email, Passwordd,HashedPassword,Salt,RoleID) VALUES (@Email,@Passwordd,@HashedPassword,@Salt,@RoleId)
 
                             SET @AccountTempID = SCOPE_IDENTITY()
                             SET @managerId=(SELECT UserID FROM UserDetails WHERE CONCAT(FirstName, ' ',LastName)=@ManagerName)
@@ -156,7 +156,8 @@ namespace DataAccessLayer.Repositories
                        new SqlParameter("@ManagerName", SqlDbType.VarChar, 80) { Value = user.ManagerName },
                        new SqlParameter("@DepartmentName", SqlDbType.VarChar, 40) { Value = user.DepartmentName },
                        new SqlParameter("@HashedPassword", SqlDbType.VarBinary) { Value = user.HashedPassword },
-                        new SqlParameter("@Salt", SqlDbType.VarBinary) { Value = user.Salt }
+                        new SqlParameter("@Salt", SqlDbType.VarBinary) { Value = user.Salt },
+                         new SqlParameter("@RoleId", SqlDbType.Int) { Value = 1 }
                    };
                 int numberOfRowsAffected = await _dataAccessLayer.InsertDataAsync(sql, parameters);
                 return (numberOfRowsAffected > 0);

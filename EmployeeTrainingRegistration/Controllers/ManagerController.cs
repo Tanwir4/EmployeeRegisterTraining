@@ -32,6 +32,7 @@ namespace EmployeeTrainingRegistration.Controllers
             List<ManagerApplicationDTO> getApplicationsByManager =await _applicationService.GetApplicationByManagerIdAsync();
             return Json(new { applications = getApplicationsByManager }, JsonRequestBehavior.AllowGet);
         }
+        [CustomAuthorization("Manager")]
         [HttpPost]
         public async Task<ActionResult> ApproveApplication(string name, string title,int applicationID)
         {
@@ -44,6 +45,7 @@ namespace EmployeeTrainingRegistration.Controllers
             else if (status == ApplicationStatus.Declined){return Json(new { success = false, message = "Failed to approve application" });}
             return Json(new { success = false, message = "An error occurred while processing the application." });
         }
+        [CustomAuthorization("Manager")]
         [HttpPost]
         public async Task<ActionResult> DeclineApplication(string name, string title,string declineReason,int applicationID)
         {
@@ -53,12 +55,14 @@ namespace EmployeeTrainingRegistration.Controllers
             _notificationService.SendDeclineEmail(applicantEmail, emailDetails.TrainingTitle, declineReason);
             return success? Json(new { success = true, message = "Application declined successfully" }): Json(new { success = false, message = "Failed to decline application" });
         }
+        [CustomAuthorization("Manager")]
         [HttpGet]
         public async Task<ActionResult> GetAttachmentsByApplicationID(int applicationID)
         {
             List<int> getAttachments =await _applicationService.GetAttachmentsByApplicationIdAsync(applicationID);
             return Json(new { success = true, Attachments= getAttachments }, JsonRequestBehavior.AllowGet);
         }
+        [CustomAuthorization("Manager")]
         [HttpGet]
         public async Task<ActionResult> DownloadAttachment(int attachmentID)
         {

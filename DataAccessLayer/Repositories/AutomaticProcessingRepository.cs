@@ -110,6 +110,7 @@ namespace DataAccessLayer.Repositories
             List<Training> trainingList =await GetTrainingByDeadlineAsync();
             List<EnrolledNotificationDTO> enrolledEmployee = new List<EnrolledNotificationDTO>();
             List<Application> filteredApplication = new List<Application>();
+            List<Application> approvedApplicant= new List<Application>();
             foreach (Training training in trainingList)
             {
                 using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
@@ -166,65 +167,59 @@ namespace DataAccessLayer.Repositories
                         }
                     }
 
-                    List<Application> approvedApplicant = filteredApplication;
-
-                    foreach (Application application in approvedApplicant)
-                    {
-                        using (SqlConnection sqlConnection1 = _dataAccessLayer.CreateConnection())
-                        {
-                            string approveApplicationSql = $@"UPDATE ApplicationDetails
+                     approvedApplicant = filteredApplication;
+                }
+            }
+            foreach (Application application in approvedApplicant)
+            {
+                using (SqlConnection sqlConnection1 = _dataAccessLayer.CreateConnection())
+                {
+                    string approveApplicationSql = $@"UPDATE ApplicationDetails
                                         SET Statuss='Selected'
                                         WHERE ApplicationID=@ApplicationID";
 
-                            List<SqlParameter> approvedApplicantParameters = new List<SqlParameter>
+                    List<SqlParameter> approvedApplicantParameters = new List<SqlParameter>
         {
             new SqlParameter("@ApplicationID", SqlDbType.Int) { Value = application.ApplicationId }
         };
 
-                            int numberOfRowsAffected =await _dataAccessLayer.InsertDataAsync(approveApplicationSql, approvedApplicantParameters);
+                    int numberOfRowsAffected = await _dataAccessLayer.InsertDataAsync(approveApplicationSql, approvedApplicantParameters);
 
 
-                            string enrolledEmployeeSql = $@"INSERT INTO Enrollment (ApplicationID) VALUES (@ApplicationId);";
-                            List<SqlParameter> enrolledApplicantParameters = new List<SqlParameter>
+                    string enrolledEmployeeSql = $@"INSERT INTO Enrollment (ApplicationID) VALUES (@ApplicationId);";
+                    List<SqlParameter> enrolledApplicantParameters = new List<SqlParameter>
         {
             new SqlParameter("@ApplicationId", SqlDbType.Int) { Value = application.ApplicationId }
         };
-                            int numberOfRowsAffectedEnrolled = await _dataAccessLayer.InsertDataAsync(enrolledEmployeeSql, enrolledApplicantParameters);
+                    int numberOfRowsAffectedEnrolled = await _dataAccessLayer.InsertDataAsync(enrolledEmployeeSql, enrolledApplicantParameters);
 
-                            string approvedEmployeeEmailSql = $@"SELECT Email,Title
+                    string approvedEmployeeEmailSql = $@"SELECT Email,Title
                                                                 FROM TrainingDetails
                                                                 INNER JOIN ApplicationDetails ON TrainingDetails.TrainingID=ApplicationDetails.TrainingID
                                                                 INNER JOIN UserDetails ON ApplicationDetails.UserID=UserDetails.UserID
                                                                 INNER JOIN UserAccount ON UserDetails.UserAccountID=UserAccount.UserAccountID
                                                                 WHERE ManagerApproval=1 AND ApplicationDetails.ApplicationID=@ApplicationID ";
 
-                            List<SqlParameter> approvedEmployeeEmailParameters = new List<SqlParameter>
+                    List<SqlParameter> approvedEmployeeEmailParameters = new List<SqlParameter>
         {
             new SqlParameter("@ApplicationID", SqlDbType.Int) { Value = application.ApplicationId }
         };
-                            using (SqlDataReader reader =await _dataAccessLayer.GetDataWithConditionsAsync(approvedEmployeeEmailSql, approvedEmployeeEmailParameters))
+                    using (SqlDataReader reader = await _dataAccessLayer.GetDataWithConditionsAsync(approvedEmployeeEmailSql, approvedEmployeeEmailParameters))
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            EnrolledNotificationDTO enrolledNotificationItem = new EnrolledNotificationDTO
                             {
-                                while (await reader.ReadAsync())
-                                {
-                                    EnrolledNotificationDTO enrolledNotificationItem = new EnrolledNotificationDTO
-                                    {
-                                        Email = (string)reader["Email"],
-                                        Title = (string)reader["Title"],
+                                Email = (string)reader["Email"],
+                                Title = (string)reader["Title"],
 
-                                    };
-                                    enrolledEmployee.Add(enrolledNotificationItem);
+                            };
+                            enrolledEmployee.Add(enrolledNotificationItem);
 
-                                }
-
-                            }
                         }
+
                     }
-
-
-
-
                 }
-
             }
             return enrolledEmployee;
         }

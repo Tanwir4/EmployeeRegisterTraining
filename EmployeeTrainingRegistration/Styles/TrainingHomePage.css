@@ -1,80 +1,98 @@
-﻿.work-sans {
-    font-family: 'Work Sans', sans-serif;
-}
-.container{
-    max-width:100%;
-}
-
-#menu-toggle:checked + #menu {
-    display: block;
-}
-
-.hover\:grow {
-    transition: all 0.3s;
-    transform: scale(1);
-}
-
-    .hover\:grow:hover {
-        transform: scale(1.02);
-    }
-
-.carousel-open:checked + .carousel-item {
-    position: static;
-    opacity: 100;
-}
-
-.carousel-item {
-    -webkit-transition: opacity 0.6s ease-out;
-    transition: opacity 0.6s ease-out;
-}
-
-#carousel-1:checked ~ .control-1,
-#carousel-2:checked ~ .control-2,
-#carousel-3:checked ~ .control-3 {
-    display: block;
-}
-
-.carousel-indicators {
-    list-style: none;
+﻿body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
     margin: 0;
     padding: 0;
-    position: absolute;
-    bottom: 2%;
-    left: 0;
-    right: 0;
-    text-align: center;
-    z-index: 10;
 }
 
-#carousel-1:checked ~ .control-1 ~ .carousel-indicators li:nth-child(1) .carousel-bullet,
-#carousel-2:checked ~ .control-2 ~ .carousel-indicators li:nth-child(2) .carousel-bullet,
-#carousel-3:checked ~ .control-3 ~ .carousel-indicators li:nth-child(3) .carousel-bullet {
-    color: #000;
-    /*Set to match the Tailwind colour you want the active one to be */
+#trainingTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border-radius: 8px;
 }
 
-#buttonApply {
-    background-color: white;
-    width: 45%;
-    border: none;
-    border-radius: 16px;
-    height: 50px;
+    #trainingTable th, #trainingTable td {
+        border: 1px solid #e0e0e0;
+        padding: 15px;
+        text-align: left;
+    }
+
+    #trainingTable th {
+        background-color: #007bff;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    #trainingTable tbody tr:hover {
+        background-color: #e0f7fa;
+        cursor: pointer;
+    }
+
+    #trainingTable td button {
+        padding: 10px 15px;
+        cursor: pointer;
+        background-color: #326fb0;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        transition: background-color 0.3s;
+    }
+
+        #trainingTable td button.view-btn {
+            margin-right: 10px; /* Adjust the margin-right as needed */
+        }
+
+        #trainingTable td button:hover {
+            background-color: #99bee6;
+        }
+
+.modal-body {
+    max-height: 400px;
+    overflow-y: auto;
 }
 
-
-.navbar li {
-    display: inline-flex;
-    margin-left: 150%;
+/* Add this CSS to your stylesheet or in a <style> tag in your HTML */
+#prerequisitesInputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
-.navbar ul {
-    display: inline-flex;
+    #prerequisitesInputs label {
+        background-color: #007bff;
+        color: #fff;
+        padding: 8px 12px;
+        cursor: pointer;
+        border-radius: 4px;
+        font-weight: bold;
+        display: inline-block;
+    }
+
+        #prerequisitesInputs label:hover {
+            background-color: #0056b3;
+        }
+
+    #prerequisitesInputs input[type="file"] {
+        display: none;
+    }
+
+        #prerequisitesInputs input[type="file"]:focus + label {
+            outline: 1px solid #fff;
+            outline-offset: -1px;
+        }
+
+.prerequisite-name {
+    border: 1px solid #ced4da; /* Border color for the file name */
+    padding: 8px 12px;
+    border-radius: 4px;
+    display: inline-block;
 }
 
-#heading {
-    background-color: white;
-    height: 45px;
-    width: 95%;
-    padding: 35px;
-    margin: 75px;
+/* Additional styling for the submit button */
+#applicationForm button[type="submit"] {
+    width: 100%;
 }

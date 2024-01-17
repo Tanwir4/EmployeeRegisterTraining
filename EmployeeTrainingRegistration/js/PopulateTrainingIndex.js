@@ -118,7 +118,7 @@ function openApplication(trainingId) {
 
                     '<label for="fileInput_' + i + '" class="btn btn-primary">' +
                     'Browse' +
-                    '<input type="file" id="fileInput_' + i + '" name="fileInput_' + i + '" style="display:none;" onchange="displayFileName(this, ' + i + ')" />' +
+                    '<input type="file" id="fileInput_' + i + '" name="fileInput_' + i + '" style="display:none;" onchange="displayFileName(this, ' + i + ')" accept=".pdf"/>' +
                     '</label>' +
                     '<span class="prerequisite-name mt-2" id="fileName_' + i + '">No file selected</span>' +
 

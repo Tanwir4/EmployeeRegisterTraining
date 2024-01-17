@@ -18,20 +18,24 @@ namespace EmployeeTrainingRegistration.Controllers
             _trainingService = trainingService;
             _automaticProcessingService = automaticProcessingService;
         }
+        [CustomAuthorization("Employee")]
         public ActionResult Index()
         {
             return View();
         }
+        [CustomAuthorization("Admin")]
         public ActionResult AdminViewTraining()
         {
             return View();
         }
+        [CustomAuthorization("Employee")]
         [HttpGet]
         public async Task<JsonResult> GetTraining()
         {
             List<Training> GetTraining =await _trainingService.GetAllTrainingForEmployeeAsync();
             return Json(new { trainings = GetTraining }, JsonRequestBehavior.AllowGet);
         }
+        [CustomAuthorization("Admin")]
         [HttpGet]
         public async Task<JsonResult> GetAllTrainingForAdmin()
         {
@@ -73,16 +77,19 @@ namespace EmployeeTrainingRegistration.Controllers
             Session["TrainingId"] = getTrainingById;
             return Json(new { trainings = getTrainingById, preRequisites= preRequisite, allPreRequisites= allPreRequisite }, JsonRequestBehavior.AllowGet);
         }
+        [CustomAuthorization("Admin")]
         [HttpPost]
         public async Task<ActionResult> UpdateTraining(Training training,Department department, List<string> checkedPrerequisites)
         {
             return await _trainingService.IsTrainingUpdatedAsync(training, department, checkedPrerequisites)? RedirectToAction("Login", "Login"): RedirectToAction("Register", "Register");
         }
+        [CustomAuthorization("Admin")]
         [HttpPost]
         public async Task<JsonResult> DeleteTraining(int id)
         {
             return await _trainingService.IsTrainingDeletedAsync(id)? Json(new { success = true, message = "Training deleted successfully." }): Json(new { success = false, message = "Training cannot be deleted." });
         }
+        [CustomAuthorization("Admin")]
         [HttpPost]
         public ActionResult AddTraining(Training training, Department department)
         {
@@ -92,6 +99,7 @@ namespace EmployeeTrainingRegistration.Controllers
                 return View("Error");
             }
         }
+        [CustomAuthorization("Admin")]
         [HttpPost]
         public async Task<ActionResult> StartAutomaticProcessing()
         {

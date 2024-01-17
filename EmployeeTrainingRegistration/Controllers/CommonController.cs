@@ -15,5 +15,9 @@ namespace EmployeeTrainingRegistration.Controllers
         {
             return View();
         }
+        public ActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }

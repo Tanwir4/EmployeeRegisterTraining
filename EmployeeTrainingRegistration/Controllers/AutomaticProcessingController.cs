@@ -14,10 +14,12 @@ namespace EmployeeTrainingRegistration.Controllers
         {
             _automaticProcessingService = automaticProcessingService;
         }
+        [CustomAuthorization("Admin")]
         public ActionResult Index()
         {
             return View();
         }
+        [CustomAuthorization("Admin")]
         [HttpGet]
         public async Task<JsonResult> GetSelectedEmployeeByTrainingId(int id)
         {

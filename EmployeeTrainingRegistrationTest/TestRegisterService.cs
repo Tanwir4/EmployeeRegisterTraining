@@ -65,14 +65,10 @@ namespace EmployeeTrainingRegistrationTest
              .Setup(iUserRepository => iUserRepository.RegisterAsync(It.IsAny<User>()))
              .ReturnsAsync(true);
 
-
-
-
             _registerService = new RegisterService(_stubUserRepository.Object);
             _accountService = new AccountService(_stubUserRepository.Object);
 
         }
-
         [Test]
         [TestCase("Tanwir", "Lollmohamud","57919528","L04060176543218","Rushmee Toolsee","Product and Technology","nasweerah.4@gmail.com","1234", ExpectedResult = true)]
         [TestCase("Tanwir", "Lollmohamud", "57919528", "Y07050154367543", "Rushmee Toolsee", "Product and Technology", "yang@gmail.com", "1234", ExpectedResult = false)]

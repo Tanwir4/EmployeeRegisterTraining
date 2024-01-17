@@ -71,8 +71,6 @@
                     data: { trainingId: trainingId },
                     dataType: 'json',
                     success: function (data) {
-                        //console.log(data);
-                        // Populate the modal with the selected training details
                         $('#trainingDetailsModal').modal('show');
                         $('#editTitle').val(data.trainings.Title);
                         var startDate = new Date(parseInt(data.trainings.StartDate.substr(6)));
@@ -198,14 +196,13 @@
                         if (result.success) {
                             //console.log('Training cannot be deleted');
                             toastr.success('Training successfully deleted!');
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1000);
                         }
                         else {
                             //console.log('Training deleted successfully');
                             toastr.error('Training cannot be deleted!');
-
-                            setTimeout(function () {
-                                location.reload();
-                            }, 3000);
                         }
                     },
                     error: function (error) {

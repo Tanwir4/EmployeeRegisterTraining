@@ -144,7 +144,7 @@ namespace DataAccessLayer.Repositories
             {
                 string sql = $@"UPDATE ApplicationDetails
                             SET DeclineReason=@DeclineReason,
-                            Statuss='Declined'
+                            Statuss=@Declined
                         WHERE UserID IN (
                             SELECT UserDetails.UserID
                             FROM UserDetails
@@ -161,7 +161,8 @@ namespace DataAccessLayer.Repositories
         {
             new SqlParameter("@FullName", SqlDbType.VarChar, 100) { Value = name },
             new SqlParameter("@TrainingTitle", SqlDbType.VarChar, 100) { Value = title },
-            new SqlParameter("@DeclineReason", SqlDbType.VarChar, 100) { Value = declineReason }
+            new SqlParameter("@DeclineReason", SqlDbType.VarChar, 100) { Value = declineReason },
+             new SqlParameter("@Declined", SqlDbType.VarChar, 100) { Value = "Declined" }
         };
                 int numberOfRowsAffected =await _dataAccessLayer.InsertDataAsync(sql, parameters);
                 return (numberOfRowsAffected > 0);
@@ -174,8 +175,8 @@ namespace DataAccessLayer.Repositories
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
                 string updateSql = $@"UPDATE ApplicationDetails
-                        SET ManagerApproval = 1,
-                        Statuss='Approved'
+                        SET ManagerApproval = @ManagerApproval,
+                        Statuss=@Approved
                         WHERE UserID IN (
                             SELECT UserDetails.UserID
                             FROM UserDetails
@@ -199,7 +200,9 @@ namespace DataAccessLayer.Repositories
                 List<SqlParameter> parametersUpdate = new List<SqlParameter>
         {
             new SqlParameter("@FullName", SqlDbType.VarChar, 100) { Value = name },
-            new SqlParameter("@TrainingTitle", SqlDbType.VarChar, 100) { Value = title }
+            new SqlParameter("@TrainingTitle", SqlDbType.VarChar, 100) { Value = title },
+            new SqlParameter("@Approved", SqlDbType.VarChar, 100) { Value = "Approved" },
+            new SqlParameter("@ManagerApproval", SqlDbType.Int) { Value = 1 }
         };
 
                 List<SqlParameter> parametersSelect = new List<SqlParameter>
@@ -234,12 +237,13 @@ namespace DataAccessLayer.Repositories
                                     FROM UserDetails
                                     INNER JOIN ApplicationDetails ON UserDetails.UserID = ApplicationDetails.UserID
                                     INNER JOIN TrainingDetails ON TrainingDetails.TrainingID = ApplicationDetails.TrainingID
-                                    WHERE UserDetails.ManagerUserID = @ManagerID AND Statuss='Pending';";
+                                    WHERE UserDetails.ManagerUserID = @ManagerID AND Statuss=@Status;";
                 int managerId =await _userRepository.GetUserIdAsync();
 
                 List<SqlParameter> parameters = new List<SqlParameter>
         {
-            new SqlParameter("@ManagerID", SqlDbType.Int) { Value = managerId }
+            new SqlParameter("@ManagerID", SqlDbType.Int) { Value = managerId },
+            new SqlParameter("@Status", SqlDbType.VarChar,100) { Value = "Pending" }
         };
 
                 SqlDataReader reader =await _dataAccessLayer.GetDataWithConditionsAsync(sql, parameters);
@@ -312,7 +316,7 @@ namespace DataAccessLayer.Repositories
                     
                         // Insert application details
                         string applicationSql = $@"INSERT INTO ApplicationDetails (ApplicationDate, Statuss, ManagerApproval, TrainingID, UserID, DeclineReason) 
-                                          VALUES (@CurrentDate, 'Pending', 0, @TrainingId, @UserId, 'Processing');
+                                          VALUES (@CurrentDate, 'Pending', 0, @TrainingId, @UserId, @DeclineReason);
                                           SELECT SCOPE_IDENTITY();";
 
                         DateTime currentDate = DateTime.Today;
@@ -324,8 +328,9 @@ namespace DataAccessLayer.Repositories
                             cmdApplication.Parameters.Add("@CurrentDate", SqlDbType.Date).Value = currentDate;
                             cmdApplication.Parameters.Add("@TrainingId", SqlDbType.Int).Value = trainingId;
                             cmdApplication.Parameters.Add("@UserId", SqlDbType.Int).Value = userId;
+                            cmdApplication.Parameters.Add("@DeclineReason", SqlDbType.VarChar,50).Value = "N/A";
 
-                            applicationId = Convert.ToInt32(cmdApplication.ExecuteScalar());
+                        applicationId = Convert.ToInt32(cmdApplication.ExecuteScalar());
                         }
 
                         // Insert each file data into Attachment table with the corresponding ApplicationID

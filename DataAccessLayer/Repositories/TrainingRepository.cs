@@ -132,12 +132,13 @@ namespace DataAccessLayer.Repositories
                 using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
                 {
                     string sql = $@"Update TrainingDetails 
-                            SET IsActive=0
+                            SET IsActive=@IsActive
                             WHERE TrainingID=@TrainingID";
 
                     List<SqlParameter> parameters = new List<SqlParameter>
             {
-                new SqlParameter("@TrainingID", SqlDbType.Int) { Value = id }
+                new SqlParameter("@TrainingID", SqlDbType.Int) { Value = id },
+                new SqlParameter("@IsActive", SqlDbType.Int) { Value = 0 }
             };
 
                     int numberOfRowsAffected = await _dataAccessLayer.InsertDataAsync(sql, parameters);
@@ -146,7 +147,7 @@ namespace DataAccessLayer.Repositories
             }
             else
             {
-                return true;
+                return false;
             }
         }
         public async Task<bool> DoesTrainingExistInEnrolledAsync(int id)

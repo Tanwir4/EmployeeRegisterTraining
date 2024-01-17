@@ -25,10 +25,12 @@ namespace EmployeeTrainingRegistration.Controllers
             _accountService = accountService;
             _trainingService = trainingService;
         }
+        [CustomAuthorization("Employee")]
         public ActionResult Index()
         {
             return View();
         }
+        [CustomAuthorization("Employee")]
         [HttpPost]
         public async Task<ActionResult> SubmitApplication(int trainingId, List<HttpPostedFileBase> fileInputs)
         { 
