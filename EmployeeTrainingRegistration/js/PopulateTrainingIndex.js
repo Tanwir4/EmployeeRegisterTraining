@@ -169,6 +169,7 @@ function submitApplication() {
             setTimeout(function () {
                 location.reload();
             }, 3000);
+           
         },
         error: function (error) {
             console.error(error);

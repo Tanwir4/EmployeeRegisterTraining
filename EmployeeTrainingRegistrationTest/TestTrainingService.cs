@@ -38,7 +38,6 @@ namespace EmployeeTrainingRegistrationTest
             _trainingService = new TrainingService(_stubTrainingRepository.Object);
         }
 
-        [Test]
         [TestCase(2, ExpectedResult =null)]
         public async Task<Training> GetTrainingByIdAsync_InvalidId_ReturnsNull(int trainingId)
         {
@@ -49,7 +48,6 @@ namespace EmployeeTrainingRegistrationTest
            return result;
         }
 
-        [Test]
         [TestCase(1)]
         public async Task GetTrainingByIdAsync_ValidId_ReturnsTraining(int trainingId)
         {

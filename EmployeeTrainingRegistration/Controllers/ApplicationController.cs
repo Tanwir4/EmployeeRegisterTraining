@@ -34,15 +34,12 @@ namespace EmployeeTrainingRegistration.Controllers
         [HttpPost]
         public async Task<ActionResult> SubmitApplication(int trainingId, List<HttpPostedFileBase> fileInputs)
         { 
-                // Ensure that trainingId is not zero (or any default value)
                 if (trainingId <= 0)
                 {
                     return Json(new { success = false, message = "Invalid trainingId" });
                 }
 
                 List<byte[]> fileDataList = new List<byte[]>();
-
-                // Loop through each file and convert file data to byte array
                 foreach (var fileInput in fileInputs)
                 {
                     if (fileInput != null && fileInput.ContentLength > 0)
@@ -54,8 +51,6 @@ namespace EmployeeTrainingRegistration.Controllers
                         }
                     }
                 }
-
-                // Save application details and file data
                 if (await _applicationService.IsApplicationSubmittedAsync(trainingId, fileDataList))
                 {
 

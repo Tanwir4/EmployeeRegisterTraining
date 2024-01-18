@@ -27,10 +27,7 @@ namespace EmployeeTrainingRegistrationTest
             _stubDepartmentRepository = new Mock<IDepartmentRepository>();
             _stubDepartmentRepository
                 .Setup(iDepartmentRepository => iDepartmentRepository.GetAllDepartmentNameAsync())
-                .ReturnsAsync(() =>
-                {
-                    return departmentList;
-                });
+                .ReturnsAsync(departmentList);
 
             _departmentService = new DepartmentService(_stubDepartmentRepository.Object);
         }

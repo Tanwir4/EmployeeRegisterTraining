@@ -42,12 +42,14 @@ namespace EmployeeTrainingRegistration.Controllers
             List<Training> GetTraining =await _trainingService.GetAllTrainingForAdminAsync();
             return Json(new { trainings = GetTraining}, JsonRequestBehavior.AllowGet);
         }
+        [CustomAuthorization("Employee")]
         [HttpGet]
         public async Task<JsonResult> IsTrainingApplied(int trainingId)
         {
             bool isApplied =await _trainingService.IsTrainingAppliedAsync(trainingId);
             return Json(isApplied, JsonRequestBehavior.AllowGet);
         }
+        [CustomAuthorization("Admin")]
         [HttpGet]
         public async Task<JsonResult> IsTrainingExpired(int trainingId)
         {

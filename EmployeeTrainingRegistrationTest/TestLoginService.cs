@@ -37,29 +37,37 @@ namespace EmployeeTrainingRegistrationTest
 
                 });
             _loginService = new LoginService(_stubUserRepository.Object);
-
         }
 
-        [Test]
-        [TestCase("nasweerah@gmail.com", "fakepassword123",ExpectedResult =true)]
-        [TestCase("nasweerah@gmail.com", "fakepassword12345", ExpectedResult = false)]
-        [TestCase("andy@gmail.com", "fakepassword12345", ExpectedResult = false)]
-        public async Task<bool> IsAuthenticatedAsyncTest(string email,string password)
+        [TestCase("nasweerah@gmail.com", "fakepassword123", ExpectedResult = true)]
+        public async Task<bool> AuthenticatedAsync_ValidInput_UserGetsAuthenticated(string email,string password)
         {
             //Arrange
-
             Account loginAccount = new Account()
             {
                 Email = email,
                 Password = password
             };
-
             //Act
             bool IsAuthenticated =await _loginService.IsAuthenticatedAsync(loginAccount);
-
             //Assert
             return IsAuthenticated;
+        }
 
+        [TestCase("nasweerah@gmail.com", "fakepassword12345", ExpectedResult = false)]
+        [TestCase("andy@gmail.com", "fakepassword12345", ExpectedResult = false)]
+        public async Task<bool> AuthenticatedAsync_InvalidInput_UserNotAuthenticated(string email, string password)
+        {
+            //Arrange
+            Account loginAccount = new Account()
+            {
+                Email = email,
+                Password = password
+            };
+            //Act
+            bool IsAuthenticated = await _loginService.IsAuthenticatedAsync(loginAccount);
+            //Assert
+            return IsAuthenticated;
         }
     }
 }

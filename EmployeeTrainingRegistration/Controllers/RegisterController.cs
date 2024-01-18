@@ -36,9 +36,9 @@ namespace EmployeeTrainingRegistration.Controllers
             return Json(!isNicUnique? new { success = true, message = "Registration successful!" }: new { success = false, message = "NIC number already exists!" }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
-        public JsonResult IsEmailUnique(string email)
+        public async Task<JsonResult> IsEmailUnique(string email)
        {
-            bool isEmailUnique =  _accountService.IsEmailUniqueAsync(email);
+            bool isEmailUnique =await  _accountService.IsEmailUniqueAsync(email);
             return Json(!isEmailUnique? new { success = true, message = "Registration successful!" }: new { success = false, message = "Email already exists!" }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]

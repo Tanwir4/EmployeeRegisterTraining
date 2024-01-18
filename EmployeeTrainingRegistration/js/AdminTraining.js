@@ -1,4 +1,5 @@
 ﻿$(document).ready(function () {
+
     toastr.options = {
         closeButton: true,
         progressBar: true,
@@ -143,7 +144,6 @@
                 });
                 $('#trainingDetailsModal').modal('hide');
             });
-
             $('#submit').on('click', function () {
                 var trainingId = $('#addTrainingForm').data('trainingId');
                 var addTitle = $('#addTitle').val();
@@ -153,11 +153,17 @@
                 var addDescription = $('#addDescription').val();
                 var addDepartment = $('#departmentDropdown2').val();
                 var checkedPrerequisites = [];
+                var errors = {};
+                clearError("title");
+                clearError("startdate");
+                clearError("deadline");
+                clearError("threshold");
+                clearError("description");
+                clearError("DepartmentName");
+                clearError("selectedPrerequisites");
                 $('input[type="checkbox"]:checked').each(function () {
                     checkedPrerequisites.push($(this).val());
                 });
-
-                alert('Checked Prerequisites: ' + checkedPrerequisites.join(', '));
                 var data = {
                     TrainingId: trainingId,
                     Title: addTitle,
@@ -169,22 +175,88 @@
                     PreRequisite: checkedPrerequisites
 
                 };
-                console.log(data);
-                $.ajax({
-                    type: 'POST',
-                    url: '/Training/AddTraining',
-                    data: data,
-                    success: function (result) {
-                        toastr.success('New Training added successfully!');
-                        setTimeout(function () {
-                            location.reload();
-                        }, 1000);
-                    },
-                    error: function () {
-                        alert('Error occurred while saving changes.');
-                    }
-                });
-                $('#trainingDetailsModal').modal('hide');
+                function clearError(fieldName) {
+                    var errorContainer = document.getElementById("error" + fieldName);
+                    errorContainer.innerHTML = "";
+                }
+                function displayError(fieldName, message) {
+                    var errorContainer = document.getElementById("error" + fieldName);
+                    errorContainer.innerHTML = message;
+                }
+
+                const currentDate = new Date();
+                const currentDateFormatted = currentDate.toISOString().split('T')[0];
+                const scheduleDateInput = document.getElementById("addStartDate");
+                scheduleDateInput.setAttribute("min", currentDateFormatted);
+                scheduleDateInput.setAttribute("value", currentDateFormatted);
+                const deadlineDateInput = document.getElementById("addDeadline");
+                deadlineDateInput.setAttribute("min", currentDateFormatted);
+                deadlineDateInput.setAttribute("value", currentDateFormatted);
+
+                const selectedDate = new Date(scheduleDateInput.value);
+                const deadlineDate = new Date(deadlineDateInput.value);
+
+                
+                if (!addTitle.trim()) {
+                    errors.addTitle = "Please enter Title.";
+                    displayError("title", errors.addTitle);
+                }
+                if (!addStartDate.trim()) {
+                    errors.addStartDate = "Please enter Start Date.";
+                    displayError("startdate", errors.addStartDate);
+                }
+                if (!addDeadline.trim()) {
+                    errors.addDeadline = "Please enter Deadline.";
+                    displayError("deadline", errors.addDeadline);
+                }
+                if (!addThreshold.trim()) {
+                    errors.addThreshold = "Please enter Threshold.";
+                    displayError("threshold", errors.addThreshold);
+                }
+                if (!addDescription.trim()) {
+                    errors.addDescription = "Please enter Description.";
+                    displayError("description", errors.addDescription);
+                }
+                if (!addDepartment.trim()) {
+                    errors.addDepartment = "Please choose Department.";
+                    displayError("DepartmentName", errors.addDepartment);
+                }
+                if (!checkedPrerequisites.length) {
+                    errors.checkedPrerequisites = "Please choose at least one prerequisite.";
+                    displayError("selectedPrerequisites", errors.checkedPrerequisites);
+                }
+
+                if (selectedDate < currentDate) {
+                    errors.addStartDate = "Please choose a valid start date.";
+                    displayError("startdate", errors.addStartDate);
+                }
+                if (deadlineDate < currentDate) {
+                    errors.addDeadline = "Please choose a valid deadline date.";
+                    displayError("deadline", errors.addDeadline);
+                }
+             
+
+                if (Object.keys(errors).length > 0) {
+                    return false;
+                } else {
+
+                    console.log(data);
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Training/AddTraining',
+                        data: data,
+                        success: function (result) {
+                            toastr.success('New Training added successfully!');
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1000);
+                        },
+                        error: function () {
+                            alert('Error occurred while saving changes.');
+                        }
+                    });
+                    $('#trainingDetailsModal').modal('hide');
+                }
             });
             $('.deleteButton').on('click', function () {
                 var trainingId = $(this).data('training-id');
@@ -194,14 +266,12 @@
                     data: { id: trainingId },
                     success: function (result) {
                         if (result.success) {
-                            //console.log('Training cannot be deleted');
                             toastr.success('Training successfully deleted!');
                             setTimeout(function () {
                                 location.reload();
                             }, 1000);
                         }
                         else {
-                            //console.log('Training deleted successfully');
                             toastr.error('Training cannot be deleted!');
                         }
                     },

@@ -125,9 +125,7 @@ namespace DataAccessLayer.Repositories
                         {
                             ApplicantName = (string)reader["ApplicantName"],
                             ManagerName = (string)reader["ManagertName"],
-                            //ApplicationStatus = reader.GetString(reader.GetOrdinal("ApplicationStatus")),
                             TrainingTitle = reader.GetString(reader.GetOrdinal("Title")),
-                            //ManagerEmail = reader.GetString(reader.GetOrdinal("ManagerEmail")),
                             EmployeeEmail = reader.GetString(reader.GetOrdinal("ApplicantEmail"))
 
                         };
@@ -171,7 +169,7 @@ namespace DataAccessLayer.Repositories
 
         public async Task<string> ApproveApplicationAsync(string name, string title)
         {
-            string status = null; // Initialize status to handle cases where no rows are found
+            string status = null; 
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
                 string updateSql = $@"UPDATE ApplicationDetails
@@ -213,12 +211,11 @@ namespace DataAccessLayer.Repositories
 
                 int numberOfRowsAffected =await _dataAccessLayer.InsertDataAsync(updateSql, parametersUpdate);
 
-                // Execute the second query to retrieve the status
                 using (SqlDataReader reader =await _dataAccessLayer.GetDataWithConditionsAsync(selectSql, parametersSelect))
                 {
                     if (reader.HasRows)
                     {
-                        await reader.ReadAsync(); // Move to the first row
+                        await reader.ReadAsync(); 
                         status = (string)reader["Statuss"];
                     }
                 }

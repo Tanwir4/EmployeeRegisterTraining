@@ -10,11 +10,12 @@ namespace DataAccessLayer.Repositories.IRepositories
         Task<bool> RegisterAsync(User user);
         Task<int> GetUserAccountIdByEmailAsync(string email);
         Task<int> GetUserIdAsync();
-        Task <string> GetRoleByEmailAsync(string email);
+        Task<string> GetRoleByEmailAsync(string email);
         Task<string> GetManagerEmailByApplicantIDAsync();
         Task<List<string>> GetAllManagersByDepartmentAsync(string department);
-        bool IsEmailUniqueAsync(string email);
+        Task<bool> IsEmailUniqueAsync(string email);
         Task<bool> IsNicUniqueAsync(string nic);
         Task<bool> IsMobileNumberUniqueAsync(string mobNum);
+        Task<bool> GetValueByColumnAsync<T>(string tableName, string columnName, string value);
     }
 }

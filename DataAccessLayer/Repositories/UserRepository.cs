@@ -6,6 +6,7 @@ using System.Data;
 using DataAccessLayer.DBConnection;
 using System.Web;
 using System.Threading.Tasks;
+using System;
 
 namespace DataAccessLayer.Repositories
 {
@@ -16,48 +17,38 @@ namespace DataAccessLayer.Repositories
         {
             _dataAccessLayer = layer;
         }
-        public async Task<bool> IsMobileNumberUniqueAsync(string mobNum)
+        public async Task<bool> GetValueByColumnAsync<T>(string tableName, string columnName, string value)
         {
             using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
             {
-                string sql = $@"select 1 from UserDetails where MobileNumber=@MobileNumber";
+                string sql = $"SELECT 1 FROM {tableName} WHERE {columnName} = @{columnName}";
 
                 List<SqlParameter> parameters = new List<SqlParameter>
-                   {
-                       new SqlParameter("@MobileNumber", SqlDbType.VarChar, 100) { Value = mobNum }
-                   };
+        {
+            new SqlParameter($"@{columnName}", SqlDbType.VarChar, 100) { Value = value }
+        };
+
                 SqlDataReader reader = await _dataAccessLayer.GetDataWithConditionsAsync(sql, parameters);
-                return (reader.HasRows);
+                return reader.HasRows;
             }
         }
+
         public async Task<bool> IsNicUniqueAsync(string nic)
         {
-            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
-            {
-                string sql = $@"select 1 from UserDetails where NationalIdentityCard=@Nic";
-
-                List<SqlParameter> parameters = new List<SqlParameter>
-                   {
-                       new SqlParameter("@Nic", SqlDbType.VarChar, 100) { Value = nic }
-                   };
-                SqlDataReader reader =await _dataAccessLayer.GetDataWithConditionsAsync(sql, parameters);
-                return (reader.HasRows);
-            }
+            return await GetValueByColumnAsync<bool>("UserDetails", "NationalIdentityCard", nic);
         }
-        public bool IsEmailUniqueAsync(string email)
+
+
+        public async Task<bool> IsMobileNumberUniqueAsync(string mobNum)
         {
-            using (SqlConnection sqlConnection = _dataAccessLayer.CreateConnection())
-            {
-                string sql = $@"select 1 from UserAccount where Email=@Email";
-
-                List<SqlParameter> parameters = new List<SqlParameter>
-                   {
-                       new SqlParameter("@Email", SqlDbType.VarChar, 100) { Value = email }
-                   };
-                SqlDataReader reader =  _dataAccessLayer.GetDataWithConditions(sql, parameters);
-                return (reader.HasRows);
-            }
+            return await GetValueByColumnAsync<bool>("UserDetails", "MobileNumber", mobNum);
         }
+
+        public async Task<bool> IsEmailUniqueAsync(string email)
+        {
+            return await GetValueByColumnAsync<bool>("UserAccount", "Email", email);
+        }
+
         public async Task<List<string>> GetAllManagersByDepartmentAsync(string department)
         {
             List<string> managerList = new List<string>();
